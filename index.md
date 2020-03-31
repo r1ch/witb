@@ -1,6 +1,6 @@
-layout:default
---
-
+---
+layout: default
+---
 <div id = "app">
   <google-login></google-login>
 </div>
