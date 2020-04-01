@@ -30,7 +30,7 @@ var app = new Vue({
 					this[destination] = data
 				})
 		},
-		fetchGames: ()=>fetch("GET","/games","games")
+		fetchGames: ()=>this.fetch("GET","/games","games")
 	},
 	mounted: function(){
 		fetchGames()
