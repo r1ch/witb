@@ -32,7 +32,7 @@ var app = new Vue({
 					this[destination] = data
 				})
 		},
-		fetchGames(){API("GET","/games","games")}
+		fetchGames(){this.API("GET","/games","games")}
 	},
 	mounted: function(){
 		this.fetchGames()
