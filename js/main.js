@@ -22,10 +22,15 @@ Vue.component('witb-games',{
 	data: ()=>({
 		currentGame:null
 	}),
+	methods: {
+		chooseGame(game):{
+			this.currentGame = game
+		}
+	},
 	template: `
 		<div class = "row">
-		      <ul class="collection with-header">
-				<witb-game @click = "currentGame=game.identifier" v-for = "game in games" :key="game.identifier" :game="game" v-if = "!currentGame || currentGame == game.identifier"></witb-game>
+		      <ul class="collection with-header" v-if = "games">
+				<witb-game v-for = "game in games" :key="game.identifier" :game="game" v-if = "!currentGame || currentGame == game.identifier"></witb-game>
 			</ul>
 		</div>
 	`
@@ -36,7 +41,7 @@ Vue.component('witb-game',{
 	data: ()=>({
 	}),
 	template: `
-		<li class="collection-item">{{game.details.title}}</li>
+		<li class="collection-item" @click="chooseGame(game.identifier)">{{game.details.title}}</li>
 	`
 })
 
