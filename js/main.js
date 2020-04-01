@@ -67,11 +67,13 @@ var app = new Vue({
 				.then(({
 					data
 				}) => {
-					this[destination] = data
+					destination && this[destination] = data
 				})
 		},
 		fetchGames(){this.API("GET","/games","games")},
-		joinGame(){this.API("PUT","/players","players",{identifier:profile.getId(),name:profile.getGivenName()})}
+		joinGame(game){
+			this.API("PUT","/players","players",false,{identifier:profile.getId(),name:profile.getGivenName()})
+		}
 	},
 	mounted: function(){
 		this.fetchGames()
