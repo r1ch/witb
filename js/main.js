@@ -22,26 +22,35 @@ Vue.component('witb-games',{
 	data: ()=>({
 		currentGame:null
 	}),
-	methods: {
-		chooseGame(game):{
-			this.currentGame = game
+	method: {
+		chooseGame(event){
+			this.currentGame = event
 		}
 	},
 	template: `
 		<div class = "row">
+CG:{{currentGame}}
 		      <ul class="collection with-header" v-if = "games">
-				<witb-game v-for = "game in games" :key="game.identifier" :game="game" v-if = "!currentGame || currentGame == game.identifier"></witb-game>
+				<witb-game @chooseGame= "chooseGame" v-for = "game in games" :key="game.identifier" :game="game" :currentGame="currentGame" v-if = "!currentGame || currentGame == game.identifier"></witb-game>
 			</ul>
 		</div>
 	`
 })
 
 Vue.component('witb-game',{
-	props: ['game'],
+	props: ['game','currentGame'],
 	data: ()=>({
 	}),
+	methods: {
+		chooseGame(){
+			this.$emit("chooseGame",this.game.identifier)
+		}
+	},
 	template: `
-		<li class="collection-item" @click="$parent.chooseGame(game.identifier)">{{game.details.title}}</li>
+		<li class="collection-item" @click="chooseGame">
+			{{game.details.title}}
+			<input class = "btn" @click="chooseGame">Join</input>
+		</li>
 	`
 })
 
