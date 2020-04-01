@@ -25,9 +25,9 @@ var app = new Vue({
 			signHttpRequest(method, URL)
 				.then(axios)
 				.then(({
-					data
+					data;
 				}) => {
-					this.[destination] = data
+					this[destination] = data;
 				})
 		},
 		fetchGames=()=>fetch(GET,"/games","games")
