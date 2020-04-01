@@ -61,8 +61,8 @@ var app = new Vue({
 		players:[]
 	},
 	methods: {
-		API(method,URL,destination,data){
-			signHttpRequest(method, URL)
+		API(method,URL,destination,send){
+			signHttpRequest(method, URL, send)
 				.then(axios)
 				.then(({
 					data
