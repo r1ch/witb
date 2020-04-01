@@ -23,7 +23,7 @@ var app = new Vue({
 		games:null
 	},
 	methods: {
-		fetch(method,URL,destination){
+		API(method,URL,destination){
 			signHttpRequest(method, URL)
 				.then(axios)
 				.then(({
@@ -32,7 +32,7 @@ var app = new Vue({
 					this[destination] = data
 				})
 		},
-		fetchGames: ()=>this.fetch("GET","/games","games")
+		fetchGames: ()=>this.API("GET","/games","games")
 	},
 	mounted: function(){
 		this.fetchGames()
