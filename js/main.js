@@ -36,14 +36,11 @@ Vue.component('witb-game',{
 	data: ()=>({
 	}),
 	template: `
-		<a class="list-group-item list-group-item-action flex-column align-items-start">
-			<div class="d-flex w-100 justify-content-between">
-				<h5 class="mb-1">{{game.details.title}}</h5>
-				<small>{{game.details.entriesPerPerson}} each</small>
-			</div>
-			<p class="mb-1">Rounds are : {{game.details.rounds}}</p>
-			<small>{{game.details.timePerRound}}</small>
-		</a>
+		<li class="list-group-item d-flex justify-content-between align-items-center">
+			{{game.details.title}}
+			<span class="badge badge-primary badge-pill">Write {{game.details.entriesPerPerson}}</span>
+			<span class="badge badge-primary badge-pill">{{game.details.timePerRound}}s/round</span>
+		</li>
 	`
 })
 
