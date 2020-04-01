@@ -49,7 +49,7 @@ Vue.component('witb-game',{
 	template: `
 		<li class="collection-item" @click="chooseGame">
 			{{game.details.title}}
-			<input class = "btn" @click="chooseGame">Join</input>
+			<a class = "btn" @click="chooseGame">Join</a>
 		</li>
 	`
 })
@@ -57,10 +57,11 @@ Vue.component('witb-game',{
 var app = new Vue({
 	el: '#app',
 	data: {
-		games:[]
+		games:[],
+		players:[]
 	},
 	methods: {
-		API(method,URL,destination){
+		API(method,URL,destination,data){
 			signHttpRequest(method, URL)
 				.then(axios)
 				.then(({
@@ -69,7 +70,8 @@ var app = new Vue({
 					this[destination] = data
 				})
 		},
-		fetchGames(){this.API("GET","/games","games")}
+		fetchGames(){this.API("GET","/games","games")},
+		joinGame(){this.API("PUT","/players","players",{identifier:profile.getId(),name:profile.getGivenName()})}
 	},
 	mounted: function(){
 		this.fetchGames()
