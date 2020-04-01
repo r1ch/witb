@@ -32,7 +32,7 @@ Vue.component('witb-game',{
 	props: ['game'],
 	data: ()=>({
 	}),
-	template: `<a @click = "class="list-group-item list-group-item-action flex-column align-items-start active">
+	template: `<a class="list-group-item list-group-item-action flex-column align-items-start active">
 		    <div class="d-flex w-100 justify-content-between">
 		      <h5 class="mb-1">{{game.details.title}}</h5>
 		      <small>{{game.details.entriesPerPerson}} each</small>
