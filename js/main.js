@@ -19,9 +19,9 @@ Vue.component('google-login', {
 
 Vue.component('witb-games',{
 	props: ['games'],
-	data: ()=>{
+	data: ()=>({
 		currentGame:null
-	},
+	}),
 	template: `
 		<div class = "row">
 			<witb-game v-for = "game in games" :key="game.identifier" :game="game" v-if = "!currentGame || currentGame == game.identifier"></witb-game>
@@ -31,8 +31,8 @@ Vue.component('witb-games',{
 
 Vue.component('witb-game',{
 	props: ['game'],
-	data: ()=>{
-	},
+	data: ()=>({
+	}),
 	template: `
 		<div>
 			{{game.details}}
