@@ -19,5 +19,20 @@ Vue.component('google-login', {
 
 var app = new Vue({
 	el: '#app',
-	data: {}
+	data: {},
+	methods: {
+		fetch(method,URL,destination){
+			signHttpRequest(method, URL)
+				.then(axios)
+				.then(({
+					data
+				}) => {
+					this.[destination] = data
+				})
+		},
+		fetchGames=()=>fetch(GET,"/games","games")
+	},
+	mounted: function(){
+		fetchGames()
+	}
 })
