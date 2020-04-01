@@ -19,7 +19,9 @@ Vue.component('google-login', {
 
 var app = new Vue({
 	el: '#app',
-	data: {},
+	data: {
+		games:null
+	},
 	methods: {
 		fetch(method,URL,destination){
 			signHttpRequest(method, URL)
@@ -33,6 +35,6 @@ var app = new Vue({
 		fetchGames: ()=>this.fetch("GET","/games","games")
 	},
 	mounted: function(){
-		fetchGames()
+		this.fetchGames()
 	}
 })
