@@ -22,9 +22,8 @@ Vue.component('witb-games',{
 	data: ()=>({
 		currentGame:null
 	}),
-	template: `
-		<div class = "row">
-			<witb-game v-for = "game in games" :key="game.identifier" :game="game" v-if = "!currentGame || currentGame == game.identifier"></witb-game>
+	template: `<div class="list-group">
+			<witb-game @click = "currentGame=game.identifier" v-for = "game in games" :key="game.identifier" :game="game" v-if = "!currentGame || currentGame == game.identifier"></witb-game>
 		</div>
 	`
 })
@@ -33,10 +32,14 @@ Vue.component('witb-game',{
 	props: ['game'],
 	data: ()=>({
 	}),
-	template: `
-		<div>
-			{{game.details}}
-		</div>
+	template: `<a @click = "class="list-group-item list-group-item-action flex-column align-items-start active">
+		    <div class="d-flex w-100 justify-content-between">
+		      <h5 class="mb-1">{{game.details.title}}</h5>
+		      <small>{{game.details.entriesPerPerson}} each</small>
+		    </div>
+		    <p class="mb-1">Rounds are : {{game.details.rounds}}</p>
+		    <small>{{game.details.timePerRound}}</small>
+		  </a>
 	`
 })
 
