@@ -18,7 +18,7 @@ Vue.component('google-login', {
 })
 
 Vue.component('witb-games',{
-	props: ['games']
+	props: ['games'],
 	data: ()=>{
 		currentGame:null
 	},
@@ -30,7 +30,7 @@ Vue.component('witb-games',{
 })
 
 Vue.component('witb-game',{
-	props: ['game']
+	props: ['game'],
 	data: ()=>{
 		currentGame:null
 	},
