@@ -11,8 +11,8 @@ Vue.component('google-login', {
 	`,
 	mounted: function() {
 		Credentials.then(() => {
-			this.authenticated = true
-			this.profileURL = profile.getImageUrl()
+			this.authenticated = true;
+			this.profileURL = profile.getImageUrl();
 		})
 	}
 })
