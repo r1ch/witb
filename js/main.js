@@ -1,6 +1,6 @@
 Vue.component('google-login', {
 	data: () => ({
-		authenticated: false
+		authenticated: false,
 		profileURL : false
 	}),
 	template: `
