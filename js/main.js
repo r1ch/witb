@@ -17,6 +17,30 @@ Vue.component('google-login', {
 	}
 })
 
+Vue.component('witb-games',{
+	props: ['games']
+	data: ()=>{
+		currentGame:null
+	},
+	template: `
+		<div class = "row">
+			<witb-game v-for = "game in games" :key="game.identifier" :game="game" v-if = "!currentGame || currentGame == game.identifier"></witb-game>
+		</div>
+	`
+})
+
+Vue.component('witb-game',{
+	props: ['game']
+	data: ()=>{
+		currentGame:null
+	},
+	template: `
+		<div>
+			{{game.details}}
+		</div>
+	`
+})
+
 var app = new Vue({
 	el: '#app',
 	data: {
