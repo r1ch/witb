@@ -32,7 +32,6 @@ Vue.component('witb-games',{
 Vue.component('witb-game',{
 	props: ['game'],
 	data: ()=>{
-		currentGame:null
 	},
 	template: `
 		<div>
@@ -44,7 +43,7 @@ Vue.component('witb-game',{
 var app = new Vue({
 	el: '#app',
 	data: {
-		games:null
+		games:[]
 	},
 	methods: {
 		API(method,URL,destination){
