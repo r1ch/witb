@@ -22,7 +22,7 @@ Vue.component('witb-games',{
 	data: ()=>({
 		currentGame:null
 	}),
-	method: {
+	methods: {
 		chooseGame(event){
 			this.currentGame = event
 		}
