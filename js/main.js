@@ -41,7 +41,7 @@ Vue.component('witb-game',{
 	data: ()=>({
 	}),
 	template: `
-		<li class="collection-item" @click="chooseGame(game.identifier)">{{game.details.title}}</li>
+		<li class="collection-item" @click="$parent.chooseGame(game.identifier)">{{game.details.title}}</li>
 	`
 })
 
