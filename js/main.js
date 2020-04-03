@@ -56,7 +56,7 @@ Vue.component('witb-games',{
 		chooseGame(event){
 			this.currentGame = event
 			console.log(this.currentGame,event)
-			this.API("PUT",`/games/${currentGame}/players`,{id:profile.getId(),name:profile.getGivenName(),URL:profile.getImageUrl()})
+			this.API("PUT",`/games/${this.currentGame}/players`,{id:profile.getId(),name:profile.getGivenName(),URL:profile.getImageUrl()})
 		}
 	},
 	template: `
@@ -78,7 +78,7 @@ Vue.component('witb-game',{
 	methods: {
 		chooseGame(){
 			this.$emit("chooseGame",this.game.recordId)
-			this.API("GET",`/games/${currentGame}/players`,false,players=>this.players=players)
+			this.API("GET",`/games/${this.currentGame}/players`,false,players=>this.players=players)
 		}
 	},
 	template: `
