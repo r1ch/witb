@@ -59,7 +59,7 @@ var app = new Vue({
 	data: {
 		games:[],
 		game:[],
-		suggestions:[]
+		names:[]
 	},
 	methods: {
 		API(method,URL,body,handler){
@@ -76,7 +76,7 @@ var app = new Vue({
 			this.API("PUT",`/games/${game}/players`,{id:profile.getId(),name:profile.getGivenName(),URL:profile.getImageUrl()},game=>{this.game=game}})
 		},
 		storeNames(game,names){
-			this.API("PUT",`/games/${game}/players/${profile.getId()}/names`,names,console.log)
+			this.API("PUT",`/games/${game}/players/${profile.getId()}/names`,names,names=>{this.names=names})
 		}
 	},
 	mounted: function(){
