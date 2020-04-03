@@ -49,7 +49,7 @@ Vue.component('witb-games',{
 		currentGame:null
 	}),
 	mounted: function(){
-		
+		fetchGames();
 	},
 	methods: {
 		fetchGames(){this.API("GET","/games",null,games=>this.games=games)},
@@ -82,7 +82,7 @@ Vue.component('witb-game',{
 	template: `
 		<li class="collection-item" @click="chooseGame">
 			{{game.title}}
-			<a class = "btn" @click="chooseGame" v-if:"game.recordIdentifier!=currentGame">Join</a>
+			<a class = "btn" @click="chooseGame" v-if="game.recordIdentifier!=currentGame">Join</a>
 			<witb-players v-for = "player in players" :key = "player.recordIdentifier" :player="player"></witb-players>
 		</li>
 	`
