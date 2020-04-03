@@ -49,7 +49,7 @@ Vue.component('witb-games',{
 		currentGame:null
 	}),
 	mounted: function(){
-		fetchGames();
+		this.fetchGames();
 	},
 	methods: {
 		fetchGames(){this.API("GET","/games",null,games=>this.games=games)},
