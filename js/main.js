@@ -62,7 +62,7 @@ Vue.component('witb-games',{
 	template: `
 		<div class = "row">
 		      <ul class="collection with-header" v-if = "games">
-				<witb-game @chooseGame= "chooseGame" v-for = "game in games" :key="game.recordIdentifier" :game="game" :currentGame="currentGame" v-if = "!currentGame || currentGame == game.recordIdentifier"></witb-game>
+				<witb-game @chooseGame= "chooseGame" v-for = "game in games" :key="game.recordId" :game="game" :currentGame="currentGame" v-if = "!currentGame || currentGame == game.recordId"></witb-game>
 			</ul>
 		</div>
 	`
@@ -76,15 +76,15 @@ Vue.component('witb-game',{
 	}),
 	methods: {
 		chooseGame(){
-			this.$emit("chooseGame",this.game.recordIdentifier)
+			this.$emit("chooseGame",this.game.recordId)
 			this.API("GET",`/games/${currentGame}/players`,false,players=>this.players=players)
 		}
 	},
 	template: `
 		<li class="collection-item" @click="chooseGame">
 			{{game.title}}
-			<a class = "btn" @click="chooseGame" v-if="game.recordIdentifier!=currentGame">Join</a>
-			<witb-player v-for = "player in players" :key = "player.recordIdentifier" :player="player"></witb-player>
+			<a class = "btn" @click="chooseGame" v-if="game.recordId!=currentGame">Join</a>
+			<witb-player v-for = "player in players" :key = "player.recordId" :player="player"></witb-player>
 		</li>
 	`
 })
