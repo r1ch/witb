@@ -54,13 +54,14 @@ Vue.component('witb-games',{
 	methods: {
 		fetchGames(){this.API("GET","/games",null,games=>this.games=games)},
 		chooseGame(event){
-			currentGame = event
-			console.log(currentGame,event)
+			this.currentGame = event
+			console.log(this.currentGame,event)
 			this.API("PUT",`/games/${currentGame}/players`,{id:profile.getId(),name:profile.getGivenName(),URL:profile.getImageUrl()})
 		}
 	},
 	template: `
 		<div class = "row">
+		      <p v-if="currentGame">{{currentGame}}</p>
 		      <ul class="collection with-header" v-if = "games">
 				<witb-game @chooseGame= "chooseGame" v-for = "game in games" :key="game.recordId" :game="game" :currentGame="currentGame" v-if = "!currentGame || currentGame == game.recordId"></witb-game>
 			</ul>
