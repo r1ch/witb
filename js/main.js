@@ -73,7 +73,7 @@ var app = new Vue({
 		},
 		fetchGames(){this.API("GET","/games",null,games=>this.games=games)},
 		joinGame(game){
-			this.API("PUT",`/games/${game}/players`,{id:profile.getId(),name:profile.getGivenName(),URL:profile.getImageUrl()},game=>{this.game=game}})
+			this.API("PUT",`/games/${game}/players`,{id:profile.getId(),name:profile.getGivenName(),URL:profile.getImageUrl()},game=>{this.game=game})
 		},
 		storeNames(game,names){
 			this.API("PUT",`/games/${game}/players/${profile.getId()}/names`,names,names=>{this.names=names})
