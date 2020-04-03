@@ -57,22 +57,24 @@ Vue.component('witb-game',{
 var app = new Vue({
 	el: '#app',
 	data: {
-		games:[],
-		players:[]
+		games:[]
 	},
 	methods: {
-		API(method,URL,destination,send){
-			signHttpRequest(method, URL, send)
+		API(method,URL,body,handler){
+			signHttpRequest(method, URL, body)
 				.then(axios)
 				.then(({
 					data
 				}) => {
-					if(destination) this[destination] = data
+					if(handler) handler(data)
 				})
 		},
-		fetchGames(){this.API("GET","/games","games")},
+		fetchGames(){this.API("GET","/games",null,games=>this.games=games)},
 		joinGame(game){
-			this.API("PUT",`/games/${game}/players`,false,{id:profile.getId(),name:profile.getGivenName(),URL:profile.getImageURL()})
+			this.API("PUT",`/games/${game}/players`,{id:profile.getId(),name:profile.getGivenName(),URL:profile.getImageURL()},console.log)
+		},
+		storeNames(game,names){
+			this.API("PUT",`/games/${game}/players/${profile.getId()}/names`,names,console.log)
 		}
 	},
 	mounted: function(){
