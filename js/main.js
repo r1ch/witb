@@ -72,7 +72,7 @@ var app = new Vue({
 		},
 		fetchGames(){this.API("GET","/games","games")},
 		joinGame(game){
-			this.API("PUT","/players",false,{game:game,player:{id:profile.getId(),name:profile.getGivenName()}})
+			this.API("PUT",`/games/${game}/players`,false,{id:profile.getId(),name:profile.getGivenName(),URL:profile.getImageURL()})
 		}
 	},
 	mounted: function(){
