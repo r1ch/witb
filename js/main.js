@@ -1,3 +1,28 @@
+var API = {
+	created: function () {
+		console.log("API created... use this to warm it")
+	},
+	methods: {
+		API(method,URL,body,handler){
+			signHttpRequest(method, URL, body)
+			.then(axios)
+			.then(({data}) => {
+				if(handler) handler(data)
+			})
+		},
+	}
+}
+	/*fetchGames(){this.API("GET","/games",null,games=>this.games=games)},
+	joinGame(game){
+	this.API("PUT",`/games/${game}/players`,{id:profile.getId(),name:profile.getGivenName(),URL:profile.getImageUrl()},game=>{this.game=game})
+	},
+	getPlayers(game){
+	this.API("GET",`/games/${game}/players`,null,console.log)
+	},
+	storeNames(game,names){
+	this.API("PUT",`/games/${game}/players/${profile.getId()}/names`,names,names=>{this.names=names})
+	}*/
+
 Vue.component('google-login', {
 	data: () => ({
 		authenticated: false,
@@ -18,38 +43,59 @@ Vue.component('google-login', {
 })
 
 Vue.component('witb-games',{
-	props: ['games'],
+	mixins:[API],
 	data: ()=>({
+		games:[],
 		currentGame:null
 	}),
+	mounted: function(){
+		this.fetchGames();
+	},
 	methods: {
+		fetchGames(){this.API("GET","/games",null,games=>this.games=games)},
 		chooseGame(event){
 			this.currentGame = event
+			console.log(this.currentGame,event)
+			this.API("PUT",`/games/${this.currentGame}/players`,{id:profile.getId(),name:profile.getGivenName(),URL:profile.getImageUrl()})
 		}
 	},
 	template: `
 		<div class = "row">
-CG:{{currentGame}}
+		      <p v-if="currentGame">{{currentGame}}</p>
 		      <ul class="collection with-header" v-if = "games">
-				<witb-game @chooseGame= "chooseGame" v-for = "game in games" :key="game.identifier" :game="game" :currentGame="currentGame" v-if = "!currentGame || currentGame == game.identifier"></witb-game>
+				<witb-game @chooseGame= "chooseGame" v-for = "game in games" :key="game.recordId" :game="game" :currentGame="currentGame" v-if = "!currentGame || currentGame == game.recordId"></witb-game>
 			</ul>
 		</div>
 	`
 })
 
 Vue.component('witb-game',{
+	mixins: [API],
 	props: ['game','currentGame'],
 	data: ()=>({
+		players:[]
 	}),
 	methods: {
 		chooseGame(){
-			this.$emit("chooseGame",this.game.identifier)
+			this.$emit("chooseGame",this.game.recordId)
+			this.API("GET",`/games/${this.currentGame}/players`,false,players=>this.players=players)
 		}
 	},
 	template: `
 		<li class="collection-item" @click="chooseGame">
-			{{game.details.title}}
-			<a class = "btn" @click="chooseGame">Join</a>
+			{{game.title}}
+			<a class = "btn" @click="chooseGame" v-if="game.recordId!=currentGame">Join</a>
+			<witb-player v-for = "player in players" :key = "player.recordId" :player="player"></witb-player>
+		</li>
+	`
+})
+
+Vue.component('witb-player',{
+	props: ['player'],
+	template: `
+		<li class="collection-item">
+			{{player.name}}
+			<img :src="player.URL"></img>
 		</li>
 	`
 })
@@ -57,25 +103,5 @@ Vue.component('witb-game',{
 var app = new Vue({
 	el: '#app',
 	data: {
-		games:[],
-		players:[]
-	},
-	methods: {
-		API(method,URL,destination,send){
-			signHttpRequest(method, URL, send)
-				.then(axios)
-				.then(({
-					data
-				}) => {
-					if(destination) this[destination] = data
-				})
-		},
-		fetchGames(){this.API("GET","/games","games")},
-		joinGame(game){
-			this.API("PUT","/players",false,{game:game,user:{identifier:profile.getId(),name:profile.getGivenName()}})
-		}
-	},
-	mounted: function(){
-		this.fetchGames()
 	}
 })
