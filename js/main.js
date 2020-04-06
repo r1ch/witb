@@ -14,6 +14,7 @@ var API = {
 }
 
 Vue.component('google-login', {
+	mixins:[API],
 	data: () => ({
 		authenticated: false,
 		profile: false
@@ -28,6 +29,7 @@ Vue.component('google-login', {
 		Credentials.then(() => {
 			this.authenticated = true;
 			this.profile = profile
+			this.API("PUT",`/players`,profile.summary)
 		})
 	}
 })
