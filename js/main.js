@@ -88,6 +88,16 @@ Vue.component('witb-game',{
 	`
 })
 
+Vue.component('witb-player',{
+	props: ['player'],
+	template: `
+		<li class="collection-item">
+			{{player.name}}
+			<img :src="player.url"></img>
+		</li>
+	`
+})
+
 Vue.component('witb-name',{
 	props: ['name'],
 	template: `
@@ -97,15 +107,6 @@ Vue.component('witb-name',{
 	`
 })
 
-Vue.component('witb-name',{
-	props: ['player'],
-	template: `
-		<li class="collection-item">
-			{{player.name}}
-			<img :src="player.url"></img>
-		</li>
-	`
-})
 
 var app = new Vue({
 	el: '#app',
