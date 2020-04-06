@@ -16,18 +16,18 @@ var API = {
 Vue.component('google-login', {
 	data: () => ({
 		authenticated: false,
-		profileURL : false
+		profile: false
 	}),
 	template: `
 		<div class = "row">
 			<div v-if = "!authenticated" class="g-signin2" data-width="200" data-height="50" data-onsuccess="authenticate" data-theme="dark"></div>
-			<img :src="profileURL"></img>
+			<img :src="profile.summary.url"></img>
 		</div>
 	`,
 	mounted: function() {
 		Credentials.then(() => {
 			this.authenticated = true;
-			this.profileURL = profile.getImageUrl();
+			this.profile = profile
 		})
 	}
 })
@@ -49,10 +49,10 @@ Vue.component('witb-games',{
 	},
 	methods: {
 		fetchGames(){this.API("GET","/games",null,games=>this.games=games)},
-		register(){this.API("PUT","/players",profilePost,)}
+		register(){this.API("PUT","/players",profile.summary)}
 		chooseGame(event){
 			this.currentGame = event
-			this.API("PUT",`/games/${this.currentGame.identifier}/players`,{id:profile.getId(),name:profile.getGivenName(),url:profile.getImageUrl()})
+			this.API("PUT",`/games/${this.currentGame.identifier}/players`,profile.summary)
 		}
 	},
 	template: `
