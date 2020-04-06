@@ -83,7 +83,7 @@ Vue.component('witb-game',{
 			{{game.title}}
 			<a class = "btn" @click="chooseGame" v-if="currentGameIdentifier != game.identifier">Join</a>
 			<witb-player v-for = "player in players" :key = "player.identifier" :player="player"></witb-player>
-			<witb-name v-for = "name in games.namesPerPerson"></witb-name>
+			<witb-name v-for = "name in games.namesPerPerson" :name="name"></witb-name>
 		</li>
 	`
 })
