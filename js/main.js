@@ -11,6 +11,7 @@ var API = {
 			})
 		},
 	}
+}
 
 Vue.component('google-login', {
 	data: () => ({
