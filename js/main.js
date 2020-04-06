@@ -49,7 +49,6 @@ Vue.component('witb-games',{
 	},
 	methods: {
 		fetchGames(){this.API("GET","/games",null,games=>this.games=games)},
-		register(){this.API("PUT","/players",profile.summary)},
 		chooseGame(event){
 			this.currentGame = event
 			this.API("PUT",`/games/${this.currentGame.identifier}/players`,profile.summary)
