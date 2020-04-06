@@ -68,10 +68,12 @@ Vue.component('witb-games',{
 Vue.component('witb-game',{
 	mixins: [API],
 	props: ['game','currentGameIdentifier'],
-	data: ()=>({
-		players:[],
-		names:Array(this.game.namesPersPerson)
-	}),
+	data: function(){
+		return{
+			players:[],
+			names:Array(this.game.namesPersPerson)
+		}
+	},
 	methods: {
 		chooseGame(){
 			this.$emit("chooseGame",this.game)
