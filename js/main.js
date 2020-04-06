@@ -38,6 +38,11 @@ Vue.component('witb-games',{
 		games:[],
 		currentGame:null
 	}),
+	computed:{
+		currentGameIdentifier(){
+			return currentGame ? currentGame.identifier : false;
+		}
+	},
 	mounted: function(){
 		this.fetchGames();
 	},
@@ -52,7 +57,7 @@ Vue.component('witb-games',{
 		<div class = "row">
 		      <p v-if="currentGame">{{currentGame.title}}</p>
 		      <ul class="collection with-header" v-if = "games">
-				<witb-game @chooseGame= "chooseGame" v-for = "game in games" :key="game.identifier" :game="game" :isCurrentGame = "currentGame && game.identifier==currentGame.identifier"></witb-game>
+				<witb-game @chooseGame= "chooseGame" v-for = "game in games" :key="game.identifier" :game="game" :currentGameIdentifier = "currentGameIdentifier"></witb-game>
 			</ul>
 		</div>
 	`
@@ -60,7 +65,7 @@ Vue.component('witb-games',{
 
 Vue.component('witb-game',{
 	mixins: [API],
-	props: ['game','isCurrentGame'],
+	props: ['game','currentGameIdentifier'],
 	data: ()=>({
 		players:[]
 	}),
@@ -71,9 +76,9 @@ Vue.component('witb-game',{
 		}
 	},
 	template: `
-		<li class="collection-item" @click="chooseGame" v-if = "isCurrentGame">
+		<li class="collection-item" @click="chooseGame">
 			{{game.title}}
-			<a class = "btn" @click="chooseGame" v-if="!isCurrentGame">Join</a>
+			<a class = "btn" @click="chooseGame" v-if="currentGameIdentifier != game.identifier">Join</a>
 			<witb-player v-for = "player in players" :key = "player.identifier" :player="player"></witb-player>
 		</li>
 	`
