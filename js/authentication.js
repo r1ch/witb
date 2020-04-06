@@ -29,7 +29,7 @@ function getIdToken(googleUser) {
     	id: profile.getId(),
 	name:profile.getGivenName(),
 	url:profile.getImageUrl(),
-	token: googleUser.getAuthResponse().id_token;
+	token: googleUser.getAuthResponse().id_token
     }
     var idToken = googleUser.getAuthResponse().id_token;
     return new Promise(function (resolve) {
