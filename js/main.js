@@ -40,7 +40,7 @@ Vue.component('witb-games',{
 	}),
 	computed:{
 		currentGameIdentifier(){
-			return currentGame ? currentGame.identifier : false;
+			return this.currentGame ? this.currentGame.identifier : false;
 		}
 	},
 	mounted: function(){
