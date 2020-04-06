@@ -69,7 +69,8 @@ Vue.component('witb-game',{
 	mixins: [API],
 	props: ['game','currentGameIdentifier'],
 	data: ()=>({
-		players:[]
+		players:[],
+		names:[]
 	}),
 	methods: {
 		chooseGame(){
@@ -82,11 +83,21 @@ Vue.component('witb-game',{
 			{{game.title}}
 			<a class = "btn" @click="chooseGame" v-if="currentGameIdentifier != game.identifier">Join</a>
 			<witb-player v-for = "player in players" :key = "player.identifier" :player="player"></witb-player>
+			<witb-name v-for = "name in games.namesPerPerson"></witb-name>
 		</li>
 	`
 })
 
-Vue.component('witb-player',{
+Vue.component('witb-name',{
+	props: ['name'],
+	template: `
+		<li class="collection-item">
+			{{name}}
+		</li>
+	`
+})
+
+Vue.component('witb-name',{
 	props: ['player'],
 	template: `
 		<li class="collection-item">
