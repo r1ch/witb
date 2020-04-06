@@ -45,15 +45,14 @@ Vue.component('witb-games',{
 		fetchGames(){this.API("GET","/games",null,games=>this.games=games)},
 		chooseGame(event){
 			this.currentGame = event
-			console.log(this.currentGame,event)
-			this.API("PUT",`/games/${this.currentGame}/players`,{id:profile.getId(),name:profile.getGivenName(),URL:profile.getImageUrl()})
+			this.API("PUT",`/games/${this.currentGame.identifier}/players`,{id:profile.getId(),name:profile.getGivenName(),URL:profile.getImageUrl()})
 		}
 	},
 	template: `
 		<div class = "row">
-		      <p v-if="currentGame">{{currentGame}}</p>
+		      <p v-if="currentGame">{{currentGame.title}}</p>
 		      <ul class="collection with-header" v-if = "games">
-				<witb-game @chooseGame= "chooseGame" v-for = "game in games" :key="game.identifier" :game="game" :currentGame="currentGame" v-if = "!currentGame || currentGame == game.identifier"></witb-game>
+				<witb-game @chooseGame= "chooseGame" v-for = "game in games" :key="game.identifier" :game="game" :currentGame="currentGame" v-if = "!currentGame || currentGame.identifier == game.identifier"></witb-game>
 			</ul>
 		</div>
 	`
@@ -61,20 +60,19 @@ Vue.component('witb-games',{
 
 Vue.component('witb-game',{
 	mixins: [API],
-	props: ['game','currentGame'],
+	props: ['game'],
 	data: ()=>({
 		players:[]
 	}),
 	methods: {
 		chooseGame(){
-			this.$emit("chooseGame",this.game.identifier)
-			this.API("GET",`/games/${this.currentGame}/players`,false,players=>this.players=players)
+			this.$emit("chooseGame",this.game)
+			this.API("GET",`/games/${this.game.identifier}/players`,false,players=>this.players=players)
 		}
 	},
 	template: `
 		<li class="collection-item" @click="chooseGame">
 			{{game.title}}
-			<a class = "btn" @click="chooseGame" v-if="game.identifier!=currentGame">Join</a>
 			<witb-player v-for = "player in players" :key = "player.identifier" :player="player"></witb-player>
 		</li>
 	`
