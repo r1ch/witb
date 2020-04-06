@@ -45,7 +45,6 @@ Vue.component('witb-games',{
 	},
 	mounted: function(){
 		this.fetchGames();
-		this.register();
 	},
 	methods: {
 		fetchGames(){this.API("GET","/games",null,games=>this.games=games)},
