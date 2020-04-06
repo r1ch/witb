@@ -1,6 +1,6 @@
 var API = {
 	created: function () {
-		console.log("API created... use this to warm it")
+		console.log("API created")
 	},
 	methods: {
 		API(method,URL,body,handler){
@@ -29,7 +29,6 @@ Vue.component('google-login', {
 		Credentials.then(() => {
 			this.authenticated = true;
 			this.profile = profile
-			this.API("PUT",`/players`,profile.summary)
 		})
 	}
 })
@@ -49,7 +48,9 @@ Vue.component('witb-games',{
 		this.fetchGames();
 	},
 	methods: {
-		fetchGames(){this.API("GET","/games",null,games=>this.games=games)},
+		fetchGames(){
+			this.API("GET","/games",null,games=>this.games=games)
+		},
 		chooseGame(event){
 			this.currentGame = event
 			this.API("PUT",`/games/${this.currentGame.identifier}/players`,profile.summary)
@@ -71,13 +72,14 @@ Vue.component('witb-game',{
 	data: function(){
 		return{
 			players:[],
-			names:Array(this.game.namesPersPerson)
+			names:[]
 		}
 	},
 	methods: {
 		chooseGame(){
 			this.$emit("chooseGame",this.game)
 			this.API("GET",`/games/${this.game.identifier}/players`,false,players=>this.players=players)
+			this.API("GET",`/games/${this.game.identifier}/names`,false,players=>this.names=names)
 		}
 	},
 	template: `
