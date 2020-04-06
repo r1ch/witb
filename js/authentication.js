@@ -25,7 +25,7 @@ function authenticate(googleUser) {
 
 function getIdToken(googleUser) {
     profile = googleUser.getBasicProfile();
-    profile.post = {
+    profile.summary = {
     	id: profile.getId(),
 	name:profile.getGivenName(),
 	url:profile.getImageUrl(),
