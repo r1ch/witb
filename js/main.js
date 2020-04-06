@@ -89,7 +89,7 @@ Vue.component('witb-player',{
 	template: `
 		<li class="collection-item">
 			{{player.name}}
-			<img :src="player.URL"></img>
+			<img :src="player.url"></img>
 		</li>
 	`
 })
