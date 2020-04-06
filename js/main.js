@@ -21,7 +21,7 @@ Vue.component('google-login', {
 	template: `
 		<div class = "row">
 			<div v-if = "!authenticated" class="g-signin2" data-width="200" data-height="50" data-onsuccess="authenticate" data-theme="dark"></div>
-			<img :src="profile.summary.url"></img>
+			<img v-if = "profile" :src="profile.summary.url"></img>
 		</div>
 	`,
 	mounted: function() {
