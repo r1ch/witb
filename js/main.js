@@ -70,7 +70,7 @@ Vue.component('witb-game',{
 	props: ['game','currentGameIdentifier'],
 	data: ()=>({
 		players:[],
-		names:[]
+		names:Array(this.game.namesPersPerson)
 	}),
 	methods: {
 		chooseGame(){
@@ -83,7 +83,7 @@ Vue.component('witb-game',{
 			{{game.title}}
 			<a class = "btn" @click="chooseGame" v-if="currentGameIdentifier != game.identifier">Join</a>
 			<witb-player v-for = "player in players" :key = "player.identifier" :player="player"></witb-player>
-			<witb-name v-for = "name in game.namesPerPerson" :name="name"></witb-name>
+			<witb-name v-for = "name in names" :name="name"></witb-name>
 		</li>
 	`
 })
