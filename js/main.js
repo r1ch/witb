@@ -25,6 +25,7 @@ Vue.component('google-login', {
 	`,
 	mounted: function() {
 		Credentials.then((profile) => {
+			console.log(`Profile Ready emitter ${profile}`)
 			this.authenticated = true;
 			this.$emit("profileReady",profile)
 		})
