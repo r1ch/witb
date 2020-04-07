@@ -24,10 +24,10 @@ Vue.component('google-login', {
 		</div>
 	`,
 	mounted: function() {
-		Credentials.then((profile) => {
-			console.log(`Profile Ready emitter ${profile}`)
+		Credentials.then((user) => {
+			console.log(`User Ready emitter ${user}`)
 			this.authenticated = true;
-			this.$emit("profileReady",profile)
+			this.$emit("userReady",user)
 		})
 	}
 })
@@ -123,23 +123,33 @@ Vue.component('witb-name',{
 var app = new Vue({
 	el: '#app',
 	data: {
-		profile: {}
+		profile: {
+			ready:false
+			id:0
+			name:''
+			url:''
+			token''
+		}
 	},
 	methods:{
-		profileReady(event){
-			console.log(`Profile Ready ${event}`)
-			this.profile = event
+		userReady(event){
+			console.log(`User Ready ${event}`)
+			let basicProfile = event.getBasicProfile();
+			this.profile.id = basicProfile.getId();
+			this.profile.name = basicProfile.getGivenName();
+			this.profile.url = basicProfile.getImageUrl();
+			this.profile.token = event.getAuthResponse().id_token
+			this.profile.ready = true
 		}
 	},
 	provide: function(){
-		console.log(`Provider ${this.profile}`)
 		return {
 			profile: this.profile
 		}
 	},
 	template: `
 		<div class = "container">
-			<google-login @profileReady = "profileReady"></google-login>
+			<google-login @userReady = "userReady"></google-login>
 			<witb-games></witb-games>
 		</div>
 	`
