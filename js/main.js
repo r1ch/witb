@@ -20,12 +20,14 @@ Vue.component('google-login', {
 	}),
 	template: `
 		<div class = "row">
+			!{{$profile}}!
 			<div v-if = "!authenticated" class="g-signin2" data-width="200" data-height="50" data-onsuccess="authenticate" data-theme="dark"></div>
 			<img v-if = "$profile" :src="$profile.url"></img>
 		</div>
 	`,
 	mounted: function() {
 		Credentials.then((profile) => {
+			console.log(profile)
 			this.authenticated = true;
 			Vue.prototype.$profile = profile
 		})
