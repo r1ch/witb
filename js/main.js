@@ -135,7 +135,7 @@ var app = new Vue({
 		}
 	},
 	template: `
-		<div class = "container"
+		<div class = "container">
 			<google-login @profileReady = "profileReady"></google-login>
 			<witb-games></witb-games>
 		</div>
