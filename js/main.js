@@ -132,7 +132,7 @@ var app = new Vue({
 		}
 	},
 	provide: function(){
-		console.log(`Provider ${profile}`)
+		console.log(`Provider ${this.profile}`)
 		return {
 			profile: this.profile
 		}
