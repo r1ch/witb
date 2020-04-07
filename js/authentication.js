@@ -1,14 +1,14 @@
-var profile;
-
 function DeferredCredentials() {
-	let res, rej
+	let res, rej, profile
 	let promise = new Promise((resolve, reject) => {
 		res = resolve;
 		rej = reject;
 	});
+	promise.setProfile = function(p){
+		profile = p
+	};
 	promise.resolve = ()=>{
-		console.log("Credentials Ready")
-		res();
+		res(profile);
 	};
 	promise.reject = rej;
 	return promise;
@@ -25,12 +25,12 @@ function authenticate(googleUser) {
 
 function getIdToken(googleUser) {
     profile = googleUser.getBasicProfile();
-    profile.summary = {
+    Credentials.setProfile({
     	id: profile.getId(),
 	name:profile.getGivenName(),
 	url:profile.getImageUrl(),
 	token: googleUser.getAuthResponse().id_token
-    }
+    })
     var idToken = googleUser.getAuthResponse().id_token;
     return new Promise(function (resolve) {
         resolve(idToken);
