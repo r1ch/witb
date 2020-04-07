@@ -1,4 +1,4 @@
-var API = {
+var APIMixin = {
 	created: function () {
 		console.log("API created")
 	},
@@ -14,7 +14,7 @@ var API = {
 }
 
 Vue.component('google-login', {
-	mixins:[API],
+	mixins:[APIMixin],
 	data: () => ({
 		authenticated: false,
 	}),
@@ -33,7 +33,7 @@ Vue.component('google-login', {
 })
 
 Vue.component('witb-games',{
-	mixins:[API],
+	mixins:[APIMixin],
 	inject:['profile'],
 	data: ()=>({
 		games:[],
@@ -67,7 +67,7 @@ Vue.component('witb-games',{
 })
 
 Vue.component('witb-game',{
-	mixins: [API],
+	mixins: [APIMixin],
 	inject:['profile'],
 	props: ['game','currentGameIdentifier'],
 	data: function(){
@@ -88,7 +88,7 @@ Vue.component('witb-game',{
 		}
 	},
 	template: `
-		<li class="collection-item" @click="chooseGame">
+		<li class="collection-item">
 			{{game.title}}
 			<a class = "btn" @click="chooseGame" v-if="currentGameIdentifier != game.identifier">Join</a>
 			<ul class = "collection">
