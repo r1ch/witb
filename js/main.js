@@ -33,7 +33,7 @@ Vue.component('google-login', {
 
 Vue.component('witb-games',{
 	mixins:[API],
-	inject:['profile']
+	inject:['profile'],
 	data: ()=>({
 		games:[],
 		currentGame:null
@@ -67,7 +67,7 @@ Vue.component('witb-games',{
 
 Vue.component('witb-game',{
 	mixins: [API],
-	inject:['profile']
+	inject:['profile'],
 	props: ['game','currentGameIdentifier'],
 	data: function(){
 		return{
