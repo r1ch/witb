@@ -4,11 +4,9 @@ var APIMixin = {
 	},
 	methods: {
 		API(method,URL,body,handler){
-			console.log("Pre",method,URL,body,handler)
 			signHttpRequest(method, URL, body)
 			.then(axios)
 			.then(({data}) => {
-				console.log("Post",handler,data)
 				if(handler) handler(data)
 			})
 		},
@@ -27,7 +25,6 @@ Vue.component('google-login', {
 	`,
 	mounted: function() {
 		Credentials.then((user) => {
-			console.log(`User Ready emitter ${user}`)
 			this.authenticated = true;
 			this.$emit("userReady",user)
 		})
@@ -83,7 +80,7 @@ Vue.component('witb-game',{
 			this.$emit("chooseGame",this.game)
 			this.API("GET",`/games/${this.game.identifier}/players`,false,players=>this.players=players)
 			this.API("GET",`/games/${this.game.identifier}/players/${this.profile.id}/names`,false,(names)=>{
-				console.log("Handler")
+				this.names = names
 			})
 		}
 	},
