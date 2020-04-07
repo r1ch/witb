@@ -82,7 +82,6 @@ Vue.component('witb-game',{
 		chooseGame(){
 			this.$emit("chooseGame",this.game)
 			this.API("GET",`/games/${this.game.identifier}/players`,false,players=>this.players=players)
-			console.log(this.profile,"PF",this.profile.id,`${this.profile}`,`${this.profile.id}`)
 			this.API("GET",`/games/${this.game.identifier}/players/${this.profile.id}/names`,false,(names)=>{
 				console.log("Handler")
 			})
@@ -93,7 +92,7 @@ Vue.component('witb-game',{
 			{{game.title}}
 			<a class = "btn" @click="chooseGame" v-if="currentGameIdentifier != game.identifier">Join</a>
 			<ul class = "collection">
-				<witb-player v-for = "player in players" :key = "player.identifier" :player="player" v-if = "player.identifier!=this.profile.id"></witb-player>
+				<witb-player v-for = "player in players" :key = "player.identifier" :player="player" v-if = "player.identifier!=profile.id"></witb-player>
 			</ul>
 			<witb-name v-for = "name in names" :name="name"></witb-name>
 		</li>
