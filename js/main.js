@@ -126,11 +126,13 @@ var app = new Vue({
 	},
 	methods:{
 		profileReady(event){
+			console.log(`Profile Ready ${event}`)
 			this.profile = event
 		}
 	},
 	provide: function(){
 		return {
+			console.log(`Provider ${profile}`)
 			profile: this.profile
 		}
 	},
