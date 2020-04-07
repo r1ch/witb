@@ -17,18 +17,17 @@ Vue.component('google-login', {
 	mixins:[API],
 	data: () => ({
 		authenticated: false,
-		profile: false
 	}),
 	template: `
 		<div class = "row">
 			<div v-if = "!authenticated" class="g-signin2" data-width="200" data-height="50" data-onsuccess="authenticate" data-theme="dark"></div>
-			<img v-if = "profile" :src="profile.summary.url"></img>
+			<img v-if = "$profile" :src="$profile.url"></img>
 		</div>
 	`,
 	mounted: function() {
-		Credentials.then(() => {
+		Credentials.then((profile) => {
 			this.authenticated = true;
-			this.profile = profile
+			Vue.prototype.$profile = profile
 		})
 	}
 })
@@ -53,7 +52,7 @@ Vue.component('witb-games',{
 		},
 		chooseGame(event){
 			this.currentGame = event
-			this.API("PUT",`/games/${this.currentGame.identifier}/players`,profile.summary)
+			this.API("PUT",`/games/${this.currentGame.identifier}/players`,this.$profile)
 		}
 	},
 	template: `
@@ -79,8 +78,8 @@ Vue.component('witb-game',{
 		chooseGame(){
 			this.$emit("chooseGame",this.game)
 			this.API("GET",`/games/${this.game.identifier}/players`,false,players=>this.players=players)
-			console.log(profile,"PF")
-			this.API("GET",`/games/${this.game.identifier}/players/${profile.summary.id}/names`,false,(names)=>{
+			console.log(this.$profile,"PF")
+			this.API("GET",`/games/${this.game.identifier}/players/${this.$profile.id}/names`,false,(names)=>{
 				if(names.length > 0) this.names = names
 				else this.names = Array(this.game.namesPerPerson).fill("")
 			})
@@ -91,7 +90,7 @@ Vue.component('witb-game',{
 			{{game.title}}
 			<a class = "btn" @click="chooseGame" v-if="currentGameIdentifier != game.identifier">Join</a>
 			<ul class = "collection">
-				<witb-player v-for = "player in players" :key = "player.identifier" :player="player" v-if = "player.identifier!=profile.summary.id"></witb-player>
+				<witb-player v-for = "player in players" :key = "player.identifier" :player="player" v-if = "player.identifier!=this.$profile.id"></witb-player>
 			</ul>
 			<witb-name v-for = "name in names" :name="name"></witb-name>
 		</li>
