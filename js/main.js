@@ -8,7 +8,7 @@ var APIMixin = {
 			signHttpRequest(method, URL, body)
 			.then(axios)
 			.then(({data}) => {
-				console.log("Post")
+				console.log("Post",handler,data)
 				if(handler) handler(data)
 			})
 		},
@@ -85,8 +85,6 @@ Vue.component('witb-game',{
 			console.log(this.profile,"PF",this.profile.id,`${this.profile}`,`${this.profile.id}`)
 			this.API("GET",`/games/${this.game.identifier}/players/${this.profile.id}/names`,false,(names)=>{
 				console.log("Handler")
-				if(names.length > 0) this.names = names
-				else this.names = Array(this.game.namesPerPerson).fill("")
 			})
 		}
 	},
