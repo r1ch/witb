@@ -123,13 +123,7 @@ Vue.component('witb-name',{
 var app = new Vue({
 	el: '#app',
 	data: {
-		profile: {
-			ready:false
-			id:0
-			name:''
-			url:''
-			token''
-		}
+		profile: {ready:false,id:0,name:'',url:'',token:''}
 	},
 	methods:{
 		userReady(event){
