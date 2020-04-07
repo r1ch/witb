@@ -5,6 +5,7 @@ function DeferredCredentials() {
 		rej = reject;
 	});
 	promise.setProfile = function(p){
+		console.log(p)
 		profile = p
 	};
 	promise.resolve = ()=>{
