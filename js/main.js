@@ -79,8 +79,8 @@ Vue.component('witb-game',{
 		chooseGame(){
 			this.$emit("chooseGame",this.game)
 			this.API("GET",`/games/${this.game.identifier}/players`,false,players=>this.players=players)
-			this.API("GET",`/games/${this.game.identifier}/players/${profile.summary.id}/names`,false,(name)=>{
-				if(names && names.length > 0) this.names = names
+			this.API("GET",`/games/${this.game.identifier}/players/${profile.summary.id}/names`,false,(names)=>{
+				if(names.length > 0) this.names = names
 				else this.names = Array(this.game.namesPerPerson).fill("")
 			})
 		}
