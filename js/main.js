@@ -122,7 +122,7 @@ Vue.component('witb-name',{
 var app = new Vue({
 	el: '#app',
 	data: {
-		profile: false;
+		profile: false
 	},
 	methods:{
 		profileReady(event){
