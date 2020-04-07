@@ -133,5 +133,11 @@ var app = new Vue({
 		return {
 			profile: this.profile
 		}
-	}
+	},
+	template: `
+		<div class = "container"
+			<google-login @profileReady = "profileReady"></google-login>
+			<witb-games></witb-games>
+		</div>
+	`
 })	
