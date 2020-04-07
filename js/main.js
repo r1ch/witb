@@ -89,7 +89,9 @@ Vue.component('witb-game',{
 		<li class="collection-item" @click="chooseGame">
 			{{game.title}}
 			<a class = "btn" @click="chooseGame" v-if="currentGameIdentifier != game.identifier">Join</a>
-			<witb-player v-for = "player in players" :key = "player.identifier" :player="player"></witb-player>
+			<ul class = "collection">
+				<witb-player v-for = "player in players" :key = "player.identifier" :player="player" v-if = "player.identifier!=profile.summary.id"></witb-player>
+			</ul>
 			<witb-name v-for = "name in names" :name="name"></witb-name>
 		</li>
 	`
@@ -98,9 +100,10 @@ Vue.component('witb-game',{
 Vue.component('witb-player',{
 	props: ['player'],
 	template: `
-		<li class="collection-item">
-			{{player.name}}
-			<img :src="player.url"></img>
+		<li class="collection-item avatar">
+			<img :src="player.url" class = "circle"></img>
+			<span class = "title">{{player.name}}</span>
+			<p>Names done: {{player.names}}</p>
 		</li>
 	`
 })
