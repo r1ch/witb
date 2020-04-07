@@ -33,6 +33,7 @@ Vue.component('google-login', {
 
 Vue.component('witb-games',{
 	mixins:[API],
+	inject:['profile']
 	data: ()=>({
 		games:[],
 		currentGame:null
@@ -51,7 +52,7 @@ Vue.component('witb-games',{
 		},
 		chooseGame(event){
 			this.currentGame = event
-			this.API("PUT",`/games/${this.currentGame.identifier}/players`,this.$profile)
+			this.API("PUT",`/games/${this.currentGame.identifier}/players`,this.profile)
 		}
 	},
 	template: `
@@ -66,6 +67,7 @@ Vue.component('witb-games',{
 
 Vue.component('witb-game',{
 	mixins: [API],
+	inject:['profile']
 	props: ['game','currentGameIdentifier'],
 	data: function(){
 		return{
@@ -77,8 +79,8 @@ Vue.component('witb-game',{
 		chooseGame(){
 			this.$emit("chooseGame",this.game)
 			this.API("GET",`/games/${this.game.identifier}/players`,false,players=>this.players=players)
-			console.log(this.$profile,"PF")
-			this.API("GET",`/games/${this.game.identifier}/players/${this.$profile.id}/names`,false,(names)=>{
+			console.log(this.profile,"PF")
+			this.API("GET",`/games/${this.game.identifier}/players/${this.profile.id}/names`,false,(names)=>{
 				if(names.length > 0) this.names = names
 				else this.names = Array(this.game.namesPerPerson).fill("")
 			})
@@ -89,7 +91,7 @@ Vue.component('witb-game',{
 			{{game.title}}
 			<a class = "btn" @click="chooseGame" v-if="currentGameIdentifier != game.identifier">Join</a>
 			<ul class = "collection">
-				<witb-player v-for = "player in players" :key = "player.identifier" :player="player" v-if = "player.identifier!=this.$profile.id"></witb-player>
+				<witb-player v-for = "player in players" :key = "player.identifier" :player="player" v-if = "player.identifier!=this.profile.id"></witb-player>
 			</ul>
 			<witb-name v-for = "name in names" :name="name"></witb-name>
 		</li>
