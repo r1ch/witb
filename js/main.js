@@ -57,10 +57,10 @@ Vue.component('witb-games',{
 	},
 	template: `
 		<div class = "row">
-		      <p v-if="currentGame">{{currentGame.title}}</p>
-		      <ul class="collection with-header" v-if = "games">
+			<ul class="collection with-header" v-if = "games">
 				<witb-game @chooseGame= "chooseGame" v-for = "game in games" :key="game.identifier" :game="game" :currentGameIdentifier = "currentGameIdentifier"></witb-game>
 			</ul>
+			<witb-game v-if = "currentGameIdentifier" :game = "currentGame" :currentGameIdentifier = "currentGameIdentifier"></witb-game>
 		</div>
 	`
 })
@@ -82,6 +82,9 @@ Vue.component('witb-game',{
 			this.API("GET",`/games/${this.game.identifier}/players/${this.profile.id}/names`,false,(names)=>{
 				this.names = names
 			})
+		},
+		saveNames(event){
+			console.log(`saveNames: ${event} ${this.names}`)
 		}
 	},
 	template: `
@@ -89,9 +92,34 @@ Vue.component('witb-game',{
 			{{game.title}}
 			<a class = "btn" @click="chooseGame" v-if="currentGameIdentifier != game.identifier">Join</a>
 			<ul class = "collection">
+				<witb-me @saveNames="saveNames" :game="game" :player="players.find(player=>player.identifier==profile.id)") :names="names"></witb-me>
 				<witb-player v-for = "player in players" :key = "player.identifier" :player="player" v-if = "player.identifier!=profile.id"></witb-player>
 			</ul>
-			<witb-name v-for = "name in names" :name="name"></witb-name>
+		</li>
+	`
+})
+
+Vue.component('witb-me',{
+	inject: ['profile'],
+	props: ['game','player','names'],
+	computed: {
+		namesList : function(){
+			let list = Array(this.game.namesPerPerson).fill("")
+			list = [...names, ...list]
+			return list.slice(0,this.game.namesPerPerson)
+		}
+	},
+	methods: {
+		saveNames: function(){
+			this.$emit("saveNames",this.namesList)
+		}
+	}
+	template: `
+		<li class="collection-item avatar">
+			<img :src="player.url" class = "circle"></img>
+			<span class = "title">{{player.name}}</span>
+			<witb-name v-for = "name in namesList" :name="name"></witb-name>
+			<a class = "btn" @click="saveNames">Save</a>
 		</li>
 	`
 })
@@ -110,9 +138,7 @@ Vue.component('witb-player',{
 Vue.component('witb-name',{
 	props: ['name'],
 	template: `
-		<li class="collection-item">
-			{{name}}
-		</li>
+		<input type = "text" :value="name"></input>
 	`
 })
 
