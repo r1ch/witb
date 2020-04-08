@@ -37,11 +37,14 @@
   },
   "license": "Apache-2.0",
   "dependencies": {
+    "@aws/dynamodb-data-mapper": "^0.7.3",
     "aws-serverless-express": "^3.3.8",
     "body-parser": "^1.17.1",
     "compression": "^1.6.2",
     "cors": "^2.8.3",
     "express": "^4.15.2",
-    "pug": "^2.0.4"
+    "express-async-handler": "^1.1.4",
+    "pug": "^2.0.4",
+    "uuid": "^7.0.3"
   }
 }
