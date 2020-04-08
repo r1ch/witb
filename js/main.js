@@ -71,7 +71,14 @@ Vue.component('witb-game',{
 	data: function(){
 		return{
 			players:[],
-			names:[]
+			remoteNames:[]
+		}
+	},
+	computed: {
+		names : function(){
+			let list = Array(this.game.namesPerPerson).fill("")
+			list = [...this.remoteNames, ...list]
+			return list.slice(0,this.game.namesPerPerson)
 		}
 	},
 	methods: {
@@ -79,7 +86,7 @@ Vue.component('witb-game',{
 			this.$emit("chooseGame",this.game)
 			this.API("GET",`/games/${this.game.identifier}/players`,false,players=>this.players=players)
 			this.API("GET",`/games/${this.game.identifier}/players/${this.profile.id}/names`,false,(names)=>{
-				this.names = names
+				this.remoteNames = names
 			})
 		},
 		saveNames(event){
@@ -101,23 +108,16 @@ Vue.component('witb-game',{
 Vue.component('witb-me',{
 	inject: ['profile'],
 	props: ['game','player','names'],
-	computed: {
-		namesList : function(){
-			let list = Array(this.game.namesPerPerson).fill("")
-			list = [...this.names, ...list]
-			return list.slice(0,this.game.namesPerPerson)
-		}
-	},
 	methods: {
 		saveNames: function(){
-			this.$emit("saveNames",this.namesList)
+			this.$emit("saveNames",this.names)
 		}
 	},
 	template: `
 		<li class="collection-item avatar">
 			<img :src="player.url" class = "circle"></img>
 			<span class = "title">{{player.name}}</span>
-			<witb-name v-for = "name in namesList" :name="name"></witb-name>
+			<witb-name v-for = "name in names" :name="name"></witb-name>
 			<a class = "btn" @click="saveNames">Save</a>
 		</li>
 	`
