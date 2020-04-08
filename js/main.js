@@ -117,7 +117,8 @@ Vue.component('witb-me',{
 		<li class="collection-item avatar">
 			<img :src="player.url" class = "circle"></img>
 			<span class = "title">{{player.name}}</span>
-			<witb-name v-for = "name in names" :name="name"></witb-name>
+			<p>Please pick {{game.namesPerPerson}} names</p>
+			<input v-for = "name in names" v-model="name"></input>
 			<a class = "btn" @click="saveNames">Save</a>
 		</li>
 	`
@@ -133,14 +134,6 @@ Vue.component('witb-player',{
 		</li>
 	`
 })
-
-Vue.component('witb-name',{
-	props: ['name'],
-	template: `
-		<input type = "text" :value="name"></input>
-	`
-})
-
 
 var app = new Vue({
 	el: '#app',
