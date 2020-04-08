@@ -95,7 +95,7 @@ Vue.component('witb-game',{
 			})
 		},
 		saveNames(){
-			this.API("PUT",`/games/${this.game.identifier}/players/${this.profile.id}/names`,this.names.map(name=>name.value),(names)=>{
+			this.API("PUT",`/games/${this.game.identifier}/players/${this.profile.id}/names`,this.names.map(name=>name.value).filter(value=>value!=""),(names)=>{
 				this.remoteNames = names
 			})
 		}
