@@ -105,7 +105,7 @@ Vue.component('witb-me',{
 	computed: {
 		namesList : function(){
 			let list = Array(this.game.namesPerPerson).fill("")
-			list = [...names, ...list]
+			list = [...this.names, ...list]
 			return list.slice(0,this.game.namesPerPerson)
 		}
 	},
