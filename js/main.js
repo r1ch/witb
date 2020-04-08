@@ -137,7 +137,7 @@ Vue.component('witb-player',{
 		<li class="collection-item avatar">
 			<img :src="player.url" class = "circle"></img>
 			<span class = "title">{{player.name}}</span>
-			<p>Names done: {{player.names}}</p>
+			<p>Names done: {{player.numberOfNames}}</p>
 		</li>
 	`
 })
