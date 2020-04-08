@@ -1,8 +1,5 @@
 ---
 layout: default
 ---
-<div id = "app">
-  <google-login></google-login>
-  <witb-games></witb-games>
-</div>
+<div id = "app"></div>
 <script src = "js/main.js"></script>

@@ -1,6 +1,6 @@
-var API = {
+var APIMixin = {
 	created: function () {
-		console.log("API created... use this to warm it")
+		console.log("API created")
 	},
 	methods: {
 		API(method,URL,body,handler){
@@ -12,80 +12,121 @@ var API = {
 		},
 	}
 }
-	/*fetchGames(){this.API("GET","/games",null,games=>this.games=games)},
-	joinGame(game){
-	this.API("PUT",`/games/${game}/players`,{id:profile.getId(),name:profile.getGivenName(),URL:profile.getImageUrl()},game=>{this.game=game})
-	},
-	getPlayers(game){
-	this.API("GET",`/games/${game}/players`,null,console.log)
-	},
-	storeNames(game,names){
-	this.API("PUT",`/games/${game}/players/${profile.getId()}/names`,names,names=>{this.names=names})
-	}*/
 
 Vue.component('google-login', {
+	mixins:[APIMixin],
 	data: () => ({
 		authenticated: false,
-		profileURL : false
 	}),
 	template: `
 		<div class = "row">
 			<div v-if = "!authenticated" class="g-signin2" data-width="200" data-height="50" data-onsuccess="authenticate" data-theme="dark"></div>
-			<img :src="profileURL"></img>
 		</div>
 	`,
 	mounted: function() {
-		Credentials.then(() => {
+		Credentials.then((user) => {
 			this.authenticated = true;
-			this.profileURL = profile.getImageUrl();
+			this.$emit("userReady",user)
 		})
 	}
 })
 
 Vue.component('witb-games',{
-	mixins:[API],
+	mixins:[APIMixin],
+	inject:['profile'],
 	data: ()=>({
 		games:[],
 		currentGame:null
 	}),
+	computed:{
+		currentGameIdentifier(){
+			return this.currentGame ? this.currentGame.identifier : false;
+		}
+	},
 	mounted: function(){
 		this.fetchGames();
 	},
 	methods: {
-		fetchGames(){this.API("GET","/games",null,games=>this.games=games)},
+		fetchGames(){
+			this.API("GET","/games",null,games=>this.games=games)
+		},
 		chooseGame(event){
 			this.currentGame = event
-			console.log(this.currentGame,event)
-			this.API("PUT",`/games/${this.currentGame}/players`,{id:profile.getId(),name:profile.getGivenName(),URL:profile.getImageUrl()})
+			this.API("PUT",`/games/${this.currentGame.identifier}/players`,this.profile)
 		}
 	},
 	template: `
 		<div class = "row">
-		      <p v-if="currentGame">{{currentGame}}</p>
-		      <ul class="collection with-header" v-if = "games">
-				<witb-game @chooseGame= "chooseGame" v-for = "game in games" :key="game.recordId" :game="game" :currentGame="currentGame" v-if = "!currentGame || currentGame == game.recordId"></witb-game>
+			<ul class="collection with-header" v-if = "games">
+				<witb-game @chooseGame= "chooseGame" v-for = "game in games" :key="game.identifier" :game="game" :currentGameIdentifier = "currentGameIdentifier"></witb-game>
 			</ul>
 		</div>
 	`
 })
 
 Vue.component('witb-game',{
-	mixins: [API],
-	props: ['game','currentGame'],
-	data: ()=>({
-		players:[]
-	}),
+	mixins: [APIMixin],
+	inject:['profile'],
+	props: ['game','currentGameIdentifier'],
+	data: function(){
+		return{
+			players:[],
+			remoteNames:[]
+		}
+	},
+	computed: {
+		names : function(){
+			let list = []
+			for(let i=0;i<this.game.namesPerPerson;i++){
+				list.push({
+					key:i,
+					value: this.remoteNames[i]||""
+				})
+			}
+			return list
+		}
+	},
 	methods: {
 		chooseGame(){
-			this.$emit("chooseGame",this.game.recordId)
-			this.API("GET",`/games/${this.currentGame}/players`,false,players=>this.players=players)
+			this.$emit("chooseGame",this.game)
+			this.API("GET",`/games/${this.game.identifier}/players`,false,players=>this.players=players)
+			this.API("GET",`/games/${this.game.identifier}/players/${this.profile.id}/names`,false,(names)=>{
+				this.remoteNames = names
+			})
+		},
+		saveNames(){
+			this.API("PUT",`/games/${this.game.identifier}/players/${this.profile.id}/names`,this.names.map(name=>name.value),(names)=>{
+				this.remoteNames = names
+			})
 		}
 	},
 	template: `
-		<li class="collection-item" @click="chooseGame">
+		<li class="collection-item">
 			{{game.title}}
-			<a class = "btn" @click="chooseGame" v-if="game.recordId!=currentGame">Join</a>
-			<witb-player v-for = "player in players" :key = "player.recordId" :player="player"></witb-player>
+			<a class = "btn" @click="chooseGame" v-if="currentGameIdentifier != game.identifier">Join</a>
+			<ul class = "collection" v-if = "currentGameIdentifier == game.identifier">
+				<witb-me @saveNames="saveNames" :game="game" :names="names"></witb-me>
+				<witb-player v-for = "player in players" :key = "player.identifier" :player="player" v-if = "player.identifier!=profile.id"></witb-player>
+			</ul>
+		</li>
+	`
+})
+
+Vue.component('witb-me',{
+	inject: ['profile'],
+	props: ['game','names'],
+	methods: {
+		saveNames: function(){
+			this.$emit("saveNames",this.names)
+		}
+	},
+	template: `
+		<li class="collection-item avatar">
+			<img :src="profile.url" class = "circle"></img>
+			<span class = "title">{{profile.name}}</span>
+			<p>Please pick {{game.namesPerPerson}} names</p>
+			<input v-for = "name in names" v-model="name.value" :key="name.key"></input>
+			<a class = "btn" @click="saveNames">Save</a>
 		</li>
 	`
 })
@@ -93,9 +134,10 @@ Vue.component('witb-game',{
 Vue.component('witb-player',{
 	props: ['player'],
 	template: `
-		<li class="collection-item">
-			{{player.name}}
-			<img :src="player.URL"></img>
+		<li class="collection-item avatar">
+			<img :src="player.url" class = "circle"></img>
+			<span class = "title">{{player.name}}</span>
+			<p>Names done: {{player.numberOfNames}}</p>
 		</li>
 	`
 })
@@ -103,5 +145,28 @@ Vue.component('witb-player',{
 var app = new Vue({
 	el: '#app',
 	data: {
-	}
-})
+		profile: {ready:false,id:0,name:'',url:'',token:''}
+	},
+	methods:{
+		userReady(event){
+			console.log(`User Ready ${event}`)
+			let basicProfile = event.getBasicProfile();
+			this.profile.id = basicProfile.getId();
+			this.profile.name = basicProfile.getGivenName();
+			this.profile.url = basicProfile.getImageUrl();
+			this.profile.token = event.getAuthResponse().id_token
+			this.profile.ready = true
+		}
+	},
+	provide: function(){
+		return {
+			profile: this.profile
+		}
+	},
+	template: `
+		<div class = "container">
+			<google-login @userReady = "userReady"></google-login>
+			<witb-games></witb-games>
+		</div>
+	`
+})	
