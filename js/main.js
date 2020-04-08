@@ -94,8 +94,10 @@ Vue.component('witb-game',{
 				this.remoteNames = names
 			})
 		},
-		saveNames(event){
-			console.log(`saveNames: ${event} ${this.names}`)
+		saveNames(){
+			this.API("PUT",`/games/${this.game.identifier}/players/${this.profile.id}/names`,this.names.map(name=>name.value),(names)=>{
+				this.remoteNames = names
+			})
 		}
 	},
 	template: `
