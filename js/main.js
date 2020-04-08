@@ -60,7 +60,6 @@ Vue.component('witb-games',{
 			<ul class="collection with-header" v-if = "games">
 				<witb-game @chooseGame= "chooseGame" v-for = "game in games" :key="game.identifier" :game="game" :currentGameIdentifier = "currentGameIdentifier"></witb-game>
 			</ul>
-			<witb-game v-if = "currentGameIdentifier" :game = "currentGame" :currentGameIdentifier = "currentGameIdentifier"></witb-game>
 		</div>
 	`
 })
@@ -91,8 +90,8 @@ Vue.component('witb-game',{
 		<li class="collection-item">
 			{{game.title}}
 			<a class = "btn" @click="chooseGame" v-if="currentGameIdentifier != game.identifier">Join</a>
-			<ul class = "collection" v-if = "currentGameIdentifier && players.length>0">
-				<witb-me @saveNames="saveNames" :game="game" :player="players.find(player=>player.identifier==profile.id)") :names="names"></witb-me>
+			<ul class = "collection" v-if = "currentGameIdentifier == game.identifier">
+				<witb-me @saveNames="saveNames" :game="game" :player="players.find(player=>player.identifier==profile.id)" :names="names"></witb-me>
 				<witb-player v-for = "player in players" :key = "player.identifier" :player="player" v-if = "player.identifier!=profile.id"></witb-player>
 			</ul>
 		</li>
