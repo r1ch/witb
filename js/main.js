@@ -77,7 +77,7 @@ Vue.component('witb-game',{
 	computed: {
 		names : function(){
 			let list
-			for(let i=0;i<game.namesPerPerson;i++){
+			for(let i=0;i<this.game.namesPerPerson;i++){
 				list.push({
 					key:i,
 					value: this.remoteNames[i]||""
