@@ -113,7 +113,7 @@ Vue.component('witb-me',{
 		saveNames: function(){
 			this.$emit("saveNames",this.namesList)
 		}
-	}
+	},
 	template: `
 		<li class="collection-item avatar">
 			<img :src="player.url" class = "circle"></img>
