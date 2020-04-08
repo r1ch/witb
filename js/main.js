@@ -98,7 +98,7 @@ Vue.component('witb-game',{
 			{{game.title}}
 			<a class = "btn" @click="chooseGame" v-if="currentGameIdentifier != game.identifier">Join</a>
 			<ul class = "collection" v-if = "currentGameIdentifier == game.identifier">
-				<witb-me @saveNames="saveNames" :game="game" :player="players.find(player=>player.identifier==profile.id)" :names="names"></witb-me>
+				<witb-me @saveNames="saveNames" :game="game" :names="names"></witb-me>
 				<witb-player v-for = "player in players" :key = "player.identifier" :player="player" v-if = "player.identifier!=profile.id"></witb-player>
 			</ul>
 		</li>
@@ -107,7 +107,7 @@ Vue.component('witb-game',{
 
 Vue.component('witb-me',{
 	inject: ['profile'],
-	props: ['game','player','names'],
+	props: ['game','names'],
 	methods: {
 		saveNames: function(){
 			this.$emit("saveNames",this.names)
@@ -115,8 +115,8 @@ Vue.component('witb-me',{
 	},
 	template: `
 		<li class="collection-item avatar">
-			<img :src="player.url" class = "circle"></img>
-			<span class = "title">{{player.name}}</span>
+			<img :src="profile.url" class = "circle"></img>
+			<span class = "title">{{profile.name}}</span>
 			<p>Please pick {{game.namesPerPerson}} names</p>
 			<input v-for = "name in names" v-model="name"></input>
 			<a class = "btn" @click="saveNames">Save</a>
