@@ -76,7 +76,7 @@ Vue.component('witb-game',{
 	},
 	computed: {
 		names : function(){
-			let list
+			let list = []
 			for(let i=0;i<this.game.namesPerPerson;i++){
 				list.push({
 					key:i,
@@ -123,7 +123,7 @@ Vue.component('witb-me',{
 			<img :src="profile.url" class = "circle"></img>
 			<span class = "title">{{profile.name}}</span>
 			<p>Please pick {{game.namesPerPerson}} names</p>
-			<input v-for = "name in names" v-model="name"></input>
+			<input v-for = "name in names" v-model="name.value" :key="name.key"></input>
 			<a class = "btn" @click="saveNames">Save</a>
 		</li>
 	`
