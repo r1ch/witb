@@ -144,7 +144,7 @@ Resources:
           - ":"
           - !Ref AWS::AccountId
           - ":"
-          - !Ref RestApi
+          - !Ref SocketApi
           - "/*/*"
 
   RestApi:
