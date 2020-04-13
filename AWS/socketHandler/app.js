@@ -16,22 +16,10 @@ exports.handler = async event => {
    case 'sendmessage':
       return success("Hi!")
    default:
-
+     return error("GFY")
  }
-
-
-  try {
-    await ddb.put(putParams).promise();
-  } catch (err) {
-    return { statusCode: 500, body: 'Failed to connect: ' + JSON.stringify(err) };
-  }
-
-  return { statusCode: 200, body: 'Connected.' };
 };
 
-
-
-};
 
 
 const connect = (event)=>({
