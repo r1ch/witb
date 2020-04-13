@@ -145,7 +145,8 @@ Vue.component('witb-player',{
 var app = new Vue({
 	el: '#app',
 	data: {
-		profile: {ready:false,id:0,name:'',url:'',token:''}
+		profile: {ready:false,id:0,name:'',url:'',token:''},
+		socket: null
 	},
 	methods:{
 		userReady(event){
@@ -162,6 +163,10 @@ var app = new Vue({
 		return {
 			profile: this.profile
 		}
+	},
+	mounted: function(){
+		this.socket = new WebSocket(window.config.socketGatewayUrl + window.config.socketGatewayPath)
+		this.socket.onconnect = console.log
 	},
 	template: `
 		<div class = "container">
