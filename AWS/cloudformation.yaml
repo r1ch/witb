@@ -83,7 +83,6 @@ Resources:
     Type: AWS::ApiGatewayV2::Stage
     Properties:
       StageName: prod
-      Description: Prod Stage
       DeploymentId: !Ref Deployment
       ApiId: !Ref SocketApi
 
