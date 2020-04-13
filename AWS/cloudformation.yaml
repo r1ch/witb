@@ -8,7 +8,7 @@ Resources:
     Properties: 
       Description: "Web Socket API"
       DisableSchemaValidation: true
-      Name: "witbSockets"
+      Name: "WITBSocketAPI"
       ProtocolType: "WEBSOCKET"
       RouteSelectionExpression: "$request.body.action"
   ConnectRoute:
@@ -94,7 +94,7 @@ Resources:
       Handler: app.handler
       MemorySize: 256
       Runtime: nodejs12.x
-      Role:
+      Role: !GetAtt SocketExecutionRole.Arn
 
   SocketExecutionRole:
     Type: AWS::IAM::Role
@@ -151,12 +151,13 @@ Resources:
   RestApi:
     Type: AWS::Serverless::Api
     Properties:
+      Name: "WITBSocketAPI"
       DefinitionUri: ./simple-proxy-api.yaml
       StageName: prod
       Variables:
         ServerlessExpressLambdaFunctionName: !Ref RestHandler
 
-  LambdaExecutionRole:
+  RestExecutionRole:
     Type: AWS::IAM::Role
     Properties:
       AssumeRolePolicyDocument:
@@ -227,7 +228,7 @@ Resources:
       CodeUri: restHandler/
       Handler: lambda.handler
       MemorySize: 1024
-      Role: !GetAtt LambdaExecutionRole.Arn
+      Role: !GetAtt RestExecutionRole.Arn
       Runtime: nodejs12.x
       Timeout: 30
       Events:
