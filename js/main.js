@@ -36,9 +36,7 @@ Vue.component('witb-games',{
 	inject:['profile','listenFor'],
 	data: ()=>({
 		games:[],
-		currentGame:{
-			started:false
-		}
+		currentGame:null
 	}),
 	computed:{
 		currentGameIdentifier(){
@@ -63,23 +61,6 @@ Vue.component('witb-games',{
 			<ul class="collection with-header" v-if = "games && !currentGame.started" >
 				<witb-game @chooseGame= "chooseGame" v-for = "game in games" :key="game.identifier" :game="game" :currentGameIdentifier = "currentGameIdentifier"></witb-game>
 			</ul>
-			<div class="col s12 m6" v-if = "currentGame.started">
-				<div class="card blue-grey darken-1">
-					<div class="card-content white-text">
-						<span class="card-title">{{currentGame.title}}</span>
-						Names:<br>
-						{{currentGame.names}}
-						Turns:
-						{{currentGame.players}}
-						Who's turn
-						{{currentGame.playerIndex}}
-					</div>
-					<div class="card-action">
-						<a>Got It</a>
-						<a>Pass It</a>
-					</div>
-				</div>
-			</div>
 		</div>
 	`
 })
@@ -109,6 +90,9 @@ Vue.component('witb-game',{
 			return 	this.game.identifier == this.currentGameIdentifier && 
 				this.players.length > 1 &&
 				this.players.filter(player=>player.numberOfNames != this.game.namesPerPerson).length == 0
+		},
+		currentPlayer: function(){
+			return players.find((player)=>player.identifier = game.players[game.playerIndex])
 		}
 	},
 	mounted: function(){
@@ -139,12 +123,24 @@ Vue.component('witb-game',{
 			{{game.title}}
 			<a class = "btn" @click="chooseGame" v-if="currentGameIdentifier != game.identifier">Join</a>
 			<a class = "btn" @click="startGame" :class="{'disabled': !gameReady}">Start</a>
-			<ul class = "collection" v-if = "currentGameIdentifier == game.identifier">
+			<ul class = "collection" v-if = "currentGameIdentifier == game.identifier && !game.started">
 				<witb-me @saveNames="saveNames" :game="game" :names="names"></witb-me>
 				<li class = "collection-item">
 					<witb-player v-for = "player in players" :key = "player.identifier" :player="player" v-if = "player.identifier!=profile.id"></witb-player>
 				</li>
 			</ul>
+			<div class="col s12 m6" v-if = "currentGameIdentifier != game.identifier && game.started">
+				<div class="card blue-grey darken-1">
+					<div class="card-content white-text">
+						<span class="card-title">{{game.title}}</span>
+						{{currentPlayer}}
+					</div>
+					<div class="card-action">
+						<a href="#">This is a link</a>
+						<a href="#">This is a link</a>
+					</div>
+				</div>
+			</div>
 		</li>
 	`
 })
