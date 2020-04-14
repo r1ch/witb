@@ -70,8 +70,8 @@ Vue.component('witb-games',{
 						{{currentGame.names}}
 					</div>
 					<div class="card-action">
-						<a @click="gotOne">Got It</a>
-						<a @click="passIt">Pass It</a>
+						<a @click="console.log">Got It</a>
+						<a @click="console.log">Pass It</a>
 					</div>
 				</div>
 			</div>
@@ -136,7 +136,7 @@ Vue.component('witb-game',{
 			<a class = "btn" @click="startGame" :class="{'disabled': !gameReady}">Start</a>
 			<ul class = "collection" v-if = "currentGameIdentifier == game.identifier">
 				<witb-me @saveNames="saveNames" :game="game" :names="names"></witb-me>
-				<li = "collection-item">
+				<li class = "collection-item">
 					<witb-player v-for = "player in players" :key = "player.identifier" :player="player" v-if = "player.identifier!=profile.id"></witb-player>
 				</li>
 			</ul>

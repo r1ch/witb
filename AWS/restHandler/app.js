@@ -7,8 +7,7 @@ const dynamo = new AWS.DynamoDB.DocumentClient()
 const {
     DynamoDbSchema,
     DynamoDbTable,
-    DataMapper,
-    embed
+    DataMapper
 } = require('@aws/dynamodb-data-mapper');
 const { v4 } = require('uuid');
 const DynamoDB = require('aws-sdk/clients/dynamodb');
