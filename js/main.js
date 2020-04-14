@@ -177,7 +177,7 @@ var app = new Vue({
 			listenFor: this.listenFor
 		}
 	},
-	mounted: function(){
+	created: function(){
 		this.socket = new WebSocket(window.config.socketGatewayUrl + window.config.socketGatewayPath)
 		this.socket.onopen = ()=>this.messages.push("Connected")
 		this.socket.onclose = ()=>this.messages.push("Disconnected")
