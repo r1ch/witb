@@ -176,7 +176,7 @@ var app = new Vue({
 		<div class = "container">
 			<google-login @userReady = "userReady"></google-login>
 			<witb-games></witb-games>
-			<span v-for = "message in messages>
+			<span v-for = "message in messages">
 				Message from WebSocket : {{message}}
 			</span>
 		</div>
