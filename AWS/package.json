@@ -4,8 +4,7 @@
   "config": {
     "s3BucketName": "witb-deploy",
     "region": "eu-west-1",
-    "cloudFormationStackName": "WITBStack",
-    "accountId": "312837731527"
+    "cloudFormationStackName": "WITBStack"
   },
   "scripts": {
     "create-bucket": "aws s3 mb s3://$npm_package_config_s3BucketName --region $npm_package_config_region",
