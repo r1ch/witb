@@ -167,7 +167,7 @@ var app = new Vue({
 	},
 	mounted: function(){
 		this.socket = new WebSocket(window.config.socketGatewayUrl + window.config.socketGatewayPath)
-		let append = (event)=>this.message.push(event)
+		let append = (event)=>this.messages.push(event)
 		this.socket.onopen = append
 		this.socket.onclose = append
 		this.socket.ommessage = append
