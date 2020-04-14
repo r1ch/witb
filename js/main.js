@@ -33,7 +33,7 @@ Vue.component('google-login', {
 
 Vue.component('witb-games',{
 	mixins:[APIMixin],
-	inject:['profile','listenFor'],
+	inject:['profile'],
 	data: ()=>({
 		games:[],
 		currentGame:null
@@ -45,9 +45,6 @@ Vue.component('witb-games',{
 	},
 	mounted: function(){
 		this.fetchGames();
-		this.listenFor("GAME",function(event){
-			console.log(`Saw a ${event} in witb-games`)
-		})
 	},
 	methods: {
 		fetchGames(){
@@ -90,14 +87,15 @@ Vue.component('witb-game',{
 		}
 	},
 	mounted: function(){
-		this.listenFor("PLAYER",function(event){
-			console.log(`Saw a ${event} in witb-game`)
-		})
+		this.listenFor("PLAYER",this.updatePlayers)
 	},
 	methods: {
+		updatePlayers(){
+			this.API("GET",`/games/${this.game.identifier}/players`,false,players=>this.players=players)
+		},
 		chooseGame(){
 			this.$emit("chooseGame",this.game)
-			this.API("GET",`/games/${this.game.identifier}/players`,false,players=>this.players=players)
+			this.updatePlayers()
 			this.API("GET",`/games/${this.game.identifier}/players/${this.profile.id}/names`,false,(names)=>{
 				this.remoteNames = names
 			})
