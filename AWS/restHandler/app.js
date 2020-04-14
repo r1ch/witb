@@ -55,7 +55,8 @@ router.get('/games/:game', (req, res) => {
 })
 
 router.put('/games/:game/players', (req, res)=>{
-    let player = new Player(req.body.id);
+    let player = new Player();
+    player.identifier = req.body.id
     player.url = req.body.url
     player.name = req.body.name
     player.association = req.params.game;
@@ -83,7 +84,8 @@ router.get('/games/:game/players/:player/names', asyncHandler(async (req, res) =
 }))
 
 router.put('/games/:game/players/:player/names', (req, res)=>{
-    let player = new Player(req.params.player);
+    let player = new Player();
+    player.identifier = req.params.player
     player.names = req.body
     mapper.update(player,{onMissing: 'skip'}).then((player)=>{
         res.json(namesOf(player))
@@ -99,7 +101,8 @@ router.get('/games/:game/names', asyncHandler(async (req, res) => {
 }))
 
 router.put('/players', (req, res)=>{
-    let player = new Player(req.body.id);
+    let player = new Player();
+    player.identifier = req.body.id
     player.url = req.body.url
     player.name = req.body.name
     mapper.update(player,{onMissing: 'skip'}).then(res.json.bind(res))
@@ -113,13 +116,29 @@ router.get('/players', asyncHandler(async (req, res) => {
     res.json(players)
 }))
 
+router.post('/games/:game/start', asyncHandler(async (req, res) => {
+    let names = []
+    let players = []
+    for await (const player of mapper.query(Player, {recordType: 'PLAYER', association: req.params.game}, {indexName: 'index'})) {
+        names.push(...namesOf(player))
+        players.push(player.name)
+    }
+    let game = new Game()
+    game.identifier = req.params.game
+    game.names = names
+    game.players = players
+    mapper.update(game,{onMissing: 'skip'}).then((game)=>{
+        res.json(game)
+    })
+}))
+
+
 app.use('/', router)
 
 module.exports = app
 
 
 const simple = (player)=>{
-    console.log(`Simplify Player ${JSON.stringify(player)}`)
     if (player.names) player.numberOfNames = player.names.length
     else player.numberOfNames = 0
     delete player.names
@@ -132,8 +151,8 @@ const namesOf = (player)=>{
 }
 
 class Game {
-    constructor(title){
-        this.title = title
+    constructor(){
+        this.recordType = "GAME";
     }
 }
 
@@ -156,15 +175,17 @@ Object.defineProperties(Game.prototype, {
             title: {type : 'String'},
             rounds: {type: 'List', memberType: {type: 'String'}},
             secondsPerRound: {type: 'Number'},
-            namesPerPerson: {type: 'Number'}
+            namesPerPerson: {type: 'Number'},
+            names: {type: 'List', memberType: {type: 'String'}},
+            players: {type: 'List', memberType: {type: 'String'}}
         },
     },
 });
 
 
 class Player {
-    constructor(identifier){
-        this.identifier = identifier
+    constructor(){
+        this.recordType = "PLAYER"
     }
 }
 
