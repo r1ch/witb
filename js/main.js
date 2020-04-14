@@ -45,7 +45,7 @@ Vue.component('witb-games',{
 	},
 	mounted: function(){
 		this.fetchGames();
-		this.listenFor("message",function(event){
+		this.listenFor("GAME",function(event){
 			console.log(`Saw a ${event} in witb-games`)
 		})
 	},
@@ -90,7 +90,7 @@ Vue.component('witb-game',{
 		}
 	},
 	mounted: function(){
-		this.listenFor("message",function(event){
+		this.listenFor("PLAYER",function(event){
 			console.log(`Saw a ${event} in witb-game`)
 		})
 	},
@@ -167,11 +167,14 @@ var app = new Vue({
 			this.profile.token = event.getAuthResponse().id_token
 			this.profile.ready = true
 		},
+		listenFor(key,handler){
+			this.socket.addEventListener("message",event=>event.data == key ? handler() : false)
+		}
 	},
 	provide: function(){
 		return {
 			profile: this.profile,
-			listenFor: function(key,handler){this.socket.addEventListener("message",function(event){event.data == key ? handler() : false})}
+			listenFor: this.listenFor
 		}
 	},
 	mounted: function(){
