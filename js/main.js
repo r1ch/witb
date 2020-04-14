@@ -33,7 +33,7 @@ Vue.component('google-login', {
 
 Vue.component('witb-games',{
 	mixins:[APIMixin],
-	inject:['profile'],
+	inject:['profile','listenFor'],
 	data: ()=>({
 		games:[],
 		currentGame:null
@@ -45,6 +45,9 @@ Vue.component('witb-games',{
 	},
 	mounted: function(){
 		this.fetchGames();
+		this.listenFor("message",function(event){
+			console.log(`Saw a ${event} in witb-games`)
+		})
 	},
 	methods: {
 		fetchGames(){
@@ -66,7 +69,7 @@ Vue.component('witb-games',{
 
 Vue.component('witb-game',{
 	mixins: [APIMixin],
-	inject:['profile'],
+	inject:['profile','listenFor'],
 	props: ['game','currentGameIdentifier'],
 	data: function(){
 		return{
@@ -85,6 +88,11 @@ Vue.component('witb-game',{
 			}
 			return list
 		}
+	},
+	mounted: function(){
+		this.listenFor("message",function(event){
+			console.log(`Saw a ${event} in witb-game`)
+		})
 	},
 	methods: {
 		chooseGame(){
@@ -146,7 +154,8 @@ var app = new Vue({
 	el: '#app',
 	data: {
 		profile: {ready:false,id:0,name:'',url:'',token:''},
-		socket: null
+		socket: null,
+		handlers: {}
 	},
 	methods:{
 		userReady(event){
@@ -157,11 +166,12 @@ var app = new Vue({
 			this.profile.url = basicProfile.getImageUrl();
 			this.profile.token = event.getAuthResponse().id_token
 			this.profile.ready = true
-		}
+		},
 	},
 	provide: function(){
 		return {
-			profile: this.profile
+			profile: this.profile,
+			listenFor: this.socket.addEventListener
 		}
 	},
 	mounted: function(){

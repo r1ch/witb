@@ -1,38 +1,48 @@
 const AWS = require('aws-sdk');
 const ddb = new AWS.DynamoDB.DocumentClient();
 const apigwManagementApi = new AWS.ApiGatewayManagementApi({endpoint: process.env.ENDPOINT});
+console.log(`Configured to send from ${process.env.ENDPOINT}`)
 
 exports.handler = async event => {
  console.log(event)
 
- switch(event.requestContext.routeKey){
+ let route = {}
+
+ if(event && event.requestContext && event.requestContext.routeKey){
+   route.key = event.requestContext.routeKey
+   route.connection = event.requestContext.connectionId
+   route.data = event.body ? JSON.parse(event.body).data : false
+ } else if (event && event.Records){
+   route.key = 'sendmessage'
+   route.data = event.Records[0].dynamodb.Keys.recordType.S
+ }
+
+ switch(route.key){
    case '$connect':
-     return await ddb.put(connect(event.requestContext.connectionId)).promise()
+     return await ddb.put(connect(route.connection)).promise()
      .then(success("Connected"))
-     .catch(error)
+     .catch(error("Connection Error"))
    case '$disconnect':
-      return await ddb.delete(disconnect(event.requestContext.connectionId)).promise()
-      .then(success("Disconnected"))
-      .catch(error)
+      return await ddb.delete(disconnect(route.connection)).promise()
+      .then(success("Diconnected"))
+      .catch(error("Disconnection Error"))
    case 'sendmessage':
       return await ddb.query(connections()).promise()
-      .then(sendToConnections("Hi"))
+      .then(sendToConnections(route.data))
       .then(success("Sent to all"))
-      .catch(error)  
+      .catch(error)
    default:
-     return error("GFY")
+     return error("Badness out of bounds exception")
  }
 };
 
-const sendToConnections = async (message) => async (connections) => {
-  let postBag = connections.map((connection)=>{
-    await apigwManagementApi.postToConnection({ ConnectionId: connection, Data: message }).promise()
-    .catch((err)=>{
-      if(err.statusCode == 410) {
-        console.log(`Clean up stale connection : ${connection}`)
-        await ddb.delete(disconnect(connection)).promise();
-      } else throw err
-    })
+const sendToConnections = message => async (connections) => {
+  let postBag = []
+  connections.Items.forEach(({identifier: connectionId})=>{
+      postBag.push(
+        apigwManagementApi.postToConnection({ConnectionId: connectionId, Data: message }).promise()
+        .catch(err=>err.statusCode == 410 ? ddb.delete(disconnect(connectionId)).promise() : err)
+      )
   })
   return Promise.all(postBag)
 }
@@ -45,13 +55,15 @@ const connect = (id)=>({
   }
 })
 
-const success = (message)=>({
-  statusCode: 200, body: message
-})
+const success = (message)=>(result)=>{
+  console.log(`Success: ${message}, given ${JSON.stringify(result)}`)
+  return {statusCode: 200, body: message}
+}
 
-const error = (error)=>({
-  statusCode: 200, body: JSON.stringify(error)
-})
+const error = (message)=>(error)=>{
+  console.log(`Error: ${message}, given ${JSON.stringify(error)}`)
+  return {statusCode: 500, body: JSON.stringify(error)}
+}
 
 const connections = ()=>({
     TableName : 'witb',

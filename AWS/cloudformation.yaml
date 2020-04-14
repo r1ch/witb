@@ -3,6 +3,50 @@ AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Description: Serverless Express Application/API powered by API Gateway and Lambda
 Resources:
+
+  WITBTable:
+    Type: AWS::DynamoDB::Table
+    Properties: 
+      TableName: "witb"
+      AttributeDefinitions: 
+        - 
+          AttributeName: "recordType"
+          AttributeType: "S"
+        - 
+          AttributeName: "identifier"
+          AttributeType: "S"
+        - 
+          AttributeName: "association"
+          AttributeType: "S"
+      KeySchema: 
+        - 
+          AttributeName: "recordType"
+          KeyType: "HASH"
+        - 
+          AttributeName: "identifier"
+          KeyType: "RANGE"
+      ProvisionedThroughput: 
+        ReadCapacityUnits: "1"
+        WriteCapacityUnits: "1"
+      GlobalSecondaryIndexes: 
+        - 
+          IndexName: "index"
+          KeySchema: 
+            - 
+              AttributeName: "recordType"
+              KeyType: "HASH"
+            - 
+              AttributeName: "association"
+              KeyType: "RANGE"
+          Projection: 
+            ProjectionType: "ALL"
+          ProvisionedThroughput: 
+            ReadCapacityUnits: "1"
+            WriteCapacityUnits: "1"
+      StreamSpecification: 
+        StreamViewType: "KEYS_ONLY"
+
+
   SocketApi:
     Type: AWS::ApiGatewayV2::Api
     Properties: 
@@ -96,7 +140,7 @@ Resources:
       Role: !GetAtt SocketExecutionRole.Arn
       Environment:
         Variables:
-          Endpoint: !Join
+          ENDPOINT: !Join
                 - ''
                 - - https://
                   - !Ref SocketApi
@@ -122,10 +166,36 @@ Resources:
           Statement:
           - Effect: Allow
             Action:
+            - execute-api:ManageConnections
+            Resource: !Join
+              - '' 
+              - - 'arn:aws:execute-api:'
+                - !Ref AWS::Region
+                - ":"
+                - !Ref AWS::AccountId
+                - ":"
+                - !Ref SocketApi
+                - "/prod/*"
+          - Effect: Allow
+            Action:
             - logs:CreateLogGroup
             - logs:CreateLogStream
             - logs:PutLogEvents
             Resource: arn:aws:logs:*:*:*
+          - Effect: Allow
+            Action:
+            - dynamodb:GetRecords
+            - dynamodb:GetShardIterator
+            - dynamodb:DescribeStream
+            - dynamodb:ListStreams
+            Resource: !Join
+              - '' 
+              - - 'arn:aws:dynamodb:'
+                - !Ref AWS::Region
+                - ":"
+                - !Ref AWS::AccountId
+                - ":"
+                - "table/witb/*"
           - Effect: Allow
             Action:
             - dynamodb:PutItem
@@ -155,6 +225,19 @@ Resources:
           - ":"
           - !Ref SocketApi
           - "/*/*"
+  
+  SocketHandlerChangeTrigger:
+    Type: AWS::Lambda::EventSourceMapping
+    Properties: 
+      BatchSize: 1
+      Enabled: true
+      EventSourceArn: !GetAtt WITBTable.StreamArn
+      FunctionName: !GetAtt SocketHandler.Arn
+      MaximumBatchingWindowInSeconds: 0
+      MaximumRecordAgeInSeconds: 60
+      MaximumRetryAttempts: 3
+      ParallelizationFactor: 3
+      StartingPosition: LATEST
 
   RestApi:
     Type: AWS::Serverless::Api
