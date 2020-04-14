@@ -86,9 +86,9 @@ Vue.component('witb-game',{
 			return list
 		},
 		gameReady : function(){
-			return 	game.identifier == currentGameIdentifier && 
-					players.length > 1 &&
-					players.filter(player=>player.numberOfNames != game.namesPerPerson).length == 0
+			return 	this.game.identifier == this.currentGameIdentifier && 
+				this.players.length > 1 &&
+				this.players.filter(player=>player.numberOfNames != this.game.namesPerPerson).length == 0
 		}
 	},
 	mounted: function(){
