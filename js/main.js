@@ -132,7 +132,7 @@ Vue.component('witb-game',{
 			<div v-if = "currentGameIdentifier == game.identifier && game.started">
 				<p>Game is in progress</p>
 				<p>Player: {{currentPlayer.name}}</p>
-				<p><img :src = "currentPlayer.url" class = "circle"><p>
+				<p><img :src = "currentPlayer.url" class = "circle"></p>
 				<ul>
 					<li v-for = "name in game.names">{{name}}</li>
 				</ul>
