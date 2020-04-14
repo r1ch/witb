@@ -176,7 +176,7 @@ var app = new Vue({
 	},
 	methods:{
 		userReady(event){
-			console.log(`User Ready ${event}`)
+			console.log(`User Ready ${JSON.stringify(event)}`)
 			let basicProfile = event.getBasicProfile();
 			this.profile.id = basicProfile.getId();
 			this.profile.name = basicProfile.getGivenName();
