@@ -90,10 +90,6 @@ Vue.component('witb-game',{
 			return 	this.game.identifier == this.currentGameIdentifier && 
 				this.players.length > 1 &&
 				this.players.filter(player=>player.numberOfNames != this.game.namesPerPerson).length == 0
-		},
-		currentPlayer : function(){
-			console.log(`Called in ${JSON.stringify(this.players)} ${JSON.stringify(this.game)}`)
-			return this.players.find(player=>player.identifier==this.game.players[this.game.playerIndex])
 		}
 	},
 	mounted: function(){
@@ -130,8 +126,7 @@ Vue.component('witb-game',{
 			</ul>
 			<div v-if = "currentGameIdentifier == game.identifier && game.started">
 				<p>Game is in progress</p>
-				<p>Player: {{currentPlayer.name}}</p>
-				<p><img :src = "currentPlayer.url" class = "circle"></p>
+				{{game}}
 			</div>
 		</li>
 	`
