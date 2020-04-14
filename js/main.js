@@ -33,10 +33,12 @@ Vue.component('google-login', {
 
 Vue.component('witb-games',{
 	mixins:[APIMixin],
-	inject:['profile'],
+	inject:['profile','listenFor'],
 	data: ()=>({
 		games:[],
-		currentGame:null
+		currentGame:{
+			started:false
+		}
 	}),
 	computed:{
 		currentGameIdentifier(){
@@ -45,6 +47,7 @@ Vue.component('witb-games',{
 	},
 	mounted: function(){
 		this.fetchGames();
+		this.listenFor("GAME",this.fetchGames)
 	},
 	methods: {
 		fetchGames(){
@@ -57,9 +60,21 @@ Vue.component('witb-games',{
 	},
 	template: `
 		<div class = "row">
-			<ul class="collection with-header" v-if = "games">
+			<ul class="collection with-header" v-if = "games && !currentGame.started" >
 				<witb-game @chooseGame= "chooseGame" v-for = "game in games" :key="game.identifier" :game="game" :currentGameIdentifier = "currentGameIdentifier"></witb-game>
 			</ul>
+			<div class="col s12 m6">
+				<div class="card blue-grey darken-1">
+					<div class="card-content white-text">
+						<span class="card-title">{{currentGame.title}}</span>
+						{{currentGame.names}}
+					</div>
+					<div class="card-action">
+						<a @click="gotOne">Got It</a>
+						<a @click="passIt">Pass It</a>
+					</div>
+				</div>
+			</div>
 		</div>
 	`
 })
@@ -92,15 +107,15 @@ Vue.component('witb-game',{
 		}
 	},
 	mounted: function(){
-		this.listenFor("PLAYER",this.updatePlayers)
+		this.listenFor("PLAYER",this.fetchPlayers)
 	},
 	methods: {
-		updatePlayers(){
+		fetchPlayers(){
 			this.API("GET",`/games/${this.game.identifier}/players`,false,players=>this.players=players)
 		},
 		chooseGame(){
 			this.$emit("chooseGame",this.game)
-			this.updatePlayers()
+			this.fetchPlayers()
 			this.API("GET",`/games/${this.game.identifier}/players/${this.profile.id}/names`,false,(names)=>{
 				this.remoteNames = names
 			})
@@ -121,7 +136,9 @@ Vue.component('witb-game',{
 			<a class = "btn" @click="startGame" :class="{'disabled': !gameReady}">Start</a>
 			<ul class = "collection" v-if = "currentGameIdentifier == game.identifier">
 				<witb-me @saveNames="saveNames" :game="game" :names="names"></witb-me>
-				<witb-player v-for = "player in players" :key = "player.identifier" :player="player" v-if = "player.identifier!=profile.id"></witb-player>
+				<li = "collection-item">
+					<witb-player v-for = "player in players" :key = "player.identifier" :player="player" v-if = "player.identifier!=profile.id"></witb-player>
+				</li>
 			</ul>
 		</li>
 	`
