@@ -118,7 +118,7 @@ Vue.component('witb-game',{
 		<li class="collection-item">
 			{{game.title}}
 			<a class = "btn" @click="chooseGame" v-if="currentGameIdentifier != game.identifier">Join</a>
-			<a class = "btn" @click="startGame" :class="disabled: !gameReady">Start</a>
+			<a class = "btn" @click="startGame" :class="'disabled': !gameReady">Start</a>
 			<ul class = "collection" v-if = "currentGameIdentifier == game.identifier">
 				<witb-me @saveNames="saveNames" :game="game" :names="names"></witb-me>
 				<witb-player v-for = "player in players" :key = "player.identifier" :player="player" v-if = "player.identifier!=profile.id"></witb-player>
