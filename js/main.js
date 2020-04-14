@@ -155,7 +155,7 @@ var app = new Vue({
 	data: {
 		profile: {ready:false,id:0,name:'',url:'',token:''},
 		socket: null,
-		handlers: {}
+		messages: []
 	},
 	methods:{
 		userReady(event){
@@ -171,17 +171,22 @@ var app = new Vue({
 	provide: function(){
 		return {
 			profile: this.profile,
-			listenFor: this.socket.addEventListener
+			listenFor: function(key,handler)=>this.socket.addEventListener("message",function(event){event.})
 		}
 	},
 	mounted: function(){
 		this.socket = new WebSocket(window.config.socketGatewayUrl + window.config.socketGatewayPath)
-		this.socket.onconnect = console.log
+		this.socket.onopen = ()=>this.messages.push("Connected")
+		this.socket.onclose = ()=>this.messages.push("Disconnected")
+		this.socket.onmessage = event=>this.messages.push(event.data)
 	},
 	template: `
 		<div class = "container">
 			<google-login @userReady = "userReady"></google-login>
 			<witb-games></witb-games>
+			<p v-for = "message in messages">
+				Message from WebSocket : {{message}}
+			</p>
 		</div>
 	`
 })	
