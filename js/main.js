@@ -186,8 +186,6 @@ var app = new Vue({
 	},
 	created: function(){
 		this.socket = new WebSocket(window.config.socketGatewayUrl + window.config.socketGatewayPath)
-		this.socket.onopen = ()=>this.messages.push("Connected")
-		this.socket.onclose = ()=>this.messages.push("Disconnected")
 		this.socket.onmessage = event=>this.messages.push(event.data)
 	},
 	template: `
@@ -195,7 +193,7 @@ var app = new Vue({
 			<google-login @userReady = "userReady"></google-login>
 			<witb-games></witb-games>
 			<p v-for = "message in messages">
-				Message from WebSocket : {{message}}
+				Need to update : {{message}}
 			</p>
 		</div>
 	`
