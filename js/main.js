@@ -167,9 +167,9 @@ var app = new Vue({
 	},
 	mounted: function(){
 		this.socket = new WebSocket(window.config.socketGatewayUrl + window.config.socketGatewayPath)
-		this.socket.onopen = function(){this.messages.push("Connected")}
-		this.socket.onclose = function(){this.messages.push("Disconnected")}
-		this.socket.onmessage = function(event){this.messages.push(event.data)}
+		this.socket.onopen = ()=>this.messages.push("Connected")
+		this.socket.onclose = ()=>this.messages.push("Disconnected")
+		this.socket.onmessage = event=>this.messages.push(event.data)
 	},
 	template: `
 		<div class = "container">
