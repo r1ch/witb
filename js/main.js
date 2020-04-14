@@ -193,7 +193,7 @@ var app = new Vue({
 			<google-login @userReady = "userReady"></google-login>
 			<witb-games></witb-games>
 			<p v-for = "message in messages">
-				Need to update : {{message}}
+				Remote update : {{message}}
 			</p>
 		</div>
 	`
