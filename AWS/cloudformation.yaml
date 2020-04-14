@@ -94,6 +94,15 @@ Resources:
       MemorySize: 256
       Runtime: nodejs12.x
       Role: !GetAtt SocketExecutionRole.Arn
+      Environment:
+        Variables:
+          Endpoint: !Join
+                - ''
+                - - https://
+                  - !Ref SocketApi
+                  - ".execute-api."
+                  - !Ref AWS::Region
+                  - ".amazonaws.com/prod/"
 
   SocketExecutionRole:
     Type: AWS::IAM::Role
