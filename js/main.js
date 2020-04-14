@@ -92,7 +92,7 @@ Vue.component('witb-game',{
 				this.players.filter(player=>player.numberOfNames != this.game.namesPerPerson).length == 0
 		},
 		currentPlayer: function(){
-			return players.find((player)=>player.identifier = game.players[game.playerIndex])
+			return this.players.find((player)=>player.identifier = this.game.players[this.game.playerIndex])
 		}
 	},
 	mounted: function(){
