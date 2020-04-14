@@ -67,7 +67,12 @@ Vue.component('witb-games',{
 				<div class="card blue-grey darken-1">
 					<div class="card-content white-text">
 						<span class="card-title">{{currentGame.title}}</span>
+						Names:<br>
 						{{currentGame.names}}
+						Turns:
+						{{currentGame.players}}
+						Who's turn
+						{{currentGame.playerIndex}}
 					</div>
 					<div class="card-action">
 						<a>Got It</a>
