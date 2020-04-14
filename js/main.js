@@ -92,6 +92,7 @@ Vue.component('witb-game',{
 				this.players.filter(player=>player.numberOfNames != this.game.namesPerPerson).length == 0
 		},
 		currentPlayer : function(){
+			console.log(`Called in ${JSON.stringify(this.players)} ${JSON.stringify(this.game)}`)
 			return this.players.find(player=>player.identifier==this.game.players[this.game.playerIndex])
 		}
 	},
