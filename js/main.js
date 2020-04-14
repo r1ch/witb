@@ -90,6 +90,9 @@ Vue.component('witb-game',{
 			return 	this.game.identifier == this.currentGameIdentifier && 
 				this.players.length > 1 &&
 				this.players.filter(player=>player.numberOfNames != this.game.namesPerPerson).length == 0
+		},
+		currentPlayer : function(){
+			return this.players.find(player=>player.identifier==this.game.players[this.games.playerIndex])
 		}
 	},
 	mounted: function(){
@@ -126,6 +129,11 @@ Vue.component('witb-game',{
 					<witb-player v-for = "player in players" :key = "player.identifier" :player="player" v-if = "player.identifier!=profile.id"></witb-player>
 				</li>
 			</ul>
+			<div v-if = "currentGameIdentifier == game.identifier && game.started">
+				Game is in progress
+				Player: {{currentPlayer.name}}
+				Img: <img :src = "currentPlayer.url">
+			</div>
 		</li>
 	`
 })
