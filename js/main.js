@@ -171,7 +171,7 @@ var app = new Vue({
 	provide: function(){
 		return {
 			profile: this.profile,
-			listenFor: function(key,handler)=>this.socket.addEventListener("message",function(event){event.})
+			listenFor: function(key,handler){this.socket.addEventListener("message",function(event){event.data == key ? handler() : false})}
 		}
 	},
 	mounted: function(){
