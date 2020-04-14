@@ -125,17 +125,12 @@ Vue.component('witb-game',{
 			<a class = "btn" @click="startGame" :class="{'disabled': !gameReady}" v-if="currentGameIdentifier == game.identifier && !game.started">Start</a>
 			<ul class = "collection" v-if = "currentGameIdentifier == game.identifier && !game.started">
 				<witb-me @saveNames="saveNames" :game="game" :names="names"></witb-me>
-				<li class = "collection-item">
-					<witb-player v-for = "player in players" :key = "player.identifier" :player="player" v-if = "player.identifier!=profile.id"></witb-player>
-				</li>
+				<witb-player v-for = "player in players" :key = "player.identifier" :player="player" v-if = "player.identifier!=profile.id"></witb-player>
 			</ul>
 			<div v-if = "currentGameIdentifier == game.identifier && game.started">
 				<p>Game is in progress</p>
 				<p>Player: {{currentPlayer.name}}</p>
 				<p><img :src = "currentPlayer.url" class = "circle"></p>
-				<ul>
-					<li v-for = "name in game.names">{{name}}</li>
-				</ul>
 			</div>
 		</li>
 	`
