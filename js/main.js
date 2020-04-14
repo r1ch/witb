@@ -70,8 +70,8 @@ Vue.component('witb-games',{
 						{{currentGame.names}}
 					</div>
 					<div class="card-action">
-						<a @click="console.log">Got It</a>
-						<a @click="console.log">Pass It</a>
+						<a>Got It</a>
+						<a>Pass It</a>
 					</div>
 				</div>
 			</div>
