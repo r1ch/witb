@@ -84,6 +84,11 @@ Vue.component('witb-game',{
 				})
 			}
 			return list
+		},
+		gameReady : function(){
+			return 	game.identifier == currentGameIdentifier && 
+					players.length > 1 &&
+					players.filter(player=>player.numberOfNames != game.namesPerPerson).length == 0
 		}
 	},
 	mounted: function(){
@@ -104,12 +109,16 @@ Vue.component('witb-game',{
 			this.API("PUT",`/games/${this.game.identifier}/players/${this.profile.id}/names`,this.names.map(name=>name.value).filter(value=>value!=""),(names)=>{
 				this.remoteNames = names
 			})
+		},
+		startGame(){
+			this.API("POST",`/games/${this.game.identifier}/start`)
 		}
 	},
 	template: `
 		<li class="collection-item">
 			{{game.title}}
 			<a class = "btn" @click="chooseGame" v-if="currentGameIdentifier != game.identifier">Join</a>
+			<a class = "btn" @click="startGame" :class="disabled: !gameReady">Start</a>
 			<ul class = "collection" v-if = "currentGameIdentifier == game.identifier">
 				<witb-me @saveNames="saveNames" :game="game" :names="names"></witb-me>
 				<witb-player v-for = "player in players" :key = "player.identifier" :player="player" v-if = "player.identifier!=profile.id"></witb-player>
