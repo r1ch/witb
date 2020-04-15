@@ -243,10 +243,12 @@ Resources:
     Type: AWS::Serverless::Api
     Properties:
       Name: "WITBRESTAPI"
-      DefinitionUri: ./simple-proxy-api.yaml
+      DefinitionBody:
+        Fn::Transform:
+          Name: AWS::Include
+          Parameters:
+            Location: ./simple-proxy-api.yaml
       StageName: prod
-      Variables:
-        RestHandlerARN: !GetAtt RestHandler.Arn
 
   RestExecutionRole:
     Type: AWS::IAM::Role
