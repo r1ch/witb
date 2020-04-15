@@ -246,8 +246,7 @@ Resources:
       DefinitionUri: ./simple-proxy-api.yaml
       StageName: prod
       Variables:
-        RestHandlerFunctionName: !Ref RestHandler
-        AccountId: !Ref AWS::AccountId
+        RestHandlerARN: !GetAtt RestHandler.Arn
 
   RestExecutionRole:
     Type: AWS::IAM::Role
