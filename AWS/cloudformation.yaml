@@ -33,7 +33,7 @@ Resources:
           Condition:
             StringEquals:
               accounts.google.com:aud: 956371621839-rm5951rfgnjolb1p2rqo8pu7k5mpmlma.apps.googleusercontent.com
-      RoleName: "Goooooooo"
+      RoleName: "WITBGoogleOAuth2Role"
 
 
 
