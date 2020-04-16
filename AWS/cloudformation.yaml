@@ -4,6 +4,40 @@ Transform: AWS::Serverless-2016-10-31
 Description: Serverless Express Application/API powered by API Gateway and Lambda
 Resources:
 
+  GoogleOAuth2Role:
+    Type: AWS::IAM::Role
+    Properties:
+      Policies:
+      - PolicyName: root
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: Allow
+            Action: execute-api:Invoke
+            Resource: !Join
+              - ''
+              - - 'arn:aws:execute-api:'
+                - !Ref AWS::Region
+                - ":"
+                - !Ref AWS::AccountId
+                - ":"
+                - !Ref RestApi
+                - "/*/*"
+      AssumeRolePolicyDocument: 
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Federated: accounts.google.com
+          Action: sts:AssumeRoleWithWebIdentity
+          Condition:
+            StringEquals:
+              accounts.google.com:aud: 956371621839-rm5951rfgnjolb1p2rqo8pu7k5mpmlma.apps.googleusercontent.com
+      RoleName: "Goooooooo"
+
+
+
+
   WITBTable:
     Type: AWS::DynamoDB::Table
     Properties: 
