@@ -126,7 +126,12 @@ Vue.component('witb-game',{
 			</ul>
 			<div v-if = "currentGameIdentifier == game.identifier && game.started">
 				<p>Game is in progress</p>
-				{{game}}
+				Current round: {{game.rounds[game.roundIndex]}}
+				It's {{game.players[game.playerIndex].name}}'s go
+				Pick from:
+				<ul>
+					<li v-for = "name in game.names">{{name}}</li>
+				</ul>
 			</div>
 		</li>
 	`
