@@ -120,13 +120,14 @@ router.post('/games/:game/start', asyncHandler(async (req, res) => {
     let players = []
     for await (const player of mapper.query(Player, {recordType: 'PLAYER', association: req.params.game}, {indexName: 'index'})) {
         names.push(...namesOf(player))
-        players.push(player.identifier)
+        players.push(player)
     }
     let game = new Game()
     game.identifier = req.params.game
     game.names = names
     game.players = players
     game.playerIndex = 0
+    game.roundIndex = 0
     game.started = true
     mapper.update(game,{onMissing: 'skip'}).then((game)=>{
         res.json(game)
@@ -175,10 +176,17 @@ Object.defineProperties(Game.prototype, {
             },
             title: {type : 'String'},
             rounds: {type: 'List', memberType: {type: 'String'}},
+            roundIndex: {type: 'Number'},
             secondsPerRound: {type: 'Number'},
             namesPerPerson: {type: 'Number'},
             names: {type: 'List', memberType: {type: 'String'}},
-            players: {type: 'List', memberType: {type: 'String'}},
+            players: {type: 'List', memberType: {type: 'Document',
+                members: {
+                    url: {type : 'String'},
+                    identifier: {type : 'String'},
+                    name: {type : 'String'}
+                }
+            }},
             playerIndex: {type: 'Number'},
             started: {type: 'Boolean'}
         },
@@ -211,9 +219,7 @@ Object.defineProperties(Player.prototype, {
             name: {type : 'String'},
             url: {type: 'String'},
             association: {type: 'String'},
-            names: {
-                type: 'List', memberType: {type: 'String'}
-            }
+            names: {type: 'List', memberType: {type: 'String'}},
         },
     },
 });
