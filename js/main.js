@@ -137,6 +137,9 @@ Vue.component('witb-playspace',{
 		return {
 			stages : ["Ready","Started","Finished","Done"],
 			stage: 0,
+			startTime: false,
+			timer: false,
+			timeRemaining: this.game.secondsPerRound,
 			namesLeft : this.game.names,
 			nameInPlay : false,
 			passed : false,
@@ -156,7 +159,19 @@ Vue.component('witb-playspace',{
 		},
 		start : function(){
 			this.pickNextName()
+			this.startTimer()
 			this.stage = 1
+		},
+		startTimer : function(){
+			this.startTime = Date.now()
+			this.timer = setInterval(()=>{this.tick},500)
+		},
+		tick(){
+			this.timeRemaining = Math.max(this.startTime+this.game.secondsPerRound-Date.now(),0)
+			if(this.timeRemaining <= 0){
+				clearInterval(this.timer)
+				this.stage = 2
+			}
 		},
 		gotIt : function(name){
 			console.log(`Got It: ${name}`)
@@ -181,13 +196,14 @@ Vue.component('witb-playspace',{
 				<h5 class="card-title">{{game.title}}</h5>
 				<p class="card-text">It's {{game.players[game.playerIndex].name}}'s go in the {{game.rounds[game.roundIndex]}} round</p>
 			</div>
-			<ul class="list-group list-group-flush">
+			<ul class="list-group list-group-flush" v-if = "game.players[game.playerIndex].identifier == profile.id">
 			<witb-playname @gotIt = "gotPass" :name="passed" v-if = "passed" :canPass = "false"></witb-playname>
 			<witb-playname @gotIt = "gotIt" @passIt = "passIt" :name="nameInPlay" v-if = "nameInPlay" :canPass = "!passed"></witb-playname>
 			</ul>
-			<div class="card-body">
+			<div class="card-body" v-if = "game.players[game.playerIndex].identifier == profile.id">
 				<button @click = "start" class =  "btn btn-primary" v-if = "stage==0 && !nameInPlay">Start my go</button>
-				<button @click = "start" class =  "btn btn-primary" v-if = "stage==3">End my go</button>
+				<span v-if = "stage<3">{{timeRemaining}}s</span>
+				<button @click = "start" class =  "btn btn-primary" v-if = "stage==2">End my go</button>
 			</div>
 		</div>
 	`	
