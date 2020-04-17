@@ -59,7 +59,7 @@ Vue.component('witb-games',{
 	template: `
 		<div class = "row">
 			<ul class="collection with-header" v-if = "games" >
-				<witb-game @chooseGame= "chooseGame" v-if = "!currentGame && !currentGame.started"  v-for = "game in games" :key="game.identifier" :game="game" :currentGameIdentifier = "currentGameIdentifier"></witb-game>
+				<witb-game @chooseGame= "chooseGame" v-if = "!(currentGame && currentGame.started)"  v-for = "game in games" :key="game.identifier" :game="game" :currentGameIdentifier = "currentGameIdentifier"></witb-game>
 				<witb-playspace v-if = "currentGame && currentGame.started" :game = "currentGame"></witb-playspace>
 			</ul>
 		</div>
