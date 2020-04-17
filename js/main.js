@@ -160,14 +160,15 @@ Vue.component('witb-playspace',{
 	watch: {
 		"game.playIndex"(newVal,oldVal){
 			console.log("Resetting")
-			this.stage = 0
 			this.startTime = false
+			this.timer && clearInterval(this.time)
 			this.timer = false
 			this.timeRemaining = this.game.secondsPerRound
 			this.namesLeft = this.game.namesLeftThisRound
 			this.nameInPlay = ""
 			this.passed = ""
 			this.namesGot = []
+			this.stage = 0
 		}
 	},
 	methods:{
