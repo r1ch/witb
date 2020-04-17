@@ -65,7 +65,7 @@ Vue.component('witb-games',{
 	template: `
 		<div class = "row">
 			<ul class="list-group" v-if = "games" >
-				<witb-game @chooseGame= "chooseGame" v-if = "!(currentGame && currentGame.started)"  v-for = "game in games" :key="game.identifier" :game="game" :currentGameIdentifier = "currentGameIdentifier"></witb-game>
+				<witb-game @chooseGame= "chooseGame" v-if = "!currentGame"  v-for = "game in games" :key="game.identifier" :game="game" :currentGameIdentifier = "currentGameIdentifier"></witb-game>
 				<witb-playspace @endTurn = "endTurn" v-if = "currentGame && currentGame.started" :game = "currentGame"></witb-playspace>
 			</ul>
 		</div>
@@ -119,7 +119,7 @@ Vue.component('witb-game',{
 			})
 		},
 		startGame(){
-			this.API("POST",`/games/${this.game.identifier}/start`)
+			if(this.gameReady) this.API("POST",`/games/${this.game.identifier}/start`)
 		}
 	},
 	template: `
@@ -278,7 +278,7 @@ Vue.component('witb-me',{
 			<span class = "title">{{profile.name}}</span>
 			<p>Please pick {{game.namesPerPerson}} names</p>
 			<input v-for = "name in names" v-model="name.value" :key="name.key"></input>
-			<a class = "btn" @click="saveNames">Save</a>
+			<button class = "btn btn-primary" @click="saveNames">Save</button>
 		</li>
 	`
 })
