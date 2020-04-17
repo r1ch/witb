@@ -139,13 +139,8 @@ Vue.component('witb-playspace',{
 			stage: 0,
 			namesLeft : this.game.names,
 			nameInPlay : false,
-			passedName : false,
+			passed : false,
 			namesGot : [],
-		}
-	},
-	computed:{
-		canPass: function(){
-			return this.passedName ? false : true
 		}
 	},
 	methods:{
@@ -183,9 +178,9 @@ Vue.component('witb-playspace',{
 			<h3>{{game.title}}</h3><br>
 			Current round: {{game.rounds[game.roundIndex]}}<br>
 			It's {{game.players[game.playerIndex].name}}'s go<br><br>
-			<button @click = "start" class =  "btn-primary" v-if = "stage==0 && !nameInPlay">Start my go</button><br>
-			<witb-playname @gotIt = "gotIt" @passIt = "passIt" :name="nameInPlay" v-if = "nameInPlay" :canPass = "passedName"></witb-playname><br>
-			<witb-playname @gotIt = "gotPass" :name="passedName" v-if = "passedName" :canPass = "false"></witb-playname><br>
+			<button @click = "start" class =  "btn-primary" v-if = "stage==0 && !nameInPlay">Start my go</button><br><br>
+			<witb-playname @gotIt = "gotIt" @passIt = "passIt" :name="nameInPlay" v-if = "nameInPlay" :canPass = "!passed"></witb-playname><br>
+			<witb-playname @gotIt = "gotPass" :name="passed" v-if = "passed" :canPass = "false"></witb-playname><br>
 		</div>
 	`	
 })
