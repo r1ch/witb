@@ -185,7 +185,7 @@ Vue.component('witb-playspace',{
 			<witb-playname @gotIt = "gotIt" @passIt = "passIt" :name="nameInPlay" v-if = "nameInPlay" :canPass = "!passed"></witb-playname><br>
 			</ul>
 			<div class="card-body">
-				<button @click = "start" class =  "btn-primary" v-if = "stage==0 && !nameInPlay">Start my go</button>
+				<button @click = "start" class =  "btn btn-primary" v-if = "stage==0 && !nameInPlay">Start my go</button>
 			</div>
 		</div>
 	`	
