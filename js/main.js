@@ -158,8 +158,11 @@ Vue.component('witb-playspace',{
 				this.nameInPlay = this.namesLeft.splice(this.namesLeft.length * Math.random() | 0, 1)[0]
 				console.log(`New name: ${this.nameInPlay}`)
 			} else {
+				console.log(`No names or time, ${this.nameInPlay}`)
 				this.nameInPlay = false
+				console.log(`No name now: ${this.nameInPlay}`)
 				if(this.stage < this.stages.Finished) this.stage = this.stages.Finished
+				console.log(`No names or time, ${this.stage}`)
 			}
 		},
 		start : function(){
@@ -183,6 +186,7 @@ Vue.component('witb-playspace',{
 			console.log(`Got It: ${name}`)
 			this.namesGot.push(name)
 			this.pickNextName()
+			console.log(`Got It: ${name}`)
 		},
 		passIt : function(name){
 			console.log(`Pass It: ${name}`)
