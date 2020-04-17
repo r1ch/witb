@@ -135,7 +135,7 @@ router.post('/games/:game/start', asyncHandler(async (req, res) => {
     })
 }))
 
-router.post('/games/:game/turn/:player', asyncHandler(async (req, res) => {
+router.put('/games/:game/turn/:player', asyncHandler(async (req, res) => {
     let game = new Game()
     game.identifier = req.params.game
     mapper.update(game,{onMissing: 'skip'}).then((game)=>{
