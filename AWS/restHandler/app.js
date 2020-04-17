@@ -125,6 +125,7 @@ router.post('/games/:game/start', asyncHandler(async (req, res) => {
     let game = new Game()
     game.identifier = req.params.game
     game.names = names
+    game.namesLeftThisRound = names
     game.players = players
     game.playIndex = 0
     game.playerIndex = 0
@@ -135,31 +136,41 @@ router.post('/games/:game/start', asyncHandler(async (req, res) => {
     })
 }))
 
-router.put('/games/:game/turn/:player', asyncHandler(async (req, res) => {
-    let game = new Game()
-    game.identifier = req.params.game
+router.put('/games/:game/turn', asyncHandler(async (req, res) => {
+    console.log(`Body: ${JSON.stringify(req.body)}`)
+    let game = Object.assign(new Game(),req.body.game)
+    let namesGot = req.body.namesGot
+    //record their progress
+    game.turns = game.turns || [];
+    game.turns[game.playIndex] = {
+        round: game.roundIndex,
+        player: game.players[game.playerIndex],
+        names: namesGot
+    }
+    //prune names
+    console.log(`Filtering: ${JSON.stringify(namesGot)}: ${JSON.stringify(game.namesLeftThisRound)}`)
+    game.namesLeftThisRound = game.namesLeftThisRound.filter(name=>{
+        console.log(`Filtering ${name}`)
+        let at = namesGot.indexOf(name)
+        if(at>=0){
+            console.log(`Filtering: ${JSON.stringify(namesGot)}: ${JSON.stringify(game.namesLeftThisRound)}`)
+            namesGot.splice(at,1)
+            return false
+        }
+        return true
+    })
+    
+    if(game.namesLeftThisRound.length==0){
+        game.roundIndex++
+        game.namesLeftThisRound = game.names
+    }
+    
+    game.playIndex++
+    game.playerIndex = (game.playerIndex+1)%game.players.length
+    console.log(JSON.stringify(game))
     mapper.update(game,{onMissing: 'skip'}).then((game)=>{
         res.json(game)
     })
-
-    mapper.get(Object.assign(new Game, {identifier: req.params.game}))
-    .then(game=>{
-        game.turns[game.playIndex] = {
-            round: game.roundsIndex,
-            player: game.players[game.playerIndex],
-            names: req.body
-        }
-        game.playIndex++
-        game.playerIndex = (game.playerIndex+1)%game.players.length
-        mapper.update(game,{onMissing: 'skip'}).then((game)=>{
-            res.json(game)
-        })
-    })
-    .catch(err => {
-        res.status(404).send(`No game found for ID: ${req.params.game}`)
-    })
-
-
 }))
 
 
@@ -208,6 +219,7 @@ Object.defineProperties(Game.prototype, {
             secondsPerRound: {type: 'Number'},
             namesPerPerson: {type: 'Number'},
             names: {type: 'List', memberType: {type: 'String'}},
+            namesLeftThisRound: {type: 'List', memberType: {type: 'String'}},
             turns: {type: 'List', memberType: {type: 'Document',
                 members: {
                     round: {type:'Number'},
