@@ -196,7 +196,9 @@ Vue.component('witb-playspace',{
 		gotPass : function(name){
 			console.log(`Got Pass: ${name}`)
 			this.namesGot.push(name)
+			console.log(`Got Pass: ${passed}`)
 			this.passed = false
+			console.log(`Got Pass: ${passed}`)
 		},
 	},
 	template:`
