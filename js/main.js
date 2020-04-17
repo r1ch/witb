@@ -213,7 +213,7 @@ Vue.component('witb-playspace',{
 				<h5 class="card-title">{{game.title}}</h5>
 				<p class="card-text">It's {{game.players[game.playerIndex].name}}'s go in the {{game.rounds[game.roundIndex]}} round</p>
 			</div>
-			<ul class="list-group list-group-flush" v-if = "stage<stages.Finished"><!-- v-if = "game.players[game.playerIndex].identifier == profile.id">-->
+			<ul class="list-group list-group-flush" v-if = "stage<stages.Done"><!-- v-if = "game.players[game.playerIndex].identifier == profile.id">-->
 			<witb-playname @gotIt = "gotPass" :name="passed" :canPass = "false"></witb-playname>
 			<witb-playname @gotIt = "gotIt" @passIt = "passIt" :name="nameInPlay" :canPass = "passed == ''"></witb-playname>
 			</ul>
