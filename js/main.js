@@ -60,7 +60,7 @@ Vue.component('witb-games',{
 		<div class = "row">
 			<ul class="collection with-header" v-if = "games" >
 				<witb-game @chooseGame= "chooseGame" v-if = "!currentGame && !currentGame.started"  v-for = "game in games" :key="game.identifier" :game="game" :currentGameIdentifier = "currentGameIdentifier"></witb-game>
-				<witb-playspace v-if = "currentGame && currentGame.started" :game = "currentGame">
+				<witb-playspace v-if = "currentGame && currentGame.started" :game = "currentGame"></witb-playspace>
 			</ul>
 		</div>
 	`
@@ -129,7 +129,7 @@ Vue.component('witb-game',{
 	`
 })
 
-Vue.component('witb-play-space',{
+Vue.component('witb-playspace',{
 	mixins:[APIMixin],
 	inject:['profile'],
 	props: ['game'],
