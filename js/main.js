@@ -167,7 +167,8 @@ Vue.component('witb-playspace',{
 			this.timer = setInterval(()=>{this.tick()},500)
 		},
 		tick(){
-			this.timeRemaining = Math.max(this.startTime+this.game.secondsPerRound-Date.now(),0)
+			console.log(`${this.startTime} ${this.game.secondsPerRound} ${Date.now()}`)
+			this.timeRemaining = Math.max(this.startTime+this.game.secondsPerRound*1000-Date.now(),0)
 			if(this.timeRemaining <= 0){
 				clearInterval(this.timer)
 				this.stage = 2
