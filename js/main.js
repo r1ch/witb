@@ -184,14 +184,14 @@ Vue.component('witb-playspace',{
 			Current round: {{game.rounds[game.roundIndex]}}<br>
 			It's {{game.players[game.playerIndex].name}}'s go<br><br>
 			<button @click = "start" class =  "btn-primary" v-if = "stage==0 && !nameInPlay">Start my go</button><br>
-			<witb-playname @gotIt = "gotIt" @passIt = "passIt" :name="nameInPlay" v-if = "nameInPlay" :isPass = "false"></witb-playname><br>
-			<witb-playname @gotIt = "gotPass" :name="passedName" v-if = "passedName" :isPass = "true"></witb-playname><br>
+			<witb-playname @gotIt = "gotIt" @passIt = "passIt" :name="nameInPlay" v-if = "nameInPlay" :canPass = "passedName"></witb-playname><br>
+			<witb-playname @gotIt = "gotPass" :name="passedName" v-if = "passedName" :canPass = "false"></witb-playname><br>
 		</div>
 	`	
 })
 
 Vue.component('witb-playname',{
-	props: ['name','isPass','canPass'],
+	props: ['name','canPass'],
 	methods:{
 		gotIt: function(){
 			console.log(`Got: ${this.name}`)
@@ -205,8 +205,8 @@ Vue.component('witb-playname',{
 	template: `
 		<div class="btn-group" role="group">
 			<button @click = "gotIt" type="button" class="btn btn-success">Got it!</button>
-			<button type="button" class="btn btn-outline-dark">{{name}}</button>
-			<button @click = "passIt" type="button" class="btn btn-error" v-if = "!isPass">Pass</button>
+			<button type="button" class="btn btn-secondary" disabled>{{name}}</button>
+			<button @click = "passIt" type="button" class="btn btn-danger" v-if = "canPass">Pass</button>
 		</div>
 	`
 })
