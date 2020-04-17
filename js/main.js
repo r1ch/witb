@@ -217,7 +217,8 @@ var app = new Vue({
 		this.socket = new WebSocket(window.config.socketGatewayUrl + window.config.socketGatewayPath)
 		this.socket.onmessage = event=>{
 			this.messages.unshift(event.data)
-			if(this.messages.length > 3) this.mesages.pop() 
+			if(this.messages.length > 3) this.mesages.pop()
+			setTimeout(function(){this.messages.pop()},5000),
 		}
 	},
 	template: `
