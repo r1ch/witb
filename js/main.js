@@ -174,13 +174,19 @@ Vue.component('witb-playspace',{
 		},
 	},
 	template:`
-		<div class = "row">
-			<h3>{{game.title}}</h3><br>
-			Current round: {{game.rounds[game.roundIndex]}}<br>
-			It's {{game.players[game.playerIndex].name}}'s go<br><br>
-			<button @click = "start" class =  "btn-primary" v-if = "stage==0 && !nameInPlay">Start my go</button><br><br>
+		<div class="card">
+			<img class="card-img-top" src="{{game.players[game.playerIndex].url}}" alt="{{game.players[game.playerIndex].name}}">
+			<div class="card-body">
+				<h5 class="card-title">{{game.title}}</h5>
+				<p class="card-text">It's {{game.players[game.playerIndex].name}}'s go in the {{game.rounds[game.roundIndex]}} round</p>
+			</div>
+			<ul class="list-group list-group-flush">
 			<witb-playname @gotIt = "gotPass" :name="passed" v-if = "passed" :canPass = "false"></witb-playname><br>
 			<witb-playname @gotIt = "gotIt" @passIt = "passIt" :name="nameInPlay" v-if = "nameInPlay" :canPass = "!passed"></witb-playname><br>
+			</ul>
+			<div class="card-body">
+				<button @click = "start" class =  "btn-primary" v-if = "stage==0 && !nameInPlay">Start my go</button>
+			</div>
 		</div>
 	`	
 })
@@ -198,11 +204,13 @@ Vue.component('witb-playname',{
 		}
 	},
 	template: `
-		<div class="btn-group" role="group">
-			<button @click = "gotIt" type="button" class="btn btn-success">Got it!</button>
-			<button type="button" class="btn btn-secondary" disabled>{{name}}</button>
-			<button @click = "passIt" type="button" class="btn btn-danger" v-if = "canPass">Pass</button>
-		</div>
+		<li class = "list-group-item">
+			<div class="btn-group" role="group">
+				<button @click = "gotIt" type="button" class="btn btn-success">Got it!</button>
+				<button type="button" class="btn btn-secondary" disabled>{{name}}</button>
+				<button @click = "passIt" type="button" class="btn btn-danger" v-if = "canPass">Pass</button>
+			</div>
+		<li class = "list-group-item">
 	`
 })
 
