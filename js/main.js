@@ -59,7 +59,8 @@ Vue.component('witb-games',{
 	template: `
 		<div class = "row">
 			<ul class="collection with-header" v-if = "games" >
-				<witb-game @chooseGame= "chooseGame" v-for = "game in games" :key="game.identifier" :game="game" :currentGameIdentifier = "currentGameIdentifier"></witb-game>
+				<witb-game @chooseGame= "chooseGame" v-if = "!currentGame && !currentGame.started"  v-for = "game in games" :key="game.identifier" :game="game" :currentGameIdentifier = "currentGameIdentifier"></witb-game>
+				<witb-playspace v-if = "currentGame && currentGame.started" :game = "currentGame">
 			</ul>
 		</div>
 	`
@@ -124,17 +125,26 @@ Vue.component('witb-game',{
 				<witb-me @saveNames="saveNames" :game="game" :names="names"></witb-me>
 				<witb-player v-for = "player in players" :key = "player.identifier" :player="player" v-if = "player.identifier!=profile.id"></witb-player>
 			</ul>
-			<div v-if = "currentGameIdentifier == game.identifier && game.started">
-				<p>Game is in progress</p>
-				Current round: {{game.rounds[game.roundIndex]}}
-				It's {{game.players[game.playerIndex].name}}'s go
-				Pick from:
-				<ul>
-					<li v-for = "name in game.names">{{name}}</li>
-				</ul>
-			</div>
 		</li>
 	`
+})
+
+Vue.component('witb-play-space'),{
+	mixins:[APIMixin],
+	inject:['profile'],
+	props: ['game'],
+	methods:{},
+	template:`
+		<div>
+			<h3>{{game.title}}</h3><br>
+			Current round: {{game.rounds[game.roundIndex]}}<br>
+			It's {{game.players[game.playerIndex].name}}'s go<br>
+			Pick from:
+			<ul>
+				<li v-for = "name in game.names">{{name}}</li>
+			</ul>
+		</div>
+	`	
 })
 
 Vue.component('witb-me',{
