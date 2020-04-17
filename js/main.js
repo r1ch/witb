@@ -179,8 +179,8 @@ Vue.component('witb-playspace',{
 			Current round: {{game.rounds[game.roundIndex]}}<br>
 			It's {{game.players[game.playerIndex].name}}'s go<br><br>
 			<button @click = "start" class =  "btn-primary" v-if = "stage==0 && !nameInPlay">Start my go</button><br><br>
-			<witb-playname @gotIt = "gotIt" @passIt = "passIt" :name="nameInPlay" v-if = "nameInPlay" :canPass = "!passed"></witb-playname><br>
 			<witb-playname @gotIt = "gotPass" :name="passed" v-if = "passed" :canPass = "false"></witb-playname><br>
+			<witb-playname @gotIt = "gotIt" @passIt = "passIt" :name="nameInPlay" v-if = "nameInPlay" :canPass = "!passed"></witb-playname><br>
 		</div>
 	`	
 })
