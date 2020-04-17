@@ -58,7 +58,7 @@ Vue.component('witb-games',{
 	},
 	template: `
 		<div class = "row">
-			<ul class="collection with-header" v-if = "games" >
+			<ul class="list-group" v-if = "games" >
 				<witb-game @chooseGame= "chooseGame" v-if = "!(currentGame && currentGame.started)"  v-for = "game in games" :key="game.identifier" :game="game" :currentGameIdentifier = "currentGameIdentifier"></witb-game>
 				<witb-playspace v-if = "currentGame && currentGame.started" :game = "currentGame"></witb-playspace>
 			</ul>
@@ -117,11 +117,11 @@ Vue.component('witb-game',{
 		}
 	},
 	template: `
-		<li class="collection-item">
+		<li class="list-group-item">
 			{{game.title}}
-			<a class = "btn" @click="chooseGame" v-if="currentGameIdentifier != game.identifier">Join</a>
-			<a class = "btn" @click="startGame" :class="{'disabled': !gameReady}" v-if="currentGameIdentifier == game.identifier && !game.started">Start</a>
-			<ul class = "collection" v-if = "currentGameIdentifier == game.identifier && !game.started">
+			<button class = "btn btn-primary" @click="chooseGame" v-if="currentGameIdentifier != game.identifier">Join</button>
+			<button class = "btn btn-primary" @click="startGame" :class="{'disabled': !gameReady}" v-if="currentGameIdentifier == game.identifier && !game.started">Start</button>
+			<ul class = "list-group" v-if = "currentGameIdentifier == game.identifier && !game.started">
 				<witb-me @saveNames="saveNames" :game="game" :names="names"></witb-me>
 				<witb-player v-for = "player in players" :key = "player.identifier" :player="player" v-if = "player.identifier!=profile.id"></witb-player>
 			</ul>
@@ -165,8 +165,8 @@ Vue.component('witb-me',{
 		}
 	},
 	template: `
-		<li class="collection-item avatar">
-			<img :src="profile.url" class = "circle"></img>
+		<li class="list-group-item">
+			<img :src="profile.url" class="rounded-circle"></img>
 			<span class = "title">{{profile.name}}</span>
 			<p>Please pick {{game.namesPerPerson}} names</p>
 			<input v-for = "name in names" v-model="name.value" :key="name.key"></input>
@@ -178,7 +178,7 @@ Vue.component('witb-me',{
 Vue.component('witb-player',{
 	props: ['player'],
 	template: `
-		<li class="collection-item avatar">
+		<li class="list-group-item">
 			<img :src="player.url" class = "circle"></img>
 			<span class = "title">{{player.name}}</span>
 			<p>Names done: {{player.numberOfNames}}</p>
