@@ -226,7 +226,8 @@ var app = new Vue({
 			<witb-games></witb-games>
 			<span class = "badge badge-pill badge-primary" v-for = "message in messages">
 				{{message.substring(0,1)}}
-			</p>
+			
+			</span>
 		</div>
 	`
 })	
