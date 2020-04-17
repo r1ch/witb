@@ -151,9 +151,11 @@ Vue.component('witb-playspace',{
 	methods:{
 		pickNextName : function(){
 			if(this.namesLeft && this.namesLeft.length > 0){
+				console.log(`Old name: ${this.nameInPlay}`)
 				let name = this.namesLeft[parseInt(Math.random()*this.namesLeft.length)]
 				this.namesLeft = this.namesLeft.filter(name=>name!=name)
 				this.nameInPlay = name
+				console.log(`New name: ${this.nameInPlay}`)
 			} else {
 				this.stage = 2
 			}
