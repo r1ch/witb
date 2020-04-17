@@ -54,13 +54,16 @@ Vue.component('witb-games',{
 		chooseGame(event){
 			this.currentGame = event
 			this.API("PUT",`/games/${this.currentGame.identifier}/players`,this.profile)
+		},
+		endTurn(event){
+			this.API("PUT",`/games/${this.currentGame.identifier}/turn`,event)
 		}
 	},
 	template: `
 		<div class = "row">
 			<ul class="list-group" v-if = "games" >
 				<witb-game @chooseGame= "chooseGame" v-if = "!(currentGame && currentGame.started)"  v-for = "game in games" :key="game.identifier" :game="game" :currentGameIdentifier = "currentGameIdentifier"></witb-game>
-				<witb-playspace v-if = "currentGame && currentGame.started" :game = "currentGame"></witb-playspace>
+				<witb-playspace @endTurn = "endTurn" v-if = "currentGame && currentGame.started" :game = "currentGame"></witb-playspace>
 			</ul>
 		</div>
 	`
@@ -172,7 +175,7 @@ Vue.component('witb-playspace',{
 			this.startTime = Date.now()
 			this.timer = setInterval(()=>{this.tick()},500)
 		},
-		tick(){
+		tick : function(){
 			console.log(`${this.startTime} ${this.game.secondsPerRound} ${Date.now()}`)
 			this.timeRemaining = Math.max((this.startTime+this.game.secondsPerRound*1000-Date.now())/1000|0,0)
 			if(this.timeRemaining <= 0){
@@ -198,6 +201,10 @@ Vue.component('witb-playspace',{
 			this.passed = false
 			console.log(`gotPass after, event: ${name}, nameInPlay: ${this.nameInPlay}, passed:${this.passed}`)
 		},
+		endTurn : function(){
+			this.stage = this.stages.Done
+			this.$emit("endTurn",this.namesGot)
+		}
 	},
 	template:`
 		<div class="card">
@@ -213,7 +220,7 @@ Vue.component('witb-playspace',{
 			<div class="card-body" v-if = "game.players[game.playerIndex].identifier == profile.id">
 				<button @click = "start" class =  "btn btn-primary" v-if = "stage==stages.Ready">Start my go</button>
 				<span v-if = "stage<stages.Done">{{timeRemaining}} s</span>
-				<button @click = "end" class =  "btn btn-primary" v-if = "stage==stages.Finished">End my go</button>
+				<button @click = "endTurn" class =  "btn btn-primary" v-if = "stage==stages.Finished">End my go</button>
 			</div>
 		</div>
 	`	
