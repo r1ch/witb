@@ -164,13 +164,13 @@ Vue.component('witb-playspace',{
 		},
 		passIt : function(name){
 			console.log(`Pass It: ${name}`)
-			this.passedName = name
+			this.passed = name
 			this.pickNextName()
 		},
 		gotPass : function(name){
 			console.log(`Got Pass: ${name}`)
 			this.namesGot.push(name)
-			this.passedName = false
+			this.passed = false
 		},
 	},
 	template:`
