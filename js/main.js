@@ -181,16 +181,22 @@ Vue.component('witb-playspace',{
 			}
 		},
 		gotIt : function(name){
+			console.log(`GotIt before, event: ${name}, nameInPlay: ${this.nameInPlay}, passed:${this.passed}`)
 			this.namesGot.push(name)
 			this.pickNextName()
+			console.log(`GotIt after, event: ${name}, nameInPlay: ${this.nameInPlay}, passed:${this.passed}`)
 		},
 		passIt : function(name){
+			console.log(`PassIt before, event: ${name}, nameInPlay: ${this.nameInPlay}, passed:${this.passed}`)
 			this.passed = name
 			this.pickNextName()
+			console.log(`PassIt after, event: ${name}, nameInPlay: ${this.nameInPlay}, passed:${this.passed}`)
 		},
 		gotPass : function(name){
+			console.log(`gotPass before, event: ${name}, nameInPlay: ${this.nameInPlay}, passed:${this.passed}`)
 			this.namesGot.push(name)
 			this.passed = false
+			console.log(`gotPass after, event: ${name}, nameInPlay: ${this.nameInPlay}, passed:${this.passed}`)
 		},
 	},
 	template:`
@@ -217,11 +223,9 @@ Vue.component('witb-playname',{
 	props: ['name','canPass'],
 	methods:{
 		gotIt: function(){
-			console.log(`Got: ${this.name}`)
 			this.$emit("gotIt",this.name)
 		},
 		passIt : function(){
-			console.log(`Pass: ${this.name}`)
 			this.$emit("passIt",this.name)
 		}
 	},
