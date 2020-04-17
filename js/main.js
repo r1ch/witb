@@ -139,31 +139,39 @@ Vue.component('witb-playspace',{
 	mixins:[APIMixin],
 	inject:['profile'],
 	props: ['game'],
-	data: this.defaultData,
+	data: function(){
+		return {
+			stages : {
+				Ready:0,
+				Started:1,
+				Finished:2,
+				Done:3
+			},
+			stage: 0,
+			startTime: false,
+			timer: false,
+			timeRemaining: this.game.secondsPerRound,
+			namesLeft : this.game.namesLeftThisRound,
+			nameInPlay : "",
+			passed : "",
+			namesGot : [],
+		}
+	},
 	watch: {
 		"game.playIndex"(newVal,oldVal){
-			this.$data = defaultData()
+			console.log("Resetting")
+			this.stage = 0
+			this.startTime = false
+			this.timer = false
+			this.timeRemaining = this.game.secondsPerRound
+			thi.timeRemaining = this.game.secondsPerRound
+			this.namesLeft = this.game.namesLeftThisRound
+			this.nameInPlay = ""
+			this.passed = ""
+			this.namesGot = []
 		}
 	},
 	methods:{
-		defaultData: function(){
-			return {
-				stages : {
-					Ready:0,
-					Started:1,
-					Finished:2,
-					Done:3
-				},
-				stage: 0,
-				startTime: false,
-				timer: false,
-				timeRemaining: this.game.secondsPerRound,
-				namesLeft : this.game.namesLeftThisRound,
-				nameInPlay : "",
-				passed : "",
-				namesGot : [],
-			}
-		},
 		pickNextName : function(){
 			if(this.namesLeft && this.namesLeft.length > 0 && this.stage < this.stages.Finished){
 				console.log(`Old name: ${this.nameInPlay}`)
