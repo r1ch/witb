@@ -161,14 +161,18 @@ Vue.component('witb-playspace',{
 			this.pickNextName()
 			this.stage = 1
 		},
-		gotIt : function(event){
-			this.namesGot.push(event.name)
-			event.isPass ? this.passedName = false : this.pickNextName()
-		},
-		passIt : function(event){
-			this.passedName = event
+		gotIt : function(name){
+			this.namesGot.push(name)
 			this.pickNextName()
-		}
+		},
+		passIt : function(name){
+			this.passedName = name
+			this.pickNextName()
+		},
+		gotPass : function(name){
+			this.namesGot.push(name)
+			this.passedName = false
+		},
 	},
 	template:`
 		<div class = "row">
@@ -176,8 +180,8 @@ Vue.component('witb-playspace',{
 			Current round: {{game.rounds[game.roundIndex]}}<br>
 			It's {{game.players[game.playerIndex].name}}'s go<br>
 			<button @click = "start" class =  "btn-primary" v-if = "stage==0 && !nameInPlay">Start my go</button>
-			<witb-playname :name="nameInPlay" v-if = "nameInPlay" :isPass = "false" :canPass = "canPass"></witb-playname>
-			<witb-playname :name="passedName" v-if = "passedName" :isPass = "true", :canPass = "false"></witb-playname>
+			<witb-playname @gotIt = "gotIt" @passIt = "passIt" :name="nameInPlay" v-if = "nameInPlay" :isPass = "false"></witb-playname>
+			<witb-playname @gotIt = "gotPass" :name="passedName" v-if = "passedName" :isPass = "true"></witb-playname>
 		</div>
 	`	
 })
@@ -186,10 +190,7 @@ Vue.component('witb-playname',{
 	props: ['name','isPass','canPass'],
 	methods:{
 		gotIt: function(){
-			this.$emit("gotIt",{
-				name: this.name,
-				isPass: this.isPass
-			})
+			this.$emit("gotIt",this.name)
 		},
 		passIt : function(){
 			this.$emit("passIt",this.name)
@@ -199,7 +200,7 @@ Vue.component('witb-playname',{
 		<div class="btn-group" role="group">
 			<button @click = "gotIt" type="button" class="btn btn-success">Got it!</button>
 			<button type="button" class="btn btn-outline-dark">{{name}}</button>
-			<button @click = "passIt" type="button" class="btn btn-warning" v-if = "canPass">Pass</button>
+			<button @click = "passIt" type="button" class="btn btn-error" v-if = "!isPass">Pass</button>
 		</div>
 	`
 })
@@ -274,8 +275,7 @@ var app = new Vue({
 			<google-login @userReady = "userReady"></google-login>
 			<witb-games></witb-games>
 			<span class = "badge badge-pill badge-primary" v-for = "message in messages">
-				{{message.substring(0,1)}}
-			
+				{{message.substring(0,1)}}		
 			</span>
 		</div>
 	`
