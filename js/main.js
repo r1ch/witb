@@ -218,7 +218,7 @@ var app = new Vue({
 		this.socket.onmessage = event=>{
 			this.messages.unshift(event.data)
 			if(this.messages.length > 3) this.mesages.pop()
-			setTimeout(function(){this.messages.pop()},5000)
+			setTimeout(()=>{this.messages.pop()},5000)
 		}
 	},
 	template: `
