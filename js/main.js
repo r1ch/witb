@@ -145,7 +145,7 @@ Vue.component('witb-playspace',{
 })
 
 Vue.component('witb-playname',{
-	props['name','pass'],
+	props: ['name','pass'],
 	methods:{},
 	template: `
 		<div class="input-field col s6">
