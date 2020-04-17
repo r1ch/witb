@@ -36,7 +36,7 @@ Vue.component('witb-games',{
 	inject:['profile','listenFor'],
 	data: ()=>({
 		games:[],
-		currentGame:null
+		currentGame:false
 	}),
 	computed:{
 		currentGameIdentifier(){
