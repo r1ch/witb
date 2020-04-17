@@ -133,26 +133,72 @@ Vue.component('witb-playspace',{
 	mixins:[APIMixin],
 	inject:['profile'],
 	props: ['game'],
-	methods:{},
+	data:()=>({
+		stages : ["Ready","Started","Finished","Done"],
+		stage: 0,
+		namesLeft : this.game.names,
+		nameInPlay : false,
+		passedName : false,
+		namesGot : [],
+	}),
+	computed:{
+		canPass: function(){
+			return this.passedName ? false : true
+		}
+	},
+	methods:{
+		pickNextName : function(){
+			if(this.namesLeft && this.namesLeft.length > 0){
+				let name = this.namesLeft[parseInt(Math.random()*this.namesLeft.length)]
+				this.namesLeft = this.namesLeft.filter(name=>name!=name)
+				this.nameInPlay = name
+			}
+			return false
+		},
+		start : function(){
+			this.pickNextName()
+			this.stage = 1
+		},
+		gotIt : function(event){
+			this.namesGot.push(event.name)
+			event.isPass ? this.passedName = false : this.pickNextName()
+		},
+		passIt : function(event){
+			this.passedName = event
+			this.pickNextName()
+		}
+	},
 	template:`
 		<div class = "row">
 			<h3>{{game.title}}</h3><br>
 			Current round: {{game.rounds[game.roundIndex]}}<br>
 			It's {{game.players[game.playerIndex].name}}'s go<br>
-			<witb-playname :name="name"></witb-playname>
+			<button @click = "start" class =  "btn-primary" v-if = "stage==0 && !nameInPlay">Start Go</button>
+			<witb-playname :name="nameInPlay" v-if = "nameInPlay" :isPass = "false" :canPass = "canPass"></witb-playname>
+			<witb-playname :name="passedName" v-if = "passedName" :isPass = "true", :canPass = "false"></witb-playname>
 		</div>
 	`	
 })
 
 Vue.component('witb-playname',{
-	props: ['name','pass'],
-	methods:{},
+	props: ['name','isPass','canPass'],
+	methods:{
+		gotIt: function(){
+			this.$emit("gotIt",{
+				name: this.name,
+				isPass: this.isPass
+			})
+		},
+		passIt : function(){
+			this.$emit("passIt",this.name)
+		}
+	},
 	template: `
-		<div class="input-field col s6">
-          		<i class="material-icons prefix">account_circle</i>
-          		<input id="icon_prefix" type="text" class="validate">
-		  	<label for="icon_prefix">{{name}}</label>
-        	</div>
+		<div class="btn-group" role="group">
+			<button @click = "gotIt" type="button" class="btn btn-success">Got it!</button>
+			<button type="button" class="btn btn-outline-dark">{{name}}</button>
+			<button @click = "passIt" type="button" class="btn btn-warning" v-if = "canPass">Pass</button>
+		</div>
 	`
 })
 
