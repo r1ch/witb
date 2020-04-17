@@ -150,6 +150,7 @@ Vue.component('witb-playspace',{
 				this.nameInPlay = this.namesLeft.splice(this.namesLeft.length * Math.random() | 0, 1)[0]
 				console.log(`New name: ${this.nameInPlay}`)
 			} else {
+				this.nameInPlay = false
 				this.stage = 2
 			}
 		},
@@ -175,17 +176,18 @@ Vue.component('witb-playspace',{
 	},
 	template:`
 		<div class="card">
-			<img class="card-img-top" src="{{game.players[game.playerIndex].url}}" :alt="game.players[game.playerIndex].name">
+			<img class="card-img-top" :src="{{game.players[game.playerIndex].url}}" :alt="game.players[game.playerIndex].name">
 			<div class="card-body">
 				<h5 class="card-title">{{game.title}}</h5>
 				<p class="card-text">It's {{game.players[game.playerIndex].name}}'s go in the {{game.rounds[game.roundIndex]}} round</p>
 			</div>
 			<ul class="list-group list-group-flush">
-			<witb-playname @gotIt = "gotPass" :name="passed" v-if = "passed" :canPass = "false"></witb-playname><br>
-			<witb-playname @gotIt = "gotIt" @passIt = "passIt" :name="nameInPlay" v-if = "nameInPlay" :canPass = "!passed"></witb-playname><br>
+			<witb-playname @gotIt = "gotPass" :name="passed" v-if = "passed" :canPass = "false"></witb-playname>
+			<witb-playname @gotIt = "gotIt" @passIt = "passIt" :name="nameInPlay" v-if = "nameInPlay" :canPass = "!passed"></witb-playname>
 			</ul>
 			<div class="card-body">
 				<button @click = "start" class =  "btn btn-primary" v-if = "stage==0 && !nameInPlay">Start my go</button>
+				<button @click = "start" class =  "btn btn-primary" v-if = "stage==3">End my go</button>
 			</div>
 		</div>
 	`	
