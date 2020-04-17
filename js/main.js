@@ -163,14 +163,17 @@ Vue.component('witb-playspace',{
 			this.stage = 1
 		},
 		gotIt : function(name){
+			console.log(`Got It: ${name}`)
 			this.namesGot.push(name)
 			this.pickNextName()
 		},
 		passIt : function(name){
+			console.log(`Pass It: ${name}`)
 			this.passedName = name
 			this.pickNextName()
 		},
 		gotPass : function(name){
+			console.log(`Got Pass: ${name}`)
 			this.namesGot.push(name)
 			this.passedName = false
 		},
@@ -191,9 +194,11 @@ Vue.component('witb-playname',{
 	props: ['name','isPass','canPass'],
 	methods:{
 		gotIt: function(){
+			console.log(`Got: ${this.name}`)
 			this.$emit("gotIt",this.name)
 		},
 		passIt : function(){
+			console.log(`Pass: ${this.name}`)
 			this.$emit("passIt",this.name)
 		}
 	},
