@@ -133,7 +133,7 @@ Vue.component('witb-playspace',{
 	mixins:[APIMixin],
 	inject:['profile'],
 	props: ['game'],
-	data:()=>function(){
+	data: function(){
 		return {
 			stages : ["Ready","Started","Finished","Done"],
 			stage: 0,
