@@ -126,12 +126,40 @@ router.post('/games/:game/start', asyncHandler(async (req, res) => {
     game.identifier = req.params.game
     game.names = names
     game.players = players
+    game.playIndex = 0
     game.playerIndex = 0
     game.roundIndex = 0
     game.started = true
     mapper.update(game,{onMissing: 'skip'}).then((game)=>{
         res.json(game)
     })
+}))
+
+router.post('/games/:game/turn/:player', asyncHandler(async (req, res) => {
+    let game = new Game()
+    game.identifier = req.params.game
+    mapper.update(game,{onMissing: 'skip'}).then((game)=>{
+        res.json(game)
+    })
+
+    mapper.get(Object.assign(new Game, {identifier: req.params.game}))
+    .then(game=>{
+        game.turns[game.playIndex] = {
+            round: game.roundsIndex,
+            player: game.players[game.playerIndex],
+            names: req.body
+        }
+        game.playIndex++
+        game.playerIndex = (game.playerIndex+1)%game.players.length
+        mapper.update(game,{onMissing: 'skip'}).then((game)=>{
+            res.json(game)
+        })
+    })
+    .catch(err => {
+        res.status(404).send(`No game found for ID: ${req.params.game}`)
+    })
+
+
 }))
 
 
@@ -180,6 +208,19 @@ Object.defineProperties(Game.prototype, {
             secondsPerRound: {type: 'Number'},
             namesPerPerson: {type: 'Number'},
             names: {type: 'List', memberType: {type: 'String'}},
+            turns: {type: 'List', memberType: {type: 'Document',
+                members: {
+                    round: {type:'Number'},
+                    player: {type: 'Document',
+                        members: {
+                            url: {type : 'String'},
+                            identifier: {type : 'String'},
+                            name: {type : 'String'}
+                        }
+                    },
+                    names: {type: 'List', memberType: {type: 'String'}},
+                }   
+            }},
             players: {type: 'List', memberType: {type: 'Document',
                 members: {
                     url: {type : 'String'},
@@ -188,6 +229,7 @@ Object.defineProperties(Game.prototype, {
                 }
             }},
             playerIndex: {type: 'Number'},
+            playIndex: {type: 'Number'},
             started: {type: 'Boolean'}
         },
     },
