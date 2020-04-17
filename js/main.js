@@ -139,7 +139,7 @@ Vue.component('witb-playspace',{
 	mixins:[APIMixin],
 	inject:['profile'],
 	props: ['game'],
-	data: defaultData,
+	data: this.defaultData,
 	watch: {
 		"game.playIndex"(newVal,oldVal){
 			this.$data = defaultData()
