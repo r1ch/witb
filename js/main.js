@@ -146,8 +146,8 @@ Vue.component('witb-playspace',{
 			timer: false,
 			timeRemaining: this.game.secondsPerRound,
 			namesLeft : this.game.names,
-			nameInPlay : false,
-			passed : false,
+			nameInPlay : "",
+			passed : "",
 			namesGot : [],
 		}
 	},
@@ -158,7 +158,7 @@ Vue.component('witb-playspace',{
 				this.nameInPlay = this.namesLeft.splice(this.namesLeft.length * Math.random() | 0, 1)[0]
 				console.log(`New name: ${this.nameInPlay}`)
 			} else {
-				this.nameInPlay = false
+				this.nameInPlay = ""
 				if(this.stage < this.stages.Finished) this.stage = this.stages.Finished
 				console.log(`No names or time, ${this.nameInPlay}`)
 			}
@@ -207,12 +207,12 @@ Vue.component('witb-playspace',{
 				<p class="card-text">It's {{game.players[game.playerIndex].name}}'s go in the {{game.rounds[game.roundIndex]}} round</p>
 			</div>
 			<ul class="list-group list-group-flush" v-if = "game.players[game.playerIndex].identifier == profile.id">
-			<witb-playname @gotIt = "gotPass" :name="passed" v-if = "passed" :canPass = "false"></witb-playname>
-			<witb-playname @gotIt = "gotIt" @passIt = "passIt" :name="nameInPlay" v-if = "nameInPlay" :canPass = "!passed"></witb-playname>
+			<witb-playname @gotIt = "gotPass" :name="passed" :canPass = "false"></witb-playname>
+			<witb-playname @gotIt = "gotIt" @passIt = "passIt" :name="nameInPlay" :canPass = "passed == ''"></witb-playname>
 			</ul>
 			<div class="card-body" v-if = "game.players[game.playerIndex].identifier == profile.id">
-				<button @click = "start" class =  "btn btn-primary" v-if = "stage==stages.Ready && !nameInPlay">Start my go</button>
-				<span v-if = "stage<stages.Done">{{timeRemaining}}s</span>
+				<button @click = "start" class =  "btn btn-primary" v-if = "stage==stages.Ready">Start my go</button>
+				<span v-if = "stage<stages.Done">{{timeRemaining}} s</span>
 				<button @click = "end" class =  "btn btn-primary" v-if = "stage==stages.Finished">End my go</button>
 			</div>
 		</div>
@@ -231,7 +231,7 @@ Vue.component('witb-playname',{
 	},
 	template: `
 		<li class = "list-group-item">
-			<div class="btn-group" role="group">
+			<div class="btn-group" role="group" v-if='name!=""'>
 				<button @click = "gotIt" type="button" class="btn btn-success">Got it!</button>
 				<button type="button" class="btn btn-secondary" disabled>{{name}}</button>
 				<button @click = "passIt" type="button" class="btn btn-danger" v-if = "canPass">Pass</button>
