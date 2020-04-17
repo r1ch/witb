@@ -205,7 +205,6 @@ Vue.component('witb-playname',{
 	},
 	template: `
 		<li class = "list-group-item">
-			<span class = "badge badge-pill badge-secondary">Passed</span>
 			<div class="btn-group" role="group">
 				<button @click = "gotIt" type="button" class="btn btn-success">Got it!</button>
 				<button type="button" class="btn btn-secondary" disabled>{{name}}</button>
