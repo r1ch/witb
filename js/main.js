@@ -237,8 +237,8 @@ Vue.component('witb-playname',{
 		}
 	},
 	template: `
-		<li class = "list-group-item">
-			<div class="btn-group" role="group" v-if='name!=""'>
+		<li class = "list-group-item" v-if='name!=""'>
+			<div class="btn-group" role="group">
 				<button @click = "gotIt" type="button" class="btn btn-success">Got it!</button>
 				<button type="button" class="btn btn-secondary" disabled>{{name}}</button>
 				<button @click = "passIt" type="button" class="btn btn-danger" v-if = "canPass">Pass</button>
