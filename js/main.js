@@ -133,14 +133,16 @@ Vue.component('witb-playspace',{
 	mixins:[APIMixin],
 	inject:['profile'],
 	props: ['game'],
-	data:()=>({
-		stages : ["Ready","Started","Finished","Done"],
-		stage: 0,
-		namesLeft : this.game.names,
-		nameInPlay : false,
-		passedName : false,
-		namesGot : [],
-	}),
+	data:()=>function(){
+		return {
+			stages : ["Ready","Started","Finished","Done"],
+			stage: 0,
+			namesLeft : this.game.names,
+			nameInPlay : false,
+			passedName : false,
+			namesGot : [],
+		}
+	},
 	computed:{
 		canPass: function(){
 			return this.passedName ? false : true
