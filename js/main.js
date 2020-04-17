@@ -164,7 +164,6 @@ Vue.component('witb-playspace',{
 			this.startTime = false
 			this.timer = false
 			this.timeRemaining = this.game.secondsPerRound
-			thi.timeRemaining = this.game.secondsPerRound
 			this.namesLeft = this.game.namesLeftThisRound
 			this.nameInPlay = ""
 			this.passed = ""
