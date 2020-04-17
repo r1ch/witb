@@ -176,7 +176,7 @@ Vue.component('witb-playspace',{
 	},
 	template:`
 		<div class="card">
-			<img class="card-img-top" :src="{{game.players[game.playerIndex].url}}" :alt="game.players[game.playerIndex].name">
+			<img class="card-img-top rounded" :src="game.players[game.playerIndex].url" :alt="game.players[game.playerIndex].name">
 			<div class="card-body">
 				<h5 class="card-title">{{game.title}}</h5>
 				<p class="card-text">It's {{game.players[game.playerIndex].name}}'s go in the {{game.rounds[game.roundIndex]}} round</p>
