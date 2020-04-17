@@ -58,8 +58,8 @@ Vue.component('witb-games',{
 			this.currentGame = event
 			this.API("PUT",`/games/${this.currentGame.identifier}/players`,this.profile)
 		},
-		endTurn(event){
-			this.API("PUT",`/games/${this.currentGame.identifier}/turn`,event,game=>this.currentGame=game)
+		endTurn(namesGot){
+			this.API("PUT",`/games/${this.currentGame.identifier}/turn`,{game:this.currentGame,namesGot:namesGot,profile:this.profile},game=>this.currentGame=game)
 		}
 	},
 	template: `
