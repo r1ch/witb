@@ -215,14 +215,17 @@ var app = new Vue({
 	},
 	created: function(){
 		this.socket = new WebSocket(window.config.socketGatewayUrl + window.config.socketGatewayPath)
-		this.socket.onmessage = event=>this.messages.push(event.data)
+		this.socket.onmessage = event=>{
+			this.messages.shift(event.data)
+			if(this.messages.length > 3) this.mesages.pop() 
+		}
 	},
 	template: `
 		<div class = "container">
 			<google-login @userReady = "userReady"></google-login>
 			<witb-games></witb-games>
-			<p v-for = "message in messages">
-				Remote update : {{message}}
+			<span class = "badge badge-pill badge-primary" v-for = "message in messages">
+				{{message.substring(0,1)}}
 			</p>
 		</div>
 	`
