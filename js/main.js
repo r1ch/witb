@@ -129,7 +129,7 @@ Vue.component('witb-game',{
 	`
 })
 
-Vue.component('witb-play-space'),{
+Vue.component('witb-play-space',{
 	mixins:[APIMixin],
 	inject:['profile'],
 	props: ['game'],
