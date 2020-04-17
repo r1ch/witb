@@ -135,7 +135,12 @@ Vue.component('witb-playspace',{
 	props: ['game'],
 	data: function(){
 		return {
-			stages : ["Ready","Started","Finished","Done"],
+			stages : {
+				Ready:0,
+				Started:1,
+				Finished:2,
+				Done:3
+			},
 			stage: 0,
 			startTime: false,
 			timer: false,
@@ -148,19 +153,19 @@ Vue.component('witb-playspace',{
 	},
 	methods:{
 		pickNextName : function(){
-			if(this.namesLeft && this.namesLeft.length > 0 && this.stage < 2){
+			if(this.namesLeft && this.namesLeft.length > 0 && this.stage < this.stages.Finished){
 				console.log(`Old name: ${this.nameInPlay}`)
 				this.nameInPlay = this.namesLeft.splice(this.namesLeft.length * Math.random() | 0, 1)[0]
 				console.log(`New name: ${this.nameInPlay}`)
 			} else {
 				this.nameInPlay = false
-				this.stage = 2
+				if(this.stage < this.stages.Finished) this.stage = this.stages.Finished
 			}
 		},
 		start : function(){
 			this.pickNextName()
 			this.startTimer()
-			this.stage = 1
+			this.stage = this.stages.Started
 		},
 		startTimer : function(){
 			this.startTime = Date.now()
@@ -171,7 +176,7 @@ Vue.component('witb-playspace',{
 			this.timeRemaining = Math.max((this.startTime+this.game.secondsPerRound*1000-Date.now())/1000|1,0)
 			if(this.timeRemaining <= 0){
 				clearInterval(this.timer)
-				this.stage = 2
+				this.stage = this.stages.Finished
 			}
 		},
 		gotIt : function(name){
@@ -202,9 +207,9 @@ Vue.component('witb-playspace',{
 			<witb-playname @gotIt = "gotIt" @passIt = "passIt" :name="nameInPlay" v-if = "nameInPlay" :canPass = "!passed"></witb-playname>
 			</ul>
 			<div class="card-body" v-if = "game.players[game.playerIndex].identifier == profile.id">
-				<button @click = "start" class =  "btn btn-primary" v-if = "stage==0 && !nameInPlay">Start my go</button>
-				<span v-if = "stage<3">{{timeRemaining}}s</span>
-				<button @click = "end" class =  "btn btn-primary" v-if = "stage==2">End my go</button>
+				<button @click = "start" class =  "btn btn-primary" v-if = "stage==stages.Ready && !nameInPlay">Start my go</button>
+				<span v-if = "stage<stages.Done">{{timeRemaining}}s</span>
+				<button @click = "end" class =  "btn btn-primary" v-if = "stage==stages.Finished">End my go</button>
 			</div>
 		</div>
 	`	
