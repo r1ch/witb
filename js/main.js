@@ -168,7 +168,7 @@ Vue.component('witb-playspace',{
 		},
 		tick(){
 			console.log(`${this.startTime} ${this.game.secondsPerRound} ${Date.now()}`)
-			this.timeRemaining = Math.max(this.startTime+this.game.secondsPerRound*1000-Date.now(),0)
+			this.timeRemaining = Math.max((this.startTime+this.game.secondsPerRound*1000-Date.now())/1000|1,0)
 			if(this.timeRemaining <= 0){
 				clearInterval(this.timer)
 				this.stage = 2
@@ -204,7 +204,7 @@ Vue.component('witb-playspace',{
 			<div class="card-body" v-if = "game.players[game.playerIndex].identifier == profile.id">
 				<button @click = "start" class =  "btn btn-primary" v-if = "stage==0 && !nameInPlay">Start my go</button>
 				<span v-if = "stage<3">{{timeRemaining}}s</span>
-				<button @click = "start" class =  "btn btn-primary" v-if = "stage==2">End my go</button>
+				<button @click = "end" class =  "btn btn-primary" v-if = "stage==2">End my go</button>
 			</div>
 		</div>
 	`	
