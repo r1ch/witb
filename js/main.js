@@ -135,16 +135,25 @@ Vue.component('witb-playspace',{
 	props: ['game'],
 	methods:{},
 	template:`
-		<div>
+		<div class = "row">
 			<h3>{{game.title}}</h3><br>
 			Current round: {{game.rounds[game.roundIndex]}}<br>
 			It's {{game.players[game.playerIndex].name}}'s go<br>
-			Pick from:
-			<ul>
-				<li v-for = "name in game.names">{{name}}</li>
-			</ul>
+			<witb-playname :name="name"></witb-playname>
 		</div>
 	`	
+})
+
+Vue.component('witb-playname',{
+	props['name','pass'],
+	methods:{},
+	template: `
+		<div class="input-field col s6">
+          		<i class="material-icons prefix">account_circle</i>
+          		<input id="icon_prefix" type="text" class="validate">
+		  	<label for="icon_prefix">{{name}}</label>
+        	</div>
+	`
 })
 
 Vue.component('witb-me',{
