@@ -265,7 +265,7 @@ Vue.component('witb-playspace',{
 	},
 	template:`
 		<div class="card" :class = "teamColours(teams[player.team].livery).card">
-			{{game.title}}:{{game.identifier}}
+			{{game.title}}
 			<div class="card-body">
 				<h5 class="card-title">{{player.name}}'s Turn</h5>
     				<h6 class="card-subtitle mb-2 text-muted">{{game.rounds[game.roundIndex]}} round</h6>
@@ -318,6 +318,7 @@ Vue.component('witb-me',{
 	},
 	template: `
 		<li class="list-group-item" :class="teamColours(teams[team].livery).li">
+			<h5>{{profile.name}}</h5
 			<div class="form-group row">
 				<label class="col-4">Team</label> 
 				<div class="col-8">
