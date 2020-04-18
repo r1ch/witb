@@ -275,13 +275,16 @@ Vue.component('witb-me',{
 			this.$emit("saveTeam",this.player.team)
 		}
 	},
+	
 	template: `
-		<li class="list-group-item" :class="{'list-group-item-success':player.team}">
+		<li class="list-group-item" :class='{teams[player.team].liClass}:player.team'>
 			<div class="form-group row">
 				<label class="col-2">Team</label> 
 				<div class="col-10">
 					<div class="btn-group" role="group">
-						<button @click = "saveTeam(team.key)" type="button" class="btn btn-primary" :class="{'active': team == team.key}" v-for = "team in teams" :key = "team.key">{{team.title}}</button>
+						<button @click = "saveTeam(team.key)" type="button" class="btn btn-primary" :class="{'active': player.team == team.key, teams[player.team].liClass:player.team}" v-for = "team in teams" :key = "team.key">
+							{{team.name}}
+						</button>
 					</div>
 					<span class="form-text text-muted">Pick your team</span>
 				</div>
@@ -338,10 +341,10 @@ var app = new Vue({
 			profile: this.profile,
 			listenFor: this.listenFor,
 			teams: [
-				{name:"1",livery:"primary",key:0},
-				{name:"2",livery:"success",key:1},
-				{name:"3",livery:"danger",key:2},
-				{name:"4",livery:"warning",key:3}
+				{name:"1",livery:"primary",key:0,liClass:"list-item-group-primary",bClass:"btn-primary"},
+				{name:"2",livery:"success",key:1,liClass:"list-item-group-success",bClass:"btn-success"},
+				{name:"3",livery:"danger",key:2,liClass:"list-item-group-danger",bClass:"btn-danger"},
+				{name:"4",livery:"warning",key:3,liClass:"list-item-group-warning",bClass:"btn-warning"}
 			]
 		}
 	},
