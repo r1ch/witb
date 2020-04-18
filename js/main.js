@@ -87,6 +87,14 @@ Vue.component('witb-game',{
 			else if(this.players.filter(player=>player.numberOfNames != this.game.namesPerPerson).length !=0) this.startProblem = "Some player missing names"
 			else this.startProblem = ""
 			return this.startProblem == ""
+		},
+		me : function(){
+			let m = this.players.find(player=>player.identifier==this.profile.id)
+			return m ? m : false
+		},
+		others : function(){
+			let o = this.players.filter(player=>player.identifier!=this.profile.id)
+			return o ? o : []
 		}
 	},
 	mounted: function(){
@@ -118,8 +126,8 @@ Vue.component('witb-game',{
 					<button class = "btn btn-primary col-sm-6" @click="startGame" :class="{'disabled': !gameReady}" v-if="currentGameIdentifier == game.identifier">Start</button>
 				</div>
 				<ul class = "list-group-flush" v-if = "currentGameIdentifier == game.identifier">
-					<witb-me @saveNames="saveNames" @saveTeam = "saveTeam" :game="game" :player="players.find(player=>player.identifier==profile.id)"></witb-me>
-					<witb-player v-for = "player in players.filter(player=>player.identifier!=profile.id)" :key = "player.identifier" :player="player"></witb-player>
+					<witb-me @saveNames="saveNames" @saveTeam = "saveTeam" :game="game" :player="me" v-if = "me"></witb-me>
+					<witb-player v-for = "player in others" :key = "player.identifier" :player="player"></witb-player>
 				</ul>
 			</div>
 		</div>
@@ -257,19 +265,12 @@ Vue.component('witb-playname',{
 Vue.component('witb-me',{
 	inject: ['teams'],
 	props: ['game','player'],
-	computed: {
-		names : function(){
-			let list = Array(this.game.namesPerPerson).fill("")
-			if(this.player && this.player.names) list.shift(this.player.names.filter(name=>name!=""))
-			return list.splice(0,this.game.namesPerPerson)
-		}
-	}
 	methods: {
 		saveNames: function(){
-			this.$emit("saveNames",this.names)
+			this.$emit("saveNames",this.player.names)
 		},
 		saveTeam: function(team){
-			this.$emit("saveTeam",this.team)
+			this.$emit("saveTeam",this.player.team)
 		}
 	},
 	template: `
