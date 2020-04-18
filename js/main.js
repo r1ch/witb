@@ -272,7 +272,7 @@ Vue.component('witb-me',{
 		}
 	},
 	template: `
-		<li class="list-group-item" :class='{"list-group-item-"+this.teams[this.team].livery":team}'>
+		<li class="list-group-item" :class='{"list-group-item-"+teams[team].livery:team}'>
 			<div class="form-group row">
 				<label class="col-2">Team</label> 
 				<div class="col-10">
