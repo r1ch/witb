@@ -102,8 +102,6 @@ Vue.component('witb-game',{
 		},
 	},
 	mounted: function(){
-		this.fetchOthers()
-		this.fetchMe()
 		this.listenFor("PLAYER",this.fetchOthers)
 	},
 	methods: {
