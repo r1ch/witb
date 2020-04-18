@@ -279,9 +279,9 @@ Vue.component('witb-me',{
 		<li class="list-group-item">
 			<h5>{{profile.name}}</h5>
 			<small>Please pick {{game.namesPerPerson}} names</small>
-			<input v-for = "name in names" v-model="name.value" :key="name.key" class = "col-sm-12 col-md-6"></input><br>
+			<input type="text" v-for = "name in names" v-model="name.value" :key="name.key" class = "col-sm-12 col-md-6"></input><br>
 			<button class = "btn btn-primary" @click="saveNames">Save</button><br>
-			<small>{{names.filter(name=>name.lenth>0).length}} names saved</small>
+			<small>{{names.filter(name=>name.length>0).length}} names saved</small>
 		</li>
 	`
 })
