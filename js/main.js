@@ -59,7 +59,7 @@ Vue.component('witb-container',{
 			this.API("PUT",`/games/${this.currentGame.identifier}/players`,this.profile)
 		},
 		endTurn(namesGot){
-			this.API("PUT",`/games/${this.currentGame.identifier}/turn`,{game:this.currentGame,namesGot:namesGot,profile:this.profile},game=>this.currentGame=game)
+			this.API("PUT",`/games/${this.currentGame.identifier}/turn/${this.currentGame.playIndex}`,{namesGot:namesGot},game=>this.currentGame=game)
 		}
 	},
 	template: `
@@ -86,7 +86,7 @@ Vue.component('witb-game',{
 		gameReady : function(){
 			if(this.game.identifier != this.currentGameIdentifier) this.startProblem = "Not in this game"
 			else if(this.players.length <= 1) this.startProblem = "Not enough players"
-			else if(this.players.filter(player=>player.numberOfNames != this.game.namesPerPerson).length !=0) this.startProblem = "Some player missing names"
+			else if(this.players.filter(player=>player.numberOfNames != this.game.namesPerPerson).length !=0) this.startProblem = "Some players missing names"
 			else this.startProblem = ""
 			return this.startProblem == ""
 		},
@@ -204,6 +204,7 @@ Vue.component('witb-playspace',{
 				this.stage = this.stages.Next
 			} else {
 				console.log("Pre go, prepare")
+				this.namesLeft = this.game.namesLeftThisRound
 				this.stage = this.stages.Ready
 			}
 		}
