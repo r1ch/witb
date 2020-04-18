@@ -335,10 +335,10 @@ var app = new Vue({
 			profile: this.profile,
 			listenFor: this.listenFor,
 			teams: [
-				{name:"1",livery="primary",key:0},
-				{name:"2",livery="success",key:1},
-				{name:"3",livery="danger",key:2},
-				{name:"4",livery="warning",key:3}
+				{name:"1",livery:"primary",key:0},
+				{name:"2",livery:"success",key:1},
+				{name:"3",livery:"danger",key:2},
+				{name:"4",livery:"warning",key:3}
 			]
 		}
 	},
