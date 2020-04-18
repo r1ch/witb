@@ -51,7 +51,7 @@ Vue.component('witb-container',{
 		fetchGames(){
 			this.API("GET","/games",null,games=>{
 				this.games=games
-				if(this.currentGame) this.currentGame = this.games.find(game=>game.identifier=this.currentGame.identifier)
+				if(this.currentGame) this.currentGame = this.games.find(game=>game.identifier==this.currentGame.identifier)
 			})
 		},
 		chooseGame(event){
