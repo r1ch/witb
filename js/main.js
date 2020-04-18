@@ -77,6 +77,8 @@ Vue.component('witb-game',{
 	data: function(){
 		return{
 			players:[],
+			remoteNames:[],
+			team:0,
 			startProblem: ""
 		}
 	},
@@ -88,33 +90,37 @@ Vue.component('witb-game',{
 			else this.startProblem = ""
 			return this.startProblem == ""
 		},
-		me : function(){
-			console.log(`Filtering ${JSON.stringify(this.players)} for me`)
-			let m = this.players.find(player=>player.identifier==this.profile.id)
-			return m ? m : false
-		},
-		others : function(){
-			console.log(`Filtering ${JSON.stringify(this.players)} for others`)
-			let o = this.players.filter(player=>player.identifier!=this.profile.id)
-			return o ? o : []
+		names : function(){
+		
 		}
 	},
 	mounted: function(){
 		this.listenFor("PLAYER",this.fetchPlayers)
 	},
 	methods: {
-		fetchPlayers(){
+		fetchOthers(){
 			this.API("GET",`/games/${this.game.identifier}/players`,false,players=>this.players=players)
+		},
+		fetchMe(){
+			this.API("GET",`/players/${this.profile.id}`,false,my=>{
+				this.remoteNames = my.names
+				this.team = my.team
+			})
 		},
 		chooseGame(){
 			this.$emit("chooseGame",this.game)
-			this.fetchPlayers()
+			this.fetchOthers()
+			this.fetchMe()
 		},
 		saveNames(names){
-			this.API("PUT",`/games/${this.game.identifier}/players/${this.profile.id}/names`,names)
+			this.API("PUT",`players/${this.profile.id}/names`,names,my=>{
+				this.remoteNames = my.names
+			})
 		},
 		saveTeam(team){
-			this.API("PUT",`/games/${this.game.identifier}/players/${this.profile.id}/team`,team)
+			this.API("PUT",`players/${this.profile.id}/team`,team,my=>{
+				this.team = my.team
+			})
 		},
 		startGame(){
 			if(this.gameReady) this.API("POST",`/games/${this.game.identifier}/start`)
@@ -128,8 +134,8 @@ Vue.component('witb-game',{
 					<button class = "btn btn-primary col-sm-6" @click="startGame" :class="{'disabled': !gameReady}" v-if="currentGameIdentifier == game.identifier">Start</button>
 				</div>
 				<ul class = "list-group-flush" v-if = "currentGameIdentifier == game.identifier">
-					<witb-me @saveNames="saveNames" @saveTeam = "saveTeam" :game="game" :player="me" v-if = "me"></witb-me>
-					<witb-player v-for = "player in others" :key = "player.identifier" :player="player"></witb-player>
+					<witb-me @saveNames="saveNames" @saveTeam = "saveTeam" :game="game" :names="names" :team="team"></witb-me>
+					<witb-player v-for = "player in players" :key = "player.identifier" :player="player" v-if "player.identifier!=profile.id"></witb-player>
 				</ul>
 			</div>
 		</div>
@@ -266,23 +272,22 @@ Vue.component('witb-playname',{
 
 Vue.component('witb-me',{
 	inject: ['teams'],
-	props: ['game','player'],
+	props: ['game','names','team'],
 	methods: {
 		saveNames: function(){
-			this.$emit("saveNames",this.player.names)
+			this.$emit("saveNames",this.names)
 		},
 		saveTeam: function(team){
-			this.$emit("saveTeam",this.player.team)
+			this.$emit("saveTeam",team)
 		}
 	},
-	
 	template: `
 		<li class="list-group-item">
 			<div class="form-group row">
 				<label class="col-2">Team</label> 
 				<div class="col-10">
 					<div class="btn-group" role="group">
-						<button v-for = "team in teams" :key="team.key" class = "btn" :class = `{"btn-primary":true}'>{{team.name}}</button>
+						<button v-for = "team in teams" :key="team.key" class = "btn" :class = '{"btn-primary":true}'>{{team.name}}</button>
 					</div>
 					<span class="form-text text-muted">Pick your team</span>
 				</div>
