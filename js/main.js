@@ -251,7 +251,7 @@ Vue.component('witb-playspace',{
 		}
 	},
 	template:`
-		<div class="card">
+		<div class="card" :class = "teamColours(teams[team]).card">
 			{{game.title}}:{{game.identifier}}
 			<div class="card-body">
 				<h5 class="card-title">{{player.name}}'s Turn</h5>
@@ -292,7 +292,7 @@ Vue.component('witb-playname',{
 })
 
 Vue.component('witb-me',{
-	inject: ['teams','buttonTeamClass','liTeamClass'],
+	inject: ['teams','teamColours'],
 	props: ['game','names','team'],
 	methods: {
 		saveNames: function(){
@@ -303,12 +303,12 @@ Vue.component('witb-me',{
 		}
 	},
 	template: `
-		<li class="list-group-item" :class="liTeamClass(teams[team||0].livery)">
+		<li class="list-group-item" :class="teamColours(teams[team].livery).li">
 			<div class="form-group row">
 				<label class="col-4">Team</label> 
 				<div class="col-8">
 					<div class="btn-group" role="group">
-						<button @click = "saveTeam(teamOption.key)" v-for = "teamOption in teams" :key="teamOption.key" class = "btn" :class = "buttonTeamClass(teamOption.livery)">{{teamOption.name}}</button>
+						<button @click = "saveTeam(teamOption.key)" v-for = "teamOption in teams" :key="teamOption.key" class = "btn" :class = "teamColours(teamOption.livery).button">{{teamOption.name}}</button>
 					</div>
 					<span class="form-text text-muted">Pick your team</span>
 				</div>
@@ -332,9 +332,9 @@ Vue.component('witb-me',{
 
 Vue.component('witb-player',{
 	props: ['player'],
-	inject:['teams','liTeamClass'],
+	inject:['teams','teamColours'],
 	template: `
-		  <li class="list-group-item" :class="liTeamClass(teams[player.team].livery)">
+		  <li class="list-group-item" :class="teamColours(teams[player.team].livery).li">
 			<span class = "title">{{player.name}}</span>
 			<span class="badge badge-primary badge-pill">{{player.numberOfNames}}</span>
 		  </li>
