@@ -229,14 +229,13 @@ Vue.component('witb-playspace',{
 	},
 	template:`
 		<div class="card">
-			<img class="card-img-top rounded" :src="game.players[game.playerIndex].url" :alt="game.players[game.playerIndex].name">
 			<div class="card-body">
 				<h5 class="card-title">{{game.title}}</h5>
-				<p class="card-text">It's {{game.players[game.playerIndex].name}}'s go in the {{game.rounds[game.roundIndex]}} round</p>
+    				<h6 class="card-subtitle mb-2 text-muted">{{game.players{{game.rounds[game.roundIndex]}} round</h6>
 			</div>
 			<ul class="list-group list-group-flush" v-if = "stage<stages.Done"><!-- v-if = "game.players[game.playerIndex].identifier == profile.id">-->
-			<witb-playname @gotIt = "gotPass" :name="passed" :canPass = "false"></witb-playname>
-			<witb-playname @gotIt = "gotIt" @passIt = "passIt" :name="nameInPlay" :canPass = "passed == ''"></witb-playname>
+				<witb-playname @gotIt = "gotPass" :name="passed" :canPass = "false"></witb-playname>
+				<witb-playname @gotIt = "gotIt" @passIt = "passIt" :name="nameInPlay" :canPass = "passed == ''"></witb-playname>
 			</ul>
 			<div class="card-body"> <!--v-if = "game.players[game.playerIndex].identifier == profile.id">-->
 				<button @click = "start" class =  "btn btn-primary" v-if = "stage==stages.Ready">Start my go</button>
