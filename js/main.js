@@ -251,7 +251,7 @@ Vue.component('witb-playspace',{
 		}
 	},
 	template:`
-		<div class="card" :class = "teamColours(teams[team]).card">
+		<div class="card" :class = "teamColours(teams[team].livery).card">
 			{{game.title}}:{{game.identifier}}
 			<div class="card-body">
 				<h5 class="card-title">{{player.name}}'s Turn</h5>
