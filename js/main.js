@@ -175,7 +175,7 @@ Vue.component('witb-playspace',{
 		}
 	},
 	computed:{
-		score: function(){
+		scores: function(){
 			return this.game.turns.reduce((map, turn) => ({
 			  ...map,
 			  [turn.teamIndex]: (map[turn.teamIndex] || 0) + 1,
@@ -269,11 +269,11 @@ Vue.component('witb-playspace',{
     				<h6 class="card-subtitle mb-2 text-muted">{{game.rounds[game.roundIndex]}} round</h6>
 				<span v-for = "(key,value) in scores" class="badge badge-pill" :class="teamColours(teams[key].livery).badge">{{value}}</span>
 			</div>
-			<ul class="list-group list-group-flush" v-if = "stage<stages.Done && player.identifier == profile.id">
+			<ul class="list-group list-group-flush" v-if = "!game.ended && stage<stages.Done && player.identifier == profile.id">
 				<witb-playname @gotIt = "gotPass" :name="passed" :canPass = "false"></witb-playname>
 				<witb-playname @gotIt = "gotIt" @passIt = "passIt" :name="nameInPlay" :canPass = "passed == ''"></witb-playname>
 			</ul>
-			<div class="card-body" v-if = "player.identifier == profile.id">
+			<div class="card-body" v-if = "!game.ended && player.identifier == profile.id">
 				<button @click = "start" class =  "btn btn-primary" v-if = "stage==stages.Ready">Start my go</button>
 				<h6 v-if = "stage<stages.Done">{{timeRemaining}} s</h6>
 				<button @click = "endTurn" class =  "btn btn-primary" v-if = "stage==stages.Finished">End my go</button>
