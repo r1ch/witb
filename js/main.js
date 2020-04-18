@@ -176,12 +176,12 @@ Vue.component('witb-playspace',{
 	},
 	computed:{
 		team: function(){
-			console.log(`New team from ${this.game.teamIndex}`)
+			console.log(`New team from ${this.game.teamIndex}, ${JSON.stringify(this.game)}`)
 			return this.game.teams[this.game.teamIndex]
 		},
 		player: function(){
 			console.log(`New player from ${this.game.teamPlayerIndex}`)
-			return this.team.players[this.game.teamPlayerIndexes[this.game.teamIndex]]
+			return this.team.players[this.game.teamPlayerIndex[this.game.teamIndex]]
 		}
 	},
 	watch: {
