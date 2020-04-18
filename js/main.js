@@ -176,6 +176,7 @@ Vue.component('witb-playspace',{
 	},
 	computed:{
 		scores: function(){
+			if(!this.game.turns) return {}
 			return this.game.turns.reduce((map, turn) => ({
 			  ...map,
 			  [turn.teamIndex]: (map[turn.teamIndex] || 0) + 1,
