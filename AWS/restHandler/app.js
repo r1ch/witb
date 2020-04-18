@@ -161,50 +161,59 @@ router.post('/games/:game/start', asyncHandler(async (req, res) => {
     })
 }))
 
-router.put('/games/:game/turn', asyncHandler(async (req, res) => {
-    console.log(`Body: ${JSON.stringify(req.body)}`)
-    let game = Object.assign(new Game(),req.body.game)
-    //record their progress
-    if(!game.ended){
-        game.turns = game.turns || [];
-        game.turns[game.playIndex] = {
-            roundIndex: game.roundIndex,
-            teamIndex: game.teamIndex,
-            playerIndex: game.teamPlayerIndex[game.teamIndex],
-            names: req.body.namesGot
-        }
-        let namesGot = JSON.parse(JSON.stringify(req.body.namesGot))
-        //prune names
-        console.log(`Filtering: ${JSON.stringify(namesGot)}: ${JSON.stringify(game.namesLeftThisRound)}`)
-        game.namesLeftThisRound = game.namesLeftThisRound.filter(name=>{
-            console.log(`Filtering ${name}`)
-            let at = namesGot.indexOf(name)
-            if(at>=0){
-                console.log(`Filtering: ${JSON.stringify(namesGot)}: ${JSON.stringify(game.namesLeftThisRound)}`)
-                namesGot.splice(at,1)
-                return false
+router.put('/games/:game/turn/:turn', asyncHandler(async (req, res) => {
+    mapper.get(Object.assign(new Game, {identifier: req.params.game}))
+    .then((game)=>{
+        if(game.playIndex>req.params.turn) return res.json(game)
+        else{
+            if(!game.ended){
+                //record turn
+                game.turns = game.turns || [];
+                game.turns[game.playIndex] = {
+                    roundIndex: game.roundIndex,
+                    teamIndex: game.teamIndex,
+                    playerIndex: game.teamPlayerIndex[game.teamIndex],
+                    names: req.body.namesGot
+                }
+                //prune names
+                let tempNamesGot = [...req.body.namesGot]
+                game.namesLeftThisRound = game.namesLeftThisRound.filter(name=>{
+                    console.log(`They got ${req.body.namesGot}, checking ${name} in ${game.namesLeftThisRound}`)
+                    let at = tempNamesGot.indexOf(name)
+                    console.log(`Got index ${at}`)
+                    if(at>=0){
+                        console.log(`So will remove ${tempNamesGot.splice(at,1)}`)
+                        return false
+                    }
+                    return true
+                })
             }
-            return true
-        })
-    }
-    
-    if(game.namesLeftThisRound.length==0){
-        if(game.roundIndex<game.rounds.length){
-            game.roundIndex++
-            game.namesLeftThisRound = game.names
-        } else {
-            game.ended = true
-        }
-    }
+            console.log(`Carrying forward ${JSON.stringify(game.namesLeftThisRound)}`)
 
-    if(!game.ended){
-        game.playIndex++
-        game.teamPlayerIndex[game.teamIndex] = (game.teamPlayerIndex[game.teamIndex]+1)%game.teams[game.teamIndex].players.length
-        game.teamIndex = game.playIndex%game.teams.length
-    }
-    console.log(JSON.stringify(game))
-    mapper.update(game,{onMissing: 'skip'}).then((game)=>{
-        res.json(game)
+            //new round + names if no names left or end the game
+            if(game.namesLeftThisRound.length==0){
+                if(game.roundIndex<game.rounds.length-1){
+                    game.roundIndex++
+                    game.namesLeftThisRound = game.names
+                } else {
+                    game.ended = true
+                }
+            }
+
+            if(!game.ended){
+                game.playIndex++
+                game.teamPlayerIndex[game.teamIndex] = (game.teamPlayerIndex[game.teamIndex]+1)%game.teams[game.teamIndex].players.length
+                game.teamIndex = game.playIndex%game.teams.length
+            }
+
+            console.log(JSON.stringify(game))
+
+            mapper.update(game,{onMissing: 'skip'}).then((game)=>{
+                res.json(game)
+            })
+
+        }
+
     })
 }))
 
