@@ -276,7 +276,7 @@ Vue.component('witb-me',{
 		}
 	},
 	template: `
-		<li class="list-group-item" :class="{'list-group-item-success':team}">
+		<li class="list-group-item" :class="{'list-group-item-success':player.team}">
 			<div class="form-group row">
 				<label class="col-2">Team</label> 
 				<div class="col-10">
