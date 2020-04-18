@@ -276,7 +276,7 @@ Vue.component('witb-playspace',{
 			<div class="card-body" v-if = "!game.ended && player.identifier == profile.id">
 				<button @click = "start" class =  "btn btn-primary" v-if = "stage==stages.Ready">Start my go</button>
 				<h6 v-if = "stage<stages.Done">{{timeRemaining}} s</h6>
-				<button @click = "endTurn" class =  "btn btn-primary" v-if = "stage==stages.Finished">End my go</button>
+				<button @click = "endTurn" class =  "btn btn-primary" v-if = "stage==stages.Finished">End my go<br><small>Got {{namesGot.length}}</small></button>
 			</div>
 		</div>
 	`	
