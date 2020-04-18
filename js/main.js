@@ -375,7 +375,7 @@ var app = new Vue({
 			teamColours: (livery)=>({
 				li:`list-group-item-${livery}`,
 				button:`btn-${livery}`,
-				card:`bg-${livery}`
+				card:`border-${livery}`
 			})
 			
 		}
