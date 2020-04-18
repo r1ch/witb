@@ -268,7 +268,8 @@ Vue.component('witb-playspace',{
 			{{game.title}}
 			<div class="card-body">
 				<h5 class="card-title">{{player.name}}'s Turn</h5>
-    				<h6 class="card-subtitle mb-2 text-muted">{{game.rounds[game.roundIndex]}} round</h6>
+    				<h6 class="card-subtitle mb-2 text-muted" v-if = "!game.ended">{{game.rounds[game.roundIndex]}} round</h6>
+				<h6 class="card-subtitle mb-2" v-if = "game.ended">Finished!</h6>
 				<span v-for = "(value,index) in scores" class="badge badge-pill" :class = "teamColours(teams[game.teams[index].team].livery).badge">{{value}}</span>
 			</div>
 			<ul class="list-group list-group-flush" v-if = "!game.ended && stage<stages.Done && player.identifier == profile.id">
