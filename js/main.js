@@ -203,10 +203,10 @@ Vue.component('witb-playspace',{
 				this.nameInPlay = ""
 				this.passed = ""
 				this.namesGot = []
-				this.stages = this.stages.Next
+				this.stage = this.stages.Next
 			} else {
 				console.log("Pre go, prepare")
-				this.stages = this.stages.Ready
+				this.stage = this.stages.Ready
 			}
 		}
 	},
