@@ -59,7 +59,7 @@ Vue.component('witb-container',{
 			this.API("PUT",`/games/${this.currentGame.identifier}/players`,this.profile)
 		},
 		endTurn(namesGot){
-			this.API("PUT",`/games/${this.currentGame.identifier}/turn`,{game:this.currentGame,namesGot:namesGot,profile:this.profile},game=>this.currentGame=game)
+			this.API("PUT",`/games/${this.currentGame.identifier}/turn/${this.currentGame.playIndex}`,{namesGot:namesGot},game=>this.currentGame=game)
 		}
 	},
 	template: `
@@ -168,7 +168,7 @@ Vue.component('witb-playspace',{
 			startTime: false,
 			timer: false,
 			timeRemaining: this.game.secondsPerRound,
-			namesLeft : JSON.parse(JSON.stringify(this.game.namesLeftThisRound)),
+			namesLeft : this.game.namesLeftThisRound,
 			nameInPlay : "",
 			passed : "",
 			namesGot : [],
