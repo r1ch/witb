@@ -77,21 +77,10 @@ Vue.component('witb-game',{
 	data: function(){
 		return{
 			players:[],
-			remoteNames:[],
 			startProblem: ""
 		}
 	},
 	computed: {
-		names : function(){
-			let list = []
-			for(let i=0;i<this.game.namesPerPerson;i++){
-				list.push({
-					key:i,
-					value: this.remoteNames[i]||""
-				})
-			}
-			return list
-		},
 		gameReady : function(){
 			if(this.game.identifier != this.currentGameIdentifier) this.startProblem = "Not in this game"
 			else if(this.players.length <= 1) this.startProblem = "Not enough players"
@@ -110,14 +99,12 @@ Vue.component('witb-game',{
 		chooseGame(){
 			this.$emit("chooseGame",this.game)
 			this.fetchPlayers()
-			this.API("GET",`/games/${this.game.identifier}/players/${this.profile.id}/names`,false,(names)=>{
-				this.remoteNames = names
-			})
 		},
-		saveNames(){
-			this.API("PUT",`/games/${this.game.identifier}/players/${this.profile.id}/names`,this.names.map(name=>name.value).filter(value=>value!=""),(names)=>{
-				this.remoteNames = names
-			})
+		saveNames(names){
+			this.API("PUT",`/games/${this.game.identifier}/players/${this.profile.id}/names`,names)
+		},
+		saveTeam(team){
+			this.API("PUT",`/games/${this.game.identifier}/players/${this.profile.id}/team`,team)
 		},
 		startGame(){
 			if(this.gameReady) this.API("POST",`/games/${this.game.identifier}/start`)
@@ -131,8 +118,8 @@ Vue.component('witb-game',{
 					<button class = "btn btn-primary col-sm-6" @click="startGame" :class="{'disabled': !gameReady}" v-if="currentGameIdentifier == game.identifier">Start</button>
 				</div>
 				<ul class = "list-group-flush" v-if = "currentGameIdentifier == game.identifier">
-					<witb-me @saveNames="saveNames" :game="game" :names="names"></witb-me>
-					<witb-player v-for = "player in players" :key = "player.identifier" :player="player" v-if = "player.identifier!=profile.id"></witb-player>
+					<witb-me @saveNames="saveNames" @saveTeam = "saveTeam" :game="game" :player="players.find(player=>player.identifier==profile.id)"></witb-me>
+					<witb-player v-for = "player in players.filter(player=>player.identifier!=profile.id)" :key = "player.identifier" :player="player"></witb-player>
 				</ul>
 			</div>
 		</div>
@@ -239,7 +226,7 @@ Vue.component('witb-playspace',{
 			</ul>
 			<div class="card-body"> <!--v-if = "game.players[game.playerIndex].identifier == profile.id">-->
 				<button @click = "start" class =  "btn btn-primary" v-if = "stage==stages.Ready">Start my go</button>
-				<span v-if = "stage<stages.Done">{{timeRemaining}} s</span>
+				<h6 v-if = "stage<stages.Done">{{timeRemaining}} s</h6>
 				<button @click = "endTurn" class =  "btn btn-primary" v-if = "stage==stages.Finished">End my go</button>
 			</div>
 		</div>
@@ -268,20 +255,46 @@ Vue.component('witb-playname',{
 })
 
 Vue.component('witb-me',{
-	inject: ['profile'],
-	props: ['game','names'],
+	inject: ['teams'],
+	props: ['game','player'],
+	data: function(){
+		return {
+			names: this.player.names,
+			team: this.player.team
+		}
+	},
 	methods: {
 		saveNames: function(){
 			this.$emit("saveNames",this.names)
+		},
+		saveTeam: function(team){
+			this.$emit("saveTeam",this.team)
 		}
 	},
 	template: `
-		<li class="list-group-item">
-			<h5>{{profile.name}}</h5>
-			<small>Please pick {{game.namesPerPerson}} names</small>
-			<input type="text" v-for = "name in names" v-model="name.value" :key="name.key" class = "col-sm-12 col-md-6"></input><br>
-			<button class = "btn btn-primary" @click="saveNames">Save</button><br>
-			<small>{{names.filter(name=>name.length>0).length}} names saved</small>
+		<li class="list-group-item" :class="{`list-group-item-${this.teams[this.team].livery}`:this.team}">
+			<div class="form-group row">
+				<label class="col-2">Team</label> 
+				<div class="col-10">
+					<div class="btn-group" role="group">
+						<button @click = "saveTeam(team.key)" type="button" class="btn btn-primary" :class="{'active': team == team.key}" v-for = "team in teams" :key = "team.key">{{team.title}}</button>
+					</div>
+					<span class="form-text text-muted">Pick your team</span>
+				</div>
+			</div>
+			<div class="form-group row">
+				<label class="col-2 col-form-label">Names</label> 
+				<div class="col-10">
+					<input v-for = "name in names" v-model="name.value" :key="name.key" type="text" required="required" class="form-control">
+					<span class="form-text text-muted">Pick {{game.namesPerPerson}} names</span>
+				</div>
+			</div>
+			<div class="form-group row">
+				<div class="offset-2 col-10">
+					<button @click = "saveNames" class="btn btn-primary">Save Names</button>
+					<span class="form-text text-muted">{{names.filter(name=>name.length>0).length}} names saved</span>
+				</div>
+			</div>
 		</li>
 	`
 })
@@ -320,7 +333,13 @@ var app = new Vue({
 	provide: function(){
 		return {
 			profile: this.profile,
-			listenFor: this.listenFor
+			listenFor: this.listenFor,
+			teams: [
+				{name:"1",livery="primary",key:0},
+				{name:"2",livery="success",key:1},
+				{name:"3",livery="danger",key:2},
+				{name:"4",livery="warning",key:3}
+			]
 		}
 	},
 	created: function(){
