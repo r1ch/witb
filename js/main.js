@@ -258,6 +258,7 @@ Vue.component('witb-me',{
 	inject: ['teams'],
 	props: ['game','player'],
 	data: function(){
+		console.log(this.player)
 		return {
 			names: this.player.names,
 			team: this.player.team
