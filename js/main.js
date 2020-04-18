@@ -257,6 +257,7 @@ Vue.component('witb-playspace',{
 			console.log(`gotPass after, event: ${name}, nameInPlay: ${this.nameInPlay}, passed:${this.passed}`)
 		},
 		endTurn : function(){
+			this.timer && clearInterval(this.timer)
 			this.stage = this.stages.Done
 			this.$emit("endTurn",this.namesGot)
 		}
