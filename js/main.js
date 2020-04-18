@@ -179,7 +179,7 @@ Vue.component('witb-playspace',{
 			if(!this.game.turns) return {}
 			return this.game.turns.reduce((map, turn) => ({
 			  ...map,
-			  [turn.teamIndex]: (map[turn.teamIndex] || 0) + 1,
+			  [turn.teamIndex]: (map[turn.teamIndex] || 0) + turn.names.length,
 			}), {})
 		},
 		team: function(){
