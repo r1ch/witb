@@ -294,7 +294,11 @@ Object.defineProperties(Game.prototype, {
             teamIndex : {type: 'Number'},
             teamPlayerIndex : {type: 'List', memberType: {type: 'Number'}},
             started: {type: 'Boolean'},
-            ended: {type: 'Boolean'}
+            ended: {type: 'Boolean'},
+            updated: {
+                type : 'Number',
+                defaultProvider: ()=>Date.now()
+            }
         },
     },
 });
@@ -329,6 +333,10 @@ Object.defineProperties(Player.prototype, {
             team: {
                 type : 'Number',
                 defaultProvider: ()=>0
+            },
+            updated: {
+                type : 'Number',
+                defaultProvider: ()=>Date.now()
             }
         },
     },
