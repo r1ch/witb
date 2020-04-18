@@ -124,12 +124,12 @@ Vue.component('witb-game',{
 		},
 		saveNames(names){
 			this.API("PUT",`/players/${this.profile.id}/names`,{names:names},my=>{
-				this.remoteNames = my.names
+				this.remoteNames = my.names || []
 			})
 		},
 		saveTeam(team){
 			this.API("PUT",`/players/${this.profile.id}/team`,{team:team},my=>{
-				this.team = my.team
+				this.team = my.team || 0
 			})
 		},
 		startGame(){
