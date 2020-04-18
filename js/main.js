@@ -127,7 +127,7 @@ Vue.component('witb-game',{
 	},
 	template: `
 		<li class="list-group-item">
-			{{game.title}}
+			{{game.title}}<br>
 			<button class = "btn btn-primary" @click="chooseGame" v-if="currentGameIdentifier != game.identifier">Join</button>
 			<button class = "btn btn-primary" @click="startGame" :class="{'disabled': !gameReady}" v-if="currentGameIdentifier == game.identifier">Start</button>
 			<ul class = "list-group-flush" v-if = "currentGameIdentifier == game.identifier">
@@ -283,7 +283,7 @@ Vue.component('witb-me',{
 			</div>
 			<input v-for = "name in names" v-model="name.value" :key="name.key"></input><br>
 			<button class = "btn btn-primary" @click="saveNames">Save</button>
-			<small>{{names.filter(name=>name!="").length}} names saved</span>
+			<small>{{names.filter(name=>name!="").length}} names saved</small>
 		</li>
 	`
 })
