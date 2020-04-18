@@ -164,7 +164,6 @@ router.post('/games/:game/start', asyncHandler(async (req, res) => {
 router.put('/games/:game/turn', asyncHandler(async (req, res) => {
     console.log(`Body: ${JSON.stringify(req.body)}`)
     let game = Object.assign(new Game(),req.body.game)
-    let namesGot = req.body.namesGot
     //record their progress
     if(!game.ended){
         game.turns = game.turns || [];
@@ -172,8 +171,9 @@ router.put('/games/:game/turn', asyncHandler(async (req, res) => {
             roundIndex: game.roundIndex,
             teamIndex: game.teamIndex,
             playerIndex: game.teamPlayerIndex[game.teamIndex],
-            names: namesGot
+            names: req.body.namesGot
         }
+        let namesGot = JSON.parse(JSON.stringify(req.body.namesGot))
         //prune names
         console.log(`Filtering: ${JSON.stringify(namesGot)}: ${JSON.stringify(game.namesLeftThisRound)}`)
         game.namesLeftThisRound = game.namesLeftThisRound.filter(name=>{
@@ -196,7 +196,7 @@ router.put('/games/:game/turn', asyncHandler(async (req, res) => {
             game.ended = true
         }
     }
-    
+
     if(!game.ended){
         game.playIndex++
         game.teamPlayerIndex[game.teamIndex] = (game.teamPlayerIndex[game.teamIndex]+1)%game.teams[game.teamIndex].players.length
@@ -221,7 +221,7 @@ const simple = (player)=>{
     return player
 }
 
-const namesOf = (player)=>{
+const namesOf = (player)=>{ 
     if (player.names) return player.names
     else return []
 }
