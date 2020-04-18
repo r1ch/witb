@@ -89,10 +89,12 @@ Vue.component('witb-game',{
 			return this.startProblem == ""
 		},
 		me : function(){
+			console.log(`Filtering ${JSON.stringify(this.players)} for me`)
 			let m = this.players.find(player=>player.identifier==this.profile.id)
 			return m ? m : false
 		},
 		others : function(){
+			console.log(`Filtering ${JSON.stringify(this.others)} for me`)
 			let o = this.players.filter(player=>player.identifier!=this.profile.id)
 			return o ? o : []
 		}
@@ -287,14 +289,14 @@ Vue.component('witb-me',{
 			<div class="form-group row">
 				<label class="col-2 col-form-label">Names</label> 
 				<div class="col-10">
-					<input v-for = "name in names" v-model="name.value" :key="name.key" type="text" required="required" class="form-control">
+					<input v-for = "name in player.names" v-model="name.value" :key="name.key" type="text" required="required" class="form-control">
 					<span class="form-text text-muted">Pick {{game.namesPerPerson}} names</span>
 				</div>
 			</div>
 			<div class="form-group row">
 				<div class="offset-2 col-10">
 					<button @click = "saveNames" class="btn btn-primary">Save Names</button>
-					<span class="form-text text-muted">{{names.filter(name=>name.length>0).length}} names saved</span>
+					<span class="form-text text-muted">{{player.names.filter(name=>name.length>0).length}} names saved</span>
 				</div>
 			</div>
 		</li>
@@ -350,7 +352,7 @@ var app = new Vue({
 			this.messages.unshift(event.data)
 			if(this.messages.length > 3) this.mesages.pop()
 			setTimeout(()=>{
-				this.messages && this.message.pop()
+				if(this.messages) this.message.pop()
 			},5000)
 		}
 	},
