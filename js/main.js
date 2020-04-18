@@ -269,7 +269,7 @@ Vue.component('witb-playspace',{
 			<div class="card-body" v-if = "player.identifier == profile.id">
 				<ul>
 					<li v-for = "(turn,index) in game.turns">
-						Turn{{index}}: Team {{turn.teamIndex+1}} player {{game.teams[turn.teamIndex].players[turn.teamPlayerIndex].name}} got {{turn.names.length}} names : {{turn.names}}
+						Turn{{index}}: Team {{turn.teamIndex+1}} player {{game.teams[turn.teamIndex].players[turn.playerIndex].name}} got {{turn.names.length}} names : {{turn.names}}
 					</li>
 				</ul>
 			</div>
