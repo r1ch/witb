@@ -295,7 +295,7 @@ Vue.component('witb-me',{
 			<div class="form-group row">
 				<label class="col-2 col-form-label">Names</label> 
 				<div class="col-10">
-					<input v-for = "name in player.names" v-model="name.value" :key="name.key" type="text" required="required" class="form-control">
+					<input v-for = "name in names" v-model="name.value" :key="name.key" type="text" required="required" class="form-control">
 					<span class="form-text text-muted">Pick {{game.namesPerPerson}} names</span>
 				</div>
 			</div>
