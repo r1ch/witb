@@ -183,18 +183,16 @@ Vue.component('witb-playspace',{
 			}), {})
 		},
 		team: function(){
-			console.log(`New team from ${this.game.teamIndex}, ${JSON.stringify(this.game)}`)
 			return this.game.teams[this.game.teamIndex]
 		},
 		player: function(){
-			console.log(`New player from ${this.game.teamPlayerIndex}`)
 			return this.team.players[this.game.teamPlayerIndex[this.game.teamIndex]]
 		}
 	},
 	watch: {
 		"game.playIndex"(newVal,oldVal){
 			if(this.stage == this.stages.Done){
-				console.log("After Go, clean up")
+				console.log("After go, clean up")
 				this.startTime = false
 				this.timer && clearInterval(this.time)
 				this.timer = false
@@ -232,7 +230,6 @@ Vue.component('witb-playspace',{
 			this.timer = setInterval(()=>{this.tick()},500)
 		},
 		tick : function(){
-			console.log(`${this.startTime} ${this.game.secondsPerRound} ${Date.now()}`)
 			this.timeRemaining = Math.max((this.startTime+this.game.secondsPerRound*1000-Date.now())/1000|0,0)
 			if(this.timeRemaining <= 0){
 				clearInterval(this.timer)
@@ -240,22 +237,22 @@ Vue.component('witb-playspace',{
 			}
 		},
 		gotIt : function(name){
-			console.log(`GotIt before, event: ${name}, nameInPlay: ${this.nameInPlay}, passed:${this.passed}`)
+			console.log(`GotIt before, got: event: ${this.namesGot}, event: ${name}, nameInPlay: ${this.nameInPlay}, passed:${this.passed}`)
 			this.namesGot.push(name)
 			this.pickNextName()
-			console.log(`GotIt after, event: ${name}, nameInPlay: ${this.nameInPlay}, passed:${this.passed}`)
+			console.log(`GotIt after, event: ${this.namesGot}, event: ${name}, nameInPlay: ${this.nameInPlay}, passed:${this.passed}`)
 		},
 		passIt : function(name){
-			console.log(`PassIt before, event: ${name}, nameInPlay: ${this.nameInPlay}, passed:${this.passed}`)
+			console.log(`PassIt before, event: ${this.namesGot}, event: ${name}, nameInPlay: ${this.nameInPlay}, passed:${this.passed}`)
 			this.passed = name
 			this.pickNextName()
-			console.log(`PassIt after, event: ${name}, nameInPlay: ${this.nameInPlay}, passed:${this.passed}`)
+			console.log(`PassIt after, event: ${this.namesGot}, event: ${name}, nameInPlay: ${this.nameInPlay}, passed:${this.passed}`)
 		},
 		gotPass : function(name){
-			console.log(`gotPass before, event: ${name}, nameInPlay: ${this.nameInPlay}, passed:${this.passed}`)
+			console.log(`gotPass before, event: ${this.namesGot}, event: ${name}, nameInPlay: ${this.nameInPlay}, passed:${this.passed}`)
 			this.namesGot.push(name)
 			this.passed = false
-			console.log(`gotPass after, event: ${name}, nameInPlay: ${this.nameInPlay}, passed:${this.passed}`)
+			console.log(`gotPass after, event: ${this.namesGot}, event: ${name}, nameInPlay: ${this.nameInPlay}, passed:${this.passed}`)
 		},
 		endTurn : function(){
 			this.timer && clearInterval(this.timer)
