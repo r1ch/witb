@@ -135,7 +135,7 @@ Vue.component('witb-game',{
 				</div>
 				<ul class = "list-group-flush" v-if = "currentGameIdentifier == game.identifier">
 					<witb-me @saveNames="saveNames" @saveTeam = "saveTeam" :game="game" :names="names" :team="team"></witb-me>
-					<witb-player v-for = "player in players" :key = "player.identifier" :player="player" v-if "player.identifier!=profile.id"></witb-player>
+					<witb-player v-for = "player in players" :key = "player.identifier" :player="player" v-if="player.identifier!=profile.id"></witb-player>
 				</ul>
 			</div>
 		</div>
