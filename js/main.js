@@ -354,7 +354,7 @@ var app = new Vue({
 			this.messages.unshift(event.data)
 			if(this.messages.length > 3) this.mesages.pop()
 			setTimeout(()=>{
-				if(this.messages) this.message.pop()
+				if(this.messages) this.messages.pop()
 			},5000)
 		}
 	},
