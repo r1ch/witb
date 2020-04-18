@@ -284,12 +284,12 @@ Vue.component('witb-me',{
 		}
 	},
 	template: `
-		<li class="list-group-item">
+		<li class="list-group-item" :class = "liTeamClass(team.livery)">
 			<div class="form-group row">
 				<label class="col-2">Team</label> 
 				<div class="col-10">
 					<div class="btn-group" role="group">
-						<button @click = "saveTeam(team.key)" v-for = "team in teams" :key="team.key" class = "btn" :class = "buttonTeamClass(team.key)">{{team.name}}</button>
+						<button @click = "saveTeam(team.key)" v-for = "team in teams" :key="team.key" class = "btn" :class = "buttonTeamClass(team.livery)">{{team.name}}</button>
 					</div>
 					<span class="form-text text-muted">Pick your team</span>
 				</div>
@@ -351,8 +351,8 @@ var app = new Vue({
 				{name:"3",livery:"danger",key:2},
 				{name:"4",livery:"warning",key:3}
 			],
-			liTeamClass: (team)=>`list-group-item-${this.teams[team].livery}`,
-			buttonTeamClass: (team)=>`list-group-item-${this.teams[team].livery}`
+			liTeamClass: (livery)=>`list-group-item-${livery}`,
+			buttonTeamClass: (livery)=>`button-${livery}`
 			
 		}
 	},
