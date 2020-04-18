@@ -204,6 +204,7 @@ Vue.component('witb-playspace',{
 				this.stage = this.stages.Next
 			} else {
 				console.log("Pre go, prepare")
+				this.namesLeft = this.game.namesLeftThisRound
 				this.stage = this.stages.Ready
 			}
 		}
