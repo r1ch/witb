@@ -95,7 +95,9 @@ Vue.component('witb-game',{
 		}
 	},
 	mounted: function(){
-		this.listenFor("PLAYER",this.fetchPlayers)
+		this.fetchOthers()
+		this.fetchMe()
+		this.listenFor("PLAYER",this.fetchOthers)
 	},
 	methods: {
 		fetchOthers(){
