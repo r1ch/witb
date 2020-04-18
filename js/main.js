@@ -352,7 +352,7 @@ var app = new Vue({
 				{name:"4",livery:"warning",key:3}
 			],
 			liTeamClass: (livery)=>`list-group-item-${livery}`,
-			buttonTeamClass: (livery)=>`button-${livery}`
+			buttonTeamClass: (livery)=>`btn-${livery}`
 			
 		}
 	},
