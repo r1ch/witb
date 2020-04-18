@@ -94,7 +94,7 @@ Vue.component('witb-game',{
 			return m ? m : false
 		},
 		others : function(){
-			console.log(`Filtering ${JSON.stringify(this.others)} for me`)
+			console.log(`Filtering ${JSON.stringify(this.players)} for others`)
 			let o = this.players.filter(player=>player.identifier!=this.profile.id)
 			return o ? o : []
 		}
