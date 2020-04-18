@@ -286,8 +286,8 @@ Vue.component('witb-me',{
 	template: `
 		<li class="list-group-item">
 			<div class="form-group row">
-				<label class="col-2">Team</label> 
-				<div class="col-10">
+				<label class="col-4">Team</label> 
+				<div class="col-8">
 					<div class="btn-group" role="group">
 						<button @click = "saveTeam(teamOption.key)" v-for = "teamOption in teams" :key="teamOption.key" class = "btn" :class = "buttonTeamClass(teamOption.livery)">{{teamOption.name}}</button>
 					</div>
@@ -295,8 +295,9 @@ Vue.component('witb-me',{
 				</div>
 			</div>
 			<div class="form-group row">
-				<label class="col-2 col-form-label">Names</label> 
-				<div class="col-10">
+				<label class="col-4 col-form-label">Names</label> 
+				<div class="col-8">
+					{{names}}
 					<input v-for = "name in names" v-model="name.value" :key="name.key" type="text" required="required" class="form-control">
 					<span class="form-text text-muted">Pick {{game.namesPerPerson}} names</span>
 				</div>
