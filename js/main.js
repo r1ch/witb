@@ -273,7 +273,7 @@ Vue.component('witb-playname',{
 })
 
 Vue.component('witb-me',{
-	inject: ['teams'],
+	inject: ['teams','buttonTeamClass','liTeamClass'],
 	props: ['game','names','team'],
 	methods: {
 		saveNames: function(){
