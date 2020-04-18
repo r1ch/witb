@@ -266,6 +266,13 @@ Vue.component('witb-playspace',{
 				<h6 v-if = "stage<stages.Done">{{timeRemaining}} s</h6>
 				<button @click = "endTurn" class =  "btn btn-primary" v-if = "stage==stages.Finished">End my go</button>
 			</div>
+			<div class="card-body" v-if = "player.identifier == profile.id">
+				<ul>
+					<li v-for = "(turn,index) in game.turns">
+						Turn{{index}}: Team {{turn.teamIndex+1}} player {{game.teams[turn.teamIndex].players[turn.teamPlayerIndex].name}} got {{turn.names.length}} names : {{turn.names}}
+					</li>
+				</ul>
+			</div>
 		</div>
 	`	
 })
