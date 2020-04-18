@@ -126,10 +126,12 @@ Vue.component('witb-game',{
 		}
 	},
 	template: `
-		<li class="list-group-item">
-			{{game.title}}<br>
-			<button class = "btn btn-primary" @click="chooseGame" v-if="currentGameIdentifier != game.identifier">Join</button>
-			<button class = "btn btn-primary" @click="startGame" :class="{'disabled': !gameReady}" v-if="currentGameIdentifier == game.identifier">Start</button>
+		<li class="list-group-item flex-column align-items-start">
+			<div class="d-flex w-100 justify-content-between">
+			<h4>{{game.title}}</h4>
+				<button class = "btn btn-primary" @click="chooseGame" v-if="currentGameIdentifier != game.identifier">Join</button>
+				<button class = "btn btn-primary" @click="startGame" :class="{'disabled': !gameReady}" v-if="currentGameIdentifier == game.identifier">Start</button>
+			</div>
 			<ul class = "list-group-flush" v-if = "currentGameIdentifier == game.identifier">
 				<witb-me @saveNames="saveNames" :game="game" :names="names"></witb-me>
 				<witb-player v-for = "player in players" :key = "player.identifier" :player="player" v-if = "player.identifier!=profile.id"></witb-player>
@@ -281,9 +283,13 @@ Vue.component('witb-me',{
 				<h5 class="mb-1">{{profile.name}}</h5>
 				<small>Please pick {{game.namesPerPerson}} names</small>
 			</div>
-			<input v-for = "name in names" v-model="name.value" :key="name.key"></input><br>
-			<button class = "btn btn-primary" @click="saveNames">Save</button>
-			<small>{{names.filter(name=>name!="").length}} names saved</small>
+			<div class="d-flex w-100 justify-content-between">
+				<input v-for = "name in names" v-model="name.value" :key="name.key"></input>
+			</div>
+			<div class="d-flex w-100 justify-content-between">
+				<button class = "btn btn-primary" @click="saveNames">Save</button>
+				<small>{{names.filter(name=>name!="").length}} names saved</small>
+			<div class="d-flex w-100 justify-content-between">
 		</li>
 	`
 })
