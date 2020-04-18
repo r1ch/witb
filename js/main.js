@@ -162,7 +162,8 @@ Vue.component('witb-playspace',{
 				Ready:0,
 				Started:1,
 				Finished:2,
-				Done:3
+				Done:3,
+				Next:4
 			},
 			stage: 0,
 			startTime: false,
@@ -186,16 +187,21 @@ Vue.component('witb-playspace',{
 	},
 	watch: {
 		"game.playIndex"(newVal,oldVal){
-			console.log("Resetting")
-			this.startTime = false
-			this.timer && clearInterval(this.time)
-			this.timer = false
-			this.timeRemaining = this.game.secondsPerRound
-			this.namesLeft = this.game.namesLeftThisRound
-			this.nameInPlay = ""
-			this.passed = ""
-			this.namesGot = []
-			this.stage = 0
+			if(this.stage == this.stages.Done){
+				console.log("After Go, clean up")
+				this.startTime = false
+				this.timer && clearInterval(this.time)
+				this.timer = false
+				this.timeRemaining = this.game.secondsPerRound
+				this.namesLeft = this.game.namesLeftThisRound
+				this.nameInPlay = ""
+				this.passed = ""
+				this.namesGot = []
+				this.stages = this.stages.Next
+			} else {
+				console.log("Pre go, prepare")
+				this.stages = this.stages.Ready
+			}
 		}
 	},
 	methods:{
