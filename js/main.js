@@ -246,13 +246,13 @@ Vue.component('witb-playspace',{
 		<div class="card">
 			<div class="card-body">
 				<h5 class="card-title">{{game.title}}</h5>
-    				<h6 class="card-subtitle mb-2 text-muted">{{game.players}} {{game.rounds[game.roundIndex]}} round</h6>
+    				<h6 class="card-subtitle mb-2 text-muted">{{game.players[game.playerIndex].name}}:{{game.rounds[game.roundIndex]}} round</h6>
 			</div>
-			<ul class="list-group list-group-flush" v-if = "stage<stages.Done"><!-- v-if = "game.players[game.playerIndex].identifier == profile.id">-->
+			<ul class="list-group list-group-flush" v-if = "stage<stages.Done && game.players[game.playerIndex].identifier == profile.id">
 				<witb-playname @gotIt = "gotPass" :name="passed" :canPass = "false"></witb-playname>
 				<witb-playname @gotIt = "gotIt" @passIt = "passIt" :name="nameInPlay" :canPass = "passed == ''"></witb-playname>
 			</ul>
-			<div class="card-body"> <!--v-if = "game.players[game.playerIndex].identifier == profile.id">-->
+			<div class="card-body" v-if = "game.players[game.playerIndex].identifier == profile.id">
 				<button @click = "start" class =  "btn btn-primary" v-if = "stage==stages.Ready">Start my go</button>
 				<h6 v-if = "stage<stages.Done">{{timeRemaining}} s</h6>
 				<button @click = "endTurn" class =  "btn btn-primary" v-if = "stage==stages.Finished">End my go</button>
