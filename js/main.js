@@ -112,6 +112,7 @@ Vue.component('witb-game',{
 		},
 		fetchMe(){
 			this.API("GET",`/players/${this.profile.id}`,false,my=>{
+				console.log(JSON.stringify(my))
 				this.remoteNames = my.names
 				this.team = my.team
 			})
