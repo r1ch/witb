@@ -91,7 +91,9 @@ Vue.component('witb-game',{
 			return this.startProblem == ""
 		},
 		names : function(){
-		
+			let n = new Array(this.game.namesPerPerson).fill("")
+			n.shift(this.remoteNames.filter(name=>name!="")
+			return n.slice(0,this.game.namesPerPerson)
 		}
 	},
 	mounted: function(){
@@ -284,7 +286,7 @@ Vue.component('witb-me',{
 		}
 	},
 	template: `
-		<li class="list-group-item">
+		<li class="list-group-item" :class="liTeamClass(teams[team||0].livery)">
 			<div class="form-group row">
 				<label class="col-4">Team</label> 
 				<div class="col-8">
