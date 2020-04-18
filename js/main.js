@@ -136,17 +136,16 @@ Vue.component('witb-game',{
 	},
 	template: `
 		<div class = row>
-				<h5>{{game.title}}</h5>
-				<ul class = "list-group-flush" v-if = "currentGameIdentifier == game.identifier">
-					<witb-me @saveNames="saveNames" @saveTeam = "saveTeam" :game="game" :names="names" :team="team"></witb-me>
-					<witb-player v-for = "player in players" :key = "player.identifier" :player="player" v-if="player.identifier!=profile.id"></witb-player>
-				</ul>
-				<br>	
-				<div class = "offset-3 col-6">
-					<button class = "btn btn-primary col-6" @click="chooseGame" v-if="currentGameIdentifier != game.identifier">Join</button>
-					<button class = "btn btn-primary col-6" @click="startGame" :class="{'disabled': !gameReady}" v-if="currentGameIdentifier == game.identifier">Start</button>
-					<span v-if = "startProblem" class="form-text text-muted">{{startProblem}}</span>
-				</div>
+			<h5>{{game.title}}</h5>
+			<ul class = "list-group-flush" v-if = "currentGameIdentifier == game.identifier">
+				<witb-me @saveNames="saveNames" @saveTeam = "saveTeam" :game="game" :names="names" :team="team"></witb-me>
+				<witb-player v-for = "player in players" :key = "player.identifier" :player="player" v-if="player.identifier!=profile.id"></witb-player>
+			</ul>
+			<br>	
+			<div class = "offset-3 col-6">
+				<button class = "btn btn-primary col-6" @click="chooseGame" v-if="currentGameIdentifier != game.identifier">Join</button>
+				<button class = "btn btn-primary col-6" @click="startGame" :class="{'disabled': !gameReady}" v-if="currentGameIdentifier == game.identifier">Start</button>
+				<span v-if = "startProblem" class="form-text text-muted">{{startProblem}}</span>
 			</div>
 		</div>
 	`
@@ -271,13 +270,6 @@ Vue.component('witb-playspace',{
 				<button @click = "start" class =  "btn btn-primary" v-if = "stage==stages.Ready">Start my go</button>
 				<h6 v-if = "stage<stages.Done">{{timeRemaining}} s</h6>
 				<button @click = "endTurn" class =  "btn btn-primary" v-if = "stage==stages.Finished">End my go</button>
-			</div>
-			<div class="card-body" v-if = "player.identifier == profile.id">
-				<ul>
-					<li v-for = "(turn,index) in game.turns">
-						Turn{{index}}: Team {{turn.teamIndex+1}} player {{game.teams[turn.teamIndex].players[turn.playerIndex].name}} got {{turn.names.length}} names : {{turn.names}}
-					</li>
-				</ul>
 			</div>
 		</div>
 	`	
