@@ -176,6 +176,16 @@ Vue.component('witb-playspace',{
 			namesGot : [],
 		}
 	},
+	computed:{
+		team: function(){
+			console.log(`New team from ${this.game.teamIndex}`)
+			return this.game.teams[this.game.teamIndex]
+		},
+		player: function(){
+			console.log(`New team from ${this.game.teamPlayerIndexes}`)
+			return this.team.players[this.game.teamPlayerIndexes[this.game.teamIndex]]
+		}
+	},
 	watch: {
 		"game.playIndex"(newVal,oldVal){
 			console.log("Resetting")
@@ -246,14 +256,14 @@ Vue.component('witb-playspace',{
 		<div class="card">
 			{{game.title}}:{{game.identifier}}
 			<div class="card-body">
-				<h5 class="card-title">{{game.players[game.playerIndex].name}}'s Turn</h5>
+				<h5 class="card-title">{{player.name}}'s Turn</h5>
     				<h6 class="card-subtitle mb-2 text-muted">{{game.rounds[game.roundIndex]}} round</h6>
 			</div>
-			<ul class="list-group list-group-flush" v-if = "stage<stages.Done && game.players[game.playerIndex].identifier == profile.id">
+			<ul class="list-group list-group-flush" v-if = "stage<stages.Done && player.identifier == profile.id">
 				<witb-playname @gotIt = "gotPass" :name="passed" :canPass = "false"></witb-playname>
 				<witb-playname @gotIt = "gotIt" @passIt = "passIt" :name="nameInPlay" :canPass = "passed == ''"></witb-playname>
 			</ul>
-			<div class="card-body" v-if = "game.players[game.playerIndex].identifier == profile.id">
+			<div class="card-body" v-if = "player.identifier == profile.id">
 				<button @click = "start" class =  "btn btn-primary" v-if = "stage==stages.Ready">Start my go</button>
 				<h6 v-if = "stage<stages.Done">{{timeRemaining}} s</h6>
 				<button @click = "endTurn" class =  "btn btn-primary" v-if = "stage==stages.Finished">End my go</button>
