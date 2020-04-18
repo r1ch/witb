@@ -123,7 +123,7 @@ Vue.component('witb-game',{
 			this.fetchMe()
 		},
 		saveNames(names){
-			this.API("PUT",`/players/${this.profile.id}/names`,{names:names},my=>{
+			this.API("PUT",`/players/${this.profile.id}/names`,{names:this.names.map(name=>name.value).filter(value=>value!="")},my=>{
 				this.remoteNames = my.names || []
 			})
 		},
