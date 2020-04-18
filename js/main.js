@@ -154,7 +154,7 @@ Vue.component('witb-game',{
 
 Vue.component('witb-playspace',{
 	mixins:[APIMixin],
-	inject:['profile','teamColours'],
+	inject:['profile','teams','teamColours'],
 	props: ['game'],
 	data: function(){
 		return {
@@ -251,7 +251,7 @@ Vue.component('witb-playspace',{
 		}
 	},
 	template:`
-		<div class="card" :class = "teamColours(teams[team].livery).card">
+		<div class="card" :class = "teamColours(teams[player.team].livery).card">
 			{{game.title}}:{{game.identifier}}
 			<div class="card-body">
 				<h5 class="card-title">{{player.name}}'s Turn</h5>
