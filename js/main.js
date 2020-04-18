@@ -63,11 +63,9 @@ Vue.component('witb-container',{
 		}
 	},
 	template: `
-		<div class = "row">
-			<ul class="list-group-flush col-sm-12" v-if = "games" >
-				<witb-game @chooseGame= "chooseGame" v-if = "!currentGameIdentifier || (currentGameIdentifier == game.identifier && !game.started)"  v-for = "game in games" :key="game.identifier" :game="game" :currentGameIdentifier = "currentGameIdentifier"></witb-game>
-				<witb-playspace @endTurn = "endTurn" v-if = "currentGame && currentGame.started" :game = "currentGame"></witb-playspace>
-			</ul>
+		<div v-if = "games" >
+			<witb-game @chooseGame= "chooseGame" v-if = "!currentGameIdentifier || (currentGameIdentifier == game.identifier && !game.started)"  v-for = "game in games" :key="game.identifier" :game="game" :currentGameIdentifier = "currentGameIdentifier"></witb-game>
+			<witb-playspace @endTurn = "endTurn" v-if = "currentGame && currentGame.started" :game = "currentGame"></witb-playspace>
 		</div>
 	`
 })
@@ -126,15 +124,18 @@ Vue.component('witb-game',{
 		}
 	},
 	template: `
-		<li class="list-group-item">
-			<h5>{{game.title}}</h5>
-			<button class = "btn btn-primary" @click="chooseGame" v-if="currentGameIdentifier != game.identifier">Join</button>
-			<button class = "btn btn-primary" @click="startGame" :class="{'disabled': !gameReady}" v-if="currentGameIdentifier == game.identifier">Start</button>
-			<ul class = "list-group-flush" v-if = "currentGameIdentifier == game.identifier">
-				<witb-me @saveNames="saveNames" :game="game" :names="names"></witb-me>
-				<witb-player v-for = "player in players" :key = "player.identifier" :player="player" v-if = "player.identifier!=profile.id"></witb-player>
-			</ul>
-		</li>
+		<div class = row>
+				<h5>{{game.title}}</h5>
+				<div class = "col-sm-12">
+					<button class = "btn btn-primary col-sm-6" @click="chooseGame" v-if="currentGameIdentifier != game.identifier">Join</button>
+					<button class = "btn btn-primary col-sm-6" @click="startGame" :class="{'disabled': !gameReady}" v-if="currentGameIdentifier == game.identifier">Start</button>
+				</div>
+				<ul class = "list-group-flush" v-if = "currentGameIdentifier == game.identifier">
+					<witb-me @saveNames="saveNames" :game="game" :names="names"></witb-me>
+					<witb-player v-for = "player in players" :key = "player.identifier" :player="player" v-if = "player.identifier!=profile.id"></witb-player>
+				</ul>
+			</div>
+		</div>
 	`
 })
 
@@ -277,11 +278,11 @@ Vue.component('witb-me',{
 	},
 	template: `
 		<li class="list-group-item">
-			<h5 class="mb-1">{{profile.name}}</h5>
+			<h5>{{profile.name}}</h5>
 			<small>Please pick {{game.namesPerPerson}} names</small>
 			<input v-for = "name in names" v-model="name.value" :key="name.key" class = "col-sm-12 col-md-6"></input><br>
 			<button class = "btn btn-primary" @click="saveNames">Save</button><br>
-			<small>{{names.filter(name=>name!="").length}} names saved</small>
+			<small>{{names.filter(name=>name.lenth>0).length}} names saved</small>
 		</li>
 	`
 })
