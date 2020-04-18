@@ -154,7 +154,7 @@ Vue.component('witb-game',{
 
 Vue.component('witb-playspace',{
 	mixins:[APIMixin],
-	inject:['profile'],
+	inject:['profile','teamColours'],
 	props: ['game'],
 	data: function(){
 		return {
