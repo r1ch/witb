@@ -175,6 +175,12 @@ Vue.component('witb-playspace',{
 		}
 	},
 	computed:{
+		score: function(){
+			return this.game.turns.reduce((map, turn) => ({
+			  ...map,
+			  [turn.teamIndex]: (map[turn.teamIndex] || 0) + 1,
+			}), {})
+		},
 		team: function(){
 			console.log(`New team from ${this.game.teamIndex}, ${JSON.stringify(this.game)}`)
 			return this.game.teams[this.game.teamIndex]
@@ -261,6 +267,7 @@ Vue.component('witb-playspace',{
 			<div class="card-body">
 				<h5 class="card-title">{{player.name}}'s Turn</h5>
     				<h6 class="card-subtitle mb-2 text-muted">{{game.rounds[game.roundIndex]}} round</h6>
+				<span v-for = "(key,value) in scores" class="badge badge-pill" :class="teamColours(teams[key].livery).badge">{{value}}</span>
 			</div>
 			<ul class="list-group list-group-flush" v-if = "stage<stages.Done && player.identifier == profile.id">
 				<witb-playname @gotIt = "gotPass" :name="passed" :canPass = "false"></witb-playname>
@@ -380,7 +387,8 @@ var app = new Vue({
 			teamColours: (livery)=>({
 				li:`list-group-item-${livery}`,
 				button:`btn-${livery}`,
-				card:`border-${livery}`
+				card:`border-${livery}`,
+				badge:`badge-${livery}`
 			})
 			
 		}
