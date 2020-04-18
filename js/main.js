@@ -92,7 +92,7 @@ Vue.component('witb-game',{
 		},
 		names : function(){
 			let n = new Array(this.game.namesPerPerson).fill("")
-			n.shift(this.remoteNames.filter(name=>name!="")
+			n.shift(this.remoteNames.filter(name=>name!=""))
 			return n.slice(0,this.game.namesPerPerson)
 		}
 	},
@@ -135,7 +135,7 @@ Vue.component('witb-game',{
 				<h5>{{game.title}}</h5>
 				<div class = "col-sm-12">
 					<button class = "btn btn-primary col-sm-6" @click="chooseGame" v-if="currentGameIdentifier != game.identifier">Join</button>
-					<button class = "btn btn-primary col-sm-6" @click="startGame" :class="{'disabled': !gameReady}" v-if="currentGameIdentifier == game.identifier">Start</button>
+					<button class = "btn btn-primary col-sm-6" @click="startGame" :class="{'disabled': !gameReady}" v-if="currentGameIdentifier == game.identifier">Start<br><small>{{startProblem}}</small></button>
 				</div>
 				<ul class = "list-group-flush" v-if = "currentGameIdentifier == game.identifier">
 					<witb-me @saveNames="saveNames" @saveTeam = "saveTeam" :game="game" :names="names" :team="team"></witb-me>
