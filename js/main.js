@@ -168,7 +168,7 @@ Vue.component('witb-playspace',{
 			startTime: false,
 			timer: false,
 			timeRemaining: this.game.secondsPerRound,
-			namesLeft : this.game.namesLeftThisRound,
+			namesLeft : JSON.parse(JSON.stringify(this.game.namesLeftThisRound)),
 			nameInPlay : "",
 			passed : "",
 			namesGot : [],
