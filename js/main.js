@@ -257,13 +257,13 @@ Vue.component('witb-playname',{
 Vue.component('witb-me',{
 	inject: ['teams'],
 	props: ['game','player'],
-	data: function(){
-		console.log(this.player)
-		return {
-			names: this.player.names,
-			team: this.player.team
+	computed: {
+		names : function(){
+			let list = Array(this.game.namesPerPerson).fill("")
+			if(this.player && this.player.names) list.shift(this.player.names.filter(name=>name!=""))
+			return list.splice(0,this.game.namesPerPerson)
 		}
-	},
+	}
 	methods: {
 		saveNames: function(){
 			this.$emit("saveNames",this.names)
