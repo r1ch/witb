@@ -91,8 +91,9 @@ Vue.component('witb-game',{
 			return this.startProblem == ""
 		},
 		names : function(){
+			console.log(`Compiling names : from ${this.remoteNames}`)
 			let n = new Array(this.game.namesPerPerson).fill("")
-			n.shift(this.remoteNames.filter(name=>name!=""))
+			if(this.remoteNames) n.shift(this.remoteNames.filter(name=>name!=""))
 			return n.slice(0,this.game.namesPerPerson)
 		}
 	},
