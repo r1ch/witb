@@ -322,9 +322,9 @@ Vue.component('witb-me',{
 })
 
 Vue.component('witb-player',{
-	props: ['player'],
+	props: ['player','teams','liTeamClass'],
 	template: `
-		  <li class="list-group-item">
+		  <li class="list-group-item" :class="liTeamClass(teams[player.team].livery)">
 			<span class = "title">{{player.name}}</span>
 			<span class="badge badge-primary badge-pill">{{player.numberOfNames}}</span>
 		  </li>
