@@ -282,7 +282,7 @@ Vue.component('witb-me',{
 				<label class="col-2">Team</label> 
 				<div class="col-10">
 					<div class="btn-group" role="group">
-						<button v-for = "team in teams">{{team}}</button>
+						<button v-for = "team in teams" :key="team.key" class = "btn" :class = `{"btn-primary":true}'>{{team.name}}</button>
 					</div>
 					<span class="form-text text-muted">Pick your team</span>
 				</div>
@@ -339,10 +339,10 @@ var app = new Vue({
 			profile: this.profile,
 			listenFor: this.listenFor,
 			teams: [
-				{name:"1",livery:"primary",key:0,liClass:"list-item-group-primary",bClass:"btn-primary"},
-				{name:"2",livery:"success",key:1,liClass:"list-item-group-success",bClass:"btn-success"},
-				{name:"3",livery:"danger",key:2,liClass:"list-item-group-danger",bClass:"btn-danger"},
-				{name:"4",livery:"warning",key:3,liClass:"list-item-group-warning",bClass:"btn-warning"}
+				{name:"1",livery:"primary",key:0},
+				{name:"2",livery:"success",key:1},
+				{name:"3",livery:"danger",key:2},
+				{name:"4",livery:"warning",key:3}
 			]
 		}
 	},
