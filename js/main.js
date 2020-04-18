@@ -296,7 +296,6 @@ Vue.component('witb-me',{
 			<div class="form-group row">
 				<div class="offset-2 col-10">
 					<button @click = "saveNames" class="btn btn-primary">Save Names</button>
-					<span class="form-text text-muted">{{player.names.filter(name=>name.length>0).length}} names saved</span>
 				</div>
 			</div>
 		</li>
