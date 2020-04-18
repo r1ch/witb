@@ -282,9 +282,7 @@ Vue.component('witb-me',{
 				<label class="col-2">Team</label> 
 				<div class="col-10">
 					<div class="btn-group" role="group">
-						<button @click = "saveTeam(team.key)" type="button" class="btn btn-primary" :class="{'active': player.team == team.key, teams[player.team].liClass:player.team}" v-for = "team in teams" :key = "team.key">
-							{{team.name}}
-						</button>
+						<button v-for = "team in teams">{{team}}</button>
 					</div>
 					<span class="form-text text-muted">Pick your team</span>
 				</div>
