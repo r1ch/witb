@@ -284,7 +284,7 @@ Vue.component('witb-me',{
 		}
 	},
 	template: `
-		<li class="list-group-item" :class = "liTeamClass(teams[team].livery)">
+		<li class="list-group-item">
 			<div class="form-group row">
 				<label class="col-2">Team</label> 
 				<div class="col-10">
