@@ -86,7 +86,7 @@ Vue.component('witb-game',{
 		gameReady : function(){
 			if(this.game.identifier != this.currentGameIdentifier) this.startProblem = "Not in this game"
 			else if(this.players.length <= 1) this.startProblem = "Not enough players"
-			else if(this.players.filter(player=>player.numberOfNames != this.game.namesPerPerson).length !=0) this.startProblem = "Some player missing names"
+			else if(this.players.filter(player=>player.numberOfNames != this.game.namesPerPerson).length !=0) this.startProblem = "Some players missing names"
 			else this.startProblem = ""
 			return this.startProblem == ""
 		},
