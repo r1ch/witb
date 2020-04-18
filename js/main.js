@@ -139,14 +139,16 @@ Vue.component('witb-game',{
 	template: `
 		<div class = row>
 				<h5>{{game.title}}</h5>
-				<div class = "col-sm-12">
-					<button class = "btn btn-primary col-sm-6" @click="chooseGame" v-if="currentGameIdentifier != game.identifier">Join</button>
-					<button class = "btn btn-primary col-sm-6" @click="startGame" :class="{'disabled': !gameReady}" v-if="currentGameIdentifier == game.identifier">Start<br><small>{{startProblem}}</small></button>
-				</div>
 				<ul class = "list-group-flush" v-if = "currentGameIdentifier == game.identifier">
 					<witb-me @saveNames="saveNames" @saveTeam = "saveTeam" :game="game" :names="names" :team="team"></witb-me>
 					<witb-player v-for = "player in players" :key = "player.identifier" :player="player" v-if="player.identifier!=profile.id"></witb-player>
 				</ul>
+				<br>	
+				<div class = "offset-sm-3 col-sm-6">
+					<button class = "btn btn-primary col-sm-6" @click="chooseGame" v-if="currentGameIdentifier != game.identifier">Join</button>
+					<button class = "btn btn-primary col-sm-6" @click="startGame" :class="{'disabled': !gameReady}" v-if="currentGameIdentifier == game.identifier">Start</button>
+					<span v-if = "startProblem" class="form-text text-muted">{{startProblem}}</span>
+				</div>
 			</div>
 		</div>
 	`
