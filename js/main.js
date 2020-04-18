@@ -372,8 +372,11 @@ var app = new Vue({
 				{name:"3",livery:"danger",key:2},
 				{name:"4",livery:"warning",key:3}
 			],
-			liTeamClass: (livery)=>`list-group-item-${livery}`,
-			buttonTeamClass: (livery)=>`btn-${livery}`
+			teamColours: (livery)=>({
+				li:`list-group-item-${livery}`,
+				button:`btn-${livery}`,
+				card:`bg-${livery}`
+			})
 			
 		}
 	},
