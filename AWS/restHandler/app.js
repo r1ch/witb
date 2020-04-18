@@ -37,6 +37,7 @@ router.get('/',(req,res) => {
     res.redirect(301,"https://witb.bradi.sh/")
 })
 
+//List all games
 router.get('/games', asyncHandler(async (req, res) => {
     let games = []
     for await (const game of mapper.query(Game, {recordType: 'GAME'})) {
@@ -45,14 +46,17 @@ router.get('/games', asyncHandler(async (req, res) => {
     res.json(games)
 }))
 
+//Get a specific game
 router.get('/games/:game', (req, res) => {
     mapper.get(Object.assign(new Game, {identifier: req.params.game}))
     .then(res.json.bind(res))
     .catch(err => {
+        console.log(err)
         res.status(404).send(`No game found for ID: ${req.params.game}`)
     })
 })
 
+//Join a player to a game (upsert a player association)
 router.put('/games/:game/players', (req, res)=>{
     let player = new Player();
     player.identifier = req.body.id
@@ -62,6 +66,7 @@ router.put('/games/:game/players', (req, res)=>{
     mapper.update(player,{onMissing: 'skip'}).then(res.json.bind(res))
 })
 
+//Get all players in a game
 router.get('/games/:game/players', asyncHandler(async (req, res) => {
     let players = []
     for await (const player of mapper.query(Player, {recordType: 'PLAYER', association: req.params.game}, {indexName: 'index'})) {
@@ -70,67 +75,87 @@ router.get('/games/:game/players', asyncHandler(async (req, res) => {
     res.json(players)
 }))
 
-router.get('/games/:game/players/:player/names', asyncHandler(async (req, res) => {
+//Get a player
+router.get('/players/:player', (req, res) => {
     mapper.get(Object.assign(new Player, {identifier: req.params.player}))
-    .then((player)=>{
-        console.log(JSON.stringify(player))
+    .then(res.json.bind(res))
+    .catch(err => {
+        console.log(err)
+        res.status(404).send(`No player found for ID: ${req.params.player}`)
+    })
+})
+
+//Update a player's names
+router.put('/players/:player/names', (req, res)=>{
+    let player = new Player();
+    player.identifier = req.params.player
+    player.names = req.body.names
+    mapper.update(player,{onMissing: 'skip'}).then(res.json.bind(res))
+})
+
+//Get a player's names
+router.get('/players/:player/names', (req, res) => {
+    mapper.get(Object.assign(new Player, {identifier: req.params.player}))
+    .then(player=>{
         res.json(namesOf(player))
     })
     .catch(err => {
         console.log(err)
-        res.status(404).send(`No names found for player with ID: ${req.params.player}, ${err}`)
-    })
-}))
-
-router.put('/games/:game/players/:player/names', (req, res)=>{
-    let player = new Player();
-    player.identifier = req.params.player
-    player.names = req.body
-    mapper.update(player,{onMissing: 'skip'}).then((player)=>{
-        res.json(namesOf(player))
+        res.status(404).send(`No game found for ID: ${req.params.player}`)
     })
 })
 
-router.get('/games/:game/names', asyncHandler(async (req, res) => {
-    let names = []
-    for await (const player of mapper.query(Player, {recordType: 'PLAYER', association: req.params.game}, {indexName: 'index'})) {
-        names.push(...namesOf(player))
-    }
-    res.json(names)
-}))
-
-router.put('/players', (req, res)=>{
+//Update a player's team
+router.put('/players/:player/team', (req, res)=>{
     let player = new Player();
-    player.identifier = req.body.id
-    player.url = req.body.url
-    player.name = req.body.name
+    player.identifier = req.params.player
+    player.team = req.body.team
     mapper.update(player,{onMissing: 'skip'}).then(res.json.bind(res))
 })
 
-router.get('/players', asyncHandler(async (req, res) => {
-    let players = []
-    for await (const player of mapper.query(Player, {recordType: 'PLAYER'})) {
-        players.push(simple(player))
-    }
-    res.json(players)
-}))
+//Get a player's team
+router.get('/players/:player/team', (req, res) => {
+    mapper.get(Object.assign(new Player, {identifier: req.params.player}))
+    .then(player=>{
+        res.json(teamOf(player))
+    })
+    .catch(err => {
+        console.log(err)
+        res.status(404).send(`No player found for ID: ${req.params.player}`)
+    })
+})
 
 router.post('/games/:game/start', asyncHandler(async (req, res) => {
+    console.log("Starting game")
     let names = []
-    let players = []
+    let t = {}
     for await (const player of mapper.query(Player, {recordType: 'PLAYER', association: req.params.game}, {indexName: 'index'})) {
         names.push(...namesOf(player))
-        players.push(player)
+        if(!t[player.team]){
+            t[player.team] = {
+                team : player.team,
+                players : [player],
+            }
+        } else {
+            t[player.team].players.push(player)
+        }
+    }
+    let teams = []
+    for(let key of Object.keys(t)){
+        teams.push(t[key])
     }
     let game = new Game()
     game.identifier = req.params.game
     game.names = names
     game.namesLeftThisRound = names
-    game.players = players
+    game.teams = teams
+    game.teamIndex = 0
+    game.teamPlayerIndex = Array(teams.length).fill(0)
     game.playIndex = 0
-    game.playerIndex = 0
     game.roundIndex = 0
     game.started = true
+    game.ended = false
+    console.log(JSON.stringify(game))
     mapper.update(game,{onMissing: 'skip'}).then((game)=>{
         res.json(game)
     })
@@ -141,32 +166,42 @@ router.put('/games/:game/turn', asyncHandler(async (req, res) => {
     let game = Object.assign(new Game(),req.body.game)
     let namesGot = req.body.namesGot
     //record their progress
-    game.turns = game.turns || [];
-    game.turns[game.playIndex] = {
-        round: game.roundIndex,
-        player: game.players[game.playerIndex],
-        names: namesGot
-    }
-    //prune names
-    console.log(`Filtering: ${JSON.stringify(namesGot)}: ${JSON.stringify(game.namesLeftThisRound)}`)
-    game.namesLeftThisRound = game.namesLeftThisRound.filter(name=>{
-        console.log(`Filtering ${name}`)
-        let at = namesGot.indexOf(name)
-        if(at>=0){
-            console.log(`Filtering: ${JSON.stringify(namesGot)}: ${JSON.stringify(game.namesLeftThisRound)}`)
-            namesGot.splice(at,1)
-            return false
+    if(!game.ended){
+        game.turns = game.turns || [];
+        game.turns[game.playIndex] = {
+            roundIndex: game.roundIndex,
+            teamIndex: game.teamIndex,
+            playerIndex: game.teamPlayerIndex[game.teamIndex],
+            names: namesGot
         }
-        return true
-    })
+        //prune names
+        console.log(`Filtering: ${JSON.stringify(namesGot)}: ${JSON.stringify(game.namesLeftThisRound)}`)
+        game.namesLeftThisRound = game.namesLeftThisRound.filter(name=>{
+            console.log(`Filtering ${name}`)
+            let at = namesGot.indexOf(name)
+            if(at>=0){
+                console.log(`Filtering: ${JSON.stringify(namesGot)}: ${JSON.stringify(game.namesLeftThisRound)}`)
+                namesGot.splice(at,1)
+                return false
+            }
+            return true
+        })
+    }
     
     if(game.namesLeftThisRound.length==0){
-        game.roundIndex++
-        game.namesLeftThisRound = game.names
+        if(game.roundIndex<game.rounds.length){
+            game.roundIndex++
+            game.namesLeftThisRound = game.names
+        } else {
+            game.ended = true
+        }
     }
     
-    game.playIndex++
-    game.playerIndex = (game.playerIndex+1)%game.players.length
+    if(!game.ended){
+        game.playIndex++
+        game.teamPlayerIndex[game.teamIndex] = (game.teamPlayerIndex[game.teamIndex]+1)%game.teams[game.teamIndex].players.length
+        game.teamIndex = game.playIndex%game.teams.length
+    }
     console.log(JSON.stringify(game))
     mapper.update(game,{onMissing: 'skip'}).then((game)=>{
         res.json(game)
@@ -189,6 +224,11 @@ const simple = (player)=>{
 const namesOf = (player)=>{
     if (player.names) return player.names
     else return []
+}
+
+const teamOf = (player)=>{
+    if (player.team) return player.team
+    else return 0
 }
 
 class Game {
@@ -215,34 +255,37 @@ Object.defineProperties(Game.prototype, {
             },
             title: {type : 'String'},
             rounds: {type: 'List', memberType: {type: 'String'}},
-            roundIndex: {type: 'Number'},
             secondsPerRound: {type: 'Number'},
             namesPerPerson: {type: 'Number'},
             names: {type: 'List', memberType: {type: 'String'}},
             namesLeftThisRound: {type: 'List', memberType: {type: 'String'}},
             turns: {type: 'List', memberType: {type: 'Document',
                 members: {
-                    round: {type:'Number'},
-                    player: {type: 'Document',
-                        members: {
-                            url: {type : 'String'},
-                            identifier: {type : 'String'},
-                            name: {type : 'String'}
-                        }
-                    },
+                    roundIndex: {type:'Number'},
+                    teamIndex: {type:'Number'},
+                    playerIndex: {type:'Number'},
                     names: {type: 'List', memberType: {type: 'String'}},
                 }   
             }},
-            players: {type: 'List', memberType: {type: 'Document',
+            teams: {type: 'List', memberType: {type: 'Document',
                 members: {
-                    url: {type : 'String'},
-                    identifier: {type : 'String'},
-                    name: {type : 'String'}
+                    team: {type:'Number'},
+                    players: {type: 'List', memberType: {type: 'Document',
+                        members: {
+                            url: {type : 'String'},
+                            identifier: {type : 'String'},
+                            name: {type : 'String'},
+                            team: {type : 'Number'}
+                        }
+                    }}
                 }
             }},
-            playerIndex: {type: 'Number'},
             playIndex: {type: 'Number'},
-            started: {type: 'Boolean'}
+            roundIndex: {type: 'Number'},
+            teamIndex : {type: 'Number'},
+            teamPlayerIndex : {type: 'List', memberType: {type: 'Number'}},
+            started: {type: 'Boolean'},
+            ended: {type: 'Boolean'}
         },
     },
 });
@@ -274,6 +317,10 @@ Object.defineProperties(Player.prototype, {
             url: {type: 'String'},
             association: {type: 'String'},
             names: {type: 'List', memberType: {type: 'String'}},
+            team: {
+                type : 'Number',
+                defaultProvider: ()=>0
+            }
         },
     },
 });
