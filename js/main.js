@@ -126,7 +126,7 @@ Vue.component('witb-game',{
 		}
 	},
 	template: `
-		<li class="list-group-item flex-column align-items-start">
+		<li class="list-group-item">
 			<h5>{{game.title}}</h5>
 			<button class = "btn btn-primary" @click="chooseGame" v-if="currentGameIdentifier != game.identifier">Join</button>
 			<button class = "btn btn-primary" @click="startGame" :class="{'disabled': !gameReady}" v-if="currentGameIdentifier == game.identifier">Start</button>
@@ -276,11 +276,9 @@ Vue.component('witb-me',{
 		}
 	},
 	template: `
-		<li class="list-group-item flex-column align-items-start">
-			<div class="d-flex w-100 justify-content-between">
-				<h5 class="mb-1">{{profile.name}}</h5>
-				<small>Please pick {{game.namesPerPerson}} names</small>
-			</div>
+		<li class="list-group-item">
+			<h5 class="mb-1">{{profile.name}}</h5>
+			<small>Please pick {{game.namesPerPerson}} names</small>
 			<input v-for = "name in names" v-model="name.value" :key="name.key" class = "col-sm-12 col-md-6"></input><br>
 			<button class = "btn btn-primary" @click="saveNames">Save</button><br>
 			<small>{{names.filter(name=>name!="").length}} names saved</small>
@@ -291,7 +289,7 @@ Vue.component('witb-me',{
 Vue.component('witb-player',{
 	props: ['player'],
 	template: `
-		  <li class="list-group-item d-flex justify-content-between align-items-center">
+		  <li class="list-group-item">
 			<span class = "title">{{player.name}}</span>
 			<span class="badge badge-primary badge-pill">{{player.numberOfNames}}</span>
 		  </li>
