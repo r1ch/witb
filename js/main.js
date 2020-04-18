@@ -244,6 +244,7 @@ Vue.component('witb-playspace',{
 	},
 	template:`
 		<div class="card">
+			{{game.title}}:{{game.identifier}}
 			<div class="card-body">
 				<h5 class="card-title">{{game.players[game.playerIndex].name}}'s Turn</h5>
     				<h6 class="card-subtitle mb-2 text-muted">{{game.rounds[game.roundIndex]}} round</h6>
