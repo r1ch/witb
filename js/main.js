@@ -31,7 +31,7 @@ Vue.component('google-login', {
 	}
 })
 
-Vue.component('witb-games',{
+Vue.component('witb-container',{
 	mixins:[APIMixin],
 	inject:['profile','listenFor'],
 	data: ()=>({
@@ -64,8 +64,8 @@ Vue.component('witb-games',{
 	},
 	template: `
 		<div class = "row">
-			<ul class="list-group" v-if = "games" >
-				<witb-game @chooseGame= "chooseGame" v-if = "!currentGameIdentifier || currentGameIdentifier == game.identifier"  v-for = "game in games" :key="game.identifier" :game="game" :currentGameIdentifier = "currentGameIdentifier"></witb-game>
+			<ul class="list-group-flush col-sm-12" v-if = "games" >
+				<witb-game @chooseGame= "chooseGame" v-if = "!currentGameIdentifier || (currentGameIdentifier == game.identifier && !game.started)"  v-for = "game in games" :key="game.identifier" :game="game" :currentGameIdentifier = "currentGameIdentifier"></witb-game>
 				<witb-playspace @endTurn = "endTurn" v-if = "currentGame && currentGame.started" :game = "currentGame"></witb-playspace>
 			</ul>
 		</div>
@@ -79,7 +79,8 @@ Vue.component('witb-game',{
 	data: function(){
 		return{
 			players:[],
-			remoteNames:[]
+			remoteNames:[],
+			startProblem: ""
 		}
 	},
 	computed: {
@@ -94,9 +95,11 @@ Vue.component('witb-game',{
 			return list
 		},
 		gameReady : function(){
-			return 	this.game.identifier == this.currentGameIdentifier && 
-				this.players.length > 1 &&
-				this.players.filter(player=>player.numberOfNames != this.game.namesPerPerson).length == 0
+			if(this.game.identifier != this.currentGameIdentifier) this.startProblem = "Not in this game"
+			else if(this.players.length <= 1) this.startProblem = "Not enough players"
+			else if(this.players.filter(player=>player.numberOfNames != this.game.namesPerPerson).length !=0) this.startProblem = "Some player missing names"
+			else this.startProblem = ""
+			return this.startProblem == ""
 		}
 	},
 	mounted: function(){
@@ -126,8 +129,8 @@ Vue.component('witb-game',{
 		<li class="list-group-item">
 			{{game.title}}
 			<button class = "btn btn-primary" @click="chooseGame" v-if="currentGameIdentifier != game.identifier">Join</button>
-			<button class = "btn btn-primary" @click="startGame" :class="{'disabled': !gameReady}" v-if="currentGameIdentifier == game.identifier && !game.started">Start</button>
-			<ul class = "list-group" v-if = "currentGameIdentifier == game.identifier && !game.started">
+			<button class = "btn btn-primary" @click="startGame" :class="{'disabled': !gameReady}" v-if="currentGameIdentifier == game.identifier">Start</button>
+			<ul class = "list-group-flush" v-if = "currentGameIdentifier == game.identifier">
 				<witb-me @saveNames="saveNames" :game="game" :names="names"></witb-me>
 				<witb-player v-for = "player in players" :key = "player.identifier" :player="player" v-if = "player.identifier!=profile.id"></witb-player>
 			</ul>
@@ -273,12 +276,14 @@ Vue.component('witb-me',{
 		}
 	},
 	template: `
-		<li class="list-group-item">
-			<img :src="profile.url" class="rounded-circle"></img>
-			<span class = "title">{{profile.name}}</span>
-			<p>Please pick {{game.namesPerPerson}} names</p>
-			<input v-for = "name in names" v-model="name.value" :key="name.key"></input>
+		<li class="list-group-item flex-column align-items-start">
+			<div class="d-flex w-100 justify-content-between">
+				<h5 class="mb-1">{{profile.name}}</h5>
+				<small>Please pick {{game.namesPerPerson}} names</small>
+			</div>
+			<input v-for = "name in names" v-model="name.value" :key="name.key"></input><br>
 			<button class = "btn btn-primary" @click="saveNames">Save</button>
+			<small>{{names.filter(name!="").length}} names saved</span>
 		</li>
 	`
 })
@@ -286,11 +291,10 @@ Vue.component('witb-me',{
 Vue.component('witb-player',{
 	props: ['player'],
 	template: `
-		<li class="list-group-item">
-			<img :src="player.url" class = "circle"></img>
+		  <li class="list-group-item d-flex justify-content-between align-items-center">
 			<span class = "title">{{player.name}}</span>
-			<p>Names done: {{player.numberOfNames}}</p>
-		</li>
+			<span class="badge badge-primary badge-pill">{{player.numberOfNames}}</span>
+		  </li>
 	`
 })
 
@@ -326,13 +330,15 @@ var app = new Vue({
 		this.socket.onmessage = event=>{
 			this.messages.unshift(event.data)
 			if(this.messages.length > 3) this.mesages.pop()
-			setTimeout(()=>{this.messages.pop()},5000)
+			setTimeout(()=>{
+				this.messages && this.message.pop()
+			},5000)
 		}
 	},
 	template: `
 		<div class = "container">
 			<google-login @userReady = "userReady"></google-login>
-			<witb-games></witb-games>
+			<witb-container></witb-container>
 			<span class = "badge badge-pill badge-primary" v-for = "message in messages">
 				{{message.substring(0,1)}}		
 			</span>
