@@ -322,7 +322,8 @@ Vue.component('witb-me',{
 })
 
 Vue.component('witb-player',{
-	props: ['player','teams','liTeamClass'],
+	props: ['player'],
+	inject:['teams','liTeamClass'],
 	template: `
 		  <li class="list-group-item" :class="liTeamClass(teams[player.team].livery)">
 			<span class = "title">{{player.name}}</span>
