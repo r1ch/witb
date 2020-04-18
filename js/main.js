@@ -91,11 +91,15 @@ Vue.component('witb-game',{
 			return this.startProblem == ""
 		},
 		names : function(){
-			console.log(`Compiling names : from ${this.remoteNames}`)
-			let n = new Array(this.game.namesPerPerson).fill("")
-			if(this.remoteNames) n.shift(this.remoteNames.filter(name=>name!=""))
-			return n.slice(0,this.game.namesPerPerson)
-		}
+			let list = []
+			for(let i=0;i<this.game.namesPerPerson;i++){
+				list.push({
+					key:i,
+					value: this.remoteNames[i]||""
+				})
+			}
+			return list
+		},
 	},
 	mounted: function(){
 		this.fetchOthers()
@@ -300,7 +304,6 @@ Vue.component('witb-me',{
 			<div class="form-group row">
 				<label class="col-4 col-form-label">Names</label> 
 				<div class="col-8">
-					{{names}}
 					<input v-for = "name in names" v-model="name.value" :key="name.key" type="text" required="required" class="form-control">
 					<span class="form-text text-muted">Pick {{game.namesPerPerson}} names</span>
 				</div>
