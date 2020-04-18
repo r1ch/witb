@@ -144,9 +144,9 @@ Vue.component('witb-game',{
 					<witb-player v-for = "player in players" :key = "player.identifier" :player="player" v-if="player.identifier!=profile.id"></witb-player>
 				</ul>
 				<br>	
-				<div class = "offset-sm-3 col-sm-6">
-					<button class = "btn btn-primary col-sm-6" @click="chooseGame" v-if="currentGameIdentifier != game.identifier">Join</button>
-					<button class = "btn btn-primary col-sm-6" @click="startGame" :class="{'disabled': !gameReady}" v-if="currentGameIdentifier == game.identifier">Start</button>
+				<div class = "offset-3 col-6">
+					<button class = "btn btn-primary col-6" @click="chooseGame" v-if="currentGameIdentifier != game.identifier">Join</button>
+					<button class = "btn btn-primary col-6" @click="startGame" :class="{'disabled': !gameReady}" v-if="currentGameIdentifier == game.identifier">Start</button>
 					<span v-if = "startProblem" class="form-text text-muted">{{startProblem}}</span>
 				</div>
 			</div>
@@ -246,7 +246,7 @@ Vue.component('witb-playspace',{
 		<div class="card">
 			<div class="card-body">
 				<h5 class="card-title">{{game.title}}</h5>
-    				<h6 class="card-subtitle mb-2 text-muted">{{game.players{{game.rounds[game.roundIndex]}} round</h6>
+    				<h6 class="card-subtitle mb-2 text-muted">{{game.players}} {{game.rounds[game.roundIndex]}} round</h6>
 			</div>
 			<ul class="list-group list-group-flush" v-if = "stage<stages.Done"><!-- v-if = "game.players[game.playerIndex].identifier == profile.id">-->
 				<witb-playname @gotIt = "gotPass" :name="passed" :canPass = "false"></witb-playname>
