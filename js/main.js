@@ -136,7 +136,7 @@ Vue.component('witb-game',{
 	},
 	template: `
 		<div class = row>
-			<h5>{{game.title}}</h5>
+			<h5 class = "col-12">{{game.title}}</h5>
 			<ul class = "list-group-flush" v-if = "currentGameIdentifier == game.identifier">
 				<witb-me @saveNames="saveNames" @saveTeam = "saveTeam" :game="game" :names="names" :team="team"></witb-me>
 				<witb-player v-for = "player in players" :key = "player.identifier" :player="player" v-if="player.identifier!=profile.id"></witb-player>
@@ -191,7 +191,7 @@ Vue.component('witb-playspace',{
 	},
 	watch: {
 		"game.playIndex"(newVal,oldVal){
-			if(this.stage == this.stages.Done){
+			if(this.stage >= this.stages.Done){
 				console.log("After go, clean up")
 				this.startTime = false
 				this.timer && clearInterval(this.time)
