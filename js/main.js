@@ -192,8 +192,7 @@ Vue.component('witb-playspace',{
 	},
 	watch: {
 		"game.playIndex"(newVal,oldVal){
-			if(this.stage >= this.stages.Done){
-				console.log("After go, clean up")
+				console.log("Clean-up as new player")
 				this.startTime = false
 				this.timer && clearInterval(this.time)
 				this.timer = false
@@ -202,11 +201,12 @@ Vue.component('witb-playspace',{
 				this.nameInPlay = ""
 				this.passed = ""
 				this.namesGot = []
-				this.stage = this.stages.Next
-			} else {
-				console.log("Pre go, prepare")
-				this.namesLeft = this.game.namesLeftThisRound
+			if(this.player.identifier == this.profile.id){
+				console.log("It's my go!")
 				this.stage = this.stages.Ready
+			} else {
+				console.log("Someone else's go...")
+				this.stage = this.stages.Next
 			}
 		}
 	},
