@@ -1,7 +1,5 @@
 ---
 layout: default
 ---
-<div id = "app">
-    <version-stamp></version-stamp>
-</div>
+<div id = "app"></div>
 <script src = "js/main.js?{{site.github.build_revision}}"></script>
