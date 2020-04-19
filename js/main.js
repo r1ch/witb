@@ -142,10 +142,11 @@ Vue.component('witb-game',{
 				<witb-player v-for = "player in players" :key = "player.identifier" :player="player" v-if="player.identifier!=profile.id"></witb-player>
 			</ul>
 			<br>	
-			<div class = "offset-3 col-6">
+			<div class = "col-12">
+				<small class= "col-6">{{game.namesPerPerson}} names, {{game.secondsPerRound}}s/turn</small>
 				<button class = "btn btn-primary col-6" @click="chooseGame" v-if="currentGameIdentifier != game.identifier">Join</button>
 				<button class = "btn btn-primary col-6" @click="startGame" :class="{'disabled': !gameReady}" v-if="currentGameIdentifier == game.identifier">Start</button>
-				<span v-if = "startProblem" class="form-text text-muted">{{startProblem}}</span>
+				<span v-if = "startProblem" class="form-text text-muted col-6">{{startProblem}}</span>
 			</div>
 		</div>
 	`
