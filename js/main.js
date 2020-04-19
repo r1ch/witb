@@ -360,7 +360,9 @@ var app = new Vue({
 	data: {
 		profile: {ready:false,id:0,name:'',url:'',token:''},
 		socket: null,
-		messages: []
+		messages: [],
+		version:version,
+		revision:revision
 	},
 	methods:{
 		userReady(event){
