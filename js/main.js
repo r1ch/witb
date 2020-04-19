@@ -362,7 +362,7 @@ var app = new Vue({
 		socket: null,
 		messages: [],
 		version:version,
-		revision:revision
+		revision:revision.substring(0,5)
 	},
 	methods:{
 		userReady(event){
