@@ -411,6 +411,9 @@ var app = new Vue({
 			<witb-container></witb-container>
 			<span class = "badge badge-pill badge-primary" v-for = "message in messages">
 				{{message.substring(0,1)}}		
+			</span><br>
+			<span class = "badge badge-pill badge-info">
+				{{revision}}:{{version}}		
 			</span>
 		</div>
 	`
