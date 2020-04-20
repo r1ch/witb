@@ -436,7 +436,7 @@ var app = new Vue({
 			<google-login @userReady = "userReady"></google-login>
 			<witb-container></witb-container>
 			<span class = "badge badge-pill badge-primary" v-for = "message in messages">
-				{{message.eventType.substring(0,1)}}		
+				{{message.substring(0,1)}}		
 			</span><br>
 			<span class = "badge badge-pill badge-info">
 				{{revision}}:{{version}}		
