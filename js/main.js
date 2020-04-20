@@ -429,9 +429,11 @@ var app = new Vue({
 		this.listenFor("*",(data)=>{
 			this.messages.unshift(data.eventType)
 			if(this.messages.length > 3) this.messages.pop()
-			setTimeout(()=>{
-				if(this.messages) this.messages.pop()
-			},5000)
+			else {
+				setTimeout(()=>{
+					if(this.messages) this.messages.pop()
+				},2000)
+			}
 		})
 	},
 	template: `
