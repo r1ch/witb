@@ -380,7 +380,16 @@ var app = new Vue({
 			this.profile.ready = true
 		},
 		listenFor(key,handler){
-			this.socket.addEventListener("message",event=>event.data.eventType == key ? handler() : false)
+			this.socket.addEventListener("message",event=>{
+				let data = event && event.data
+				try{
+					data = JSON.parse(data)
+				} catch(err){
+					console.err(`Error in parse of ${JSON.stringify(event)} data`)
+					data = false
+				}
+				data && data.eventType && data.eventType == key ? handler(data) : false
+			})
 		},
 		sendMessage(eventType,eventDetail){
 			this.socket.send({
