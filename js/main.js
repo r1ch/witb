@@ -154,7 +154,7 @@ Vue.component('witb-game',{
 
 Vue.component('witb-playspace',{
 	mixins:[APIMixin],
-	inject:['profile','teams','teamColours'],
+	inject:['profile','teams','teamColours','sendMessage','listenFor'],
 	props: ['game'],
 	data: function(){
 		return {
@@ -233,6 +233,11 @@ Vue.component('witb-playspace',{
 		},
 		tick : function(){
 			this.timeRemaining = Math.max((this.startTime+this.game.secondsPerRound*1000-Date.now())/1000|0,0)
+			this.timeRemaining % 5 == 0 && this.sendMessage({
+				player: this.profile.id,
+				playerEpoch: (new Date()).getTime(),
+				playerSeconds: this.timeRemaining
+			})
 			if(this.timeRemaining <= 0){
 				clearInterval(this.timer)
 				this.stage = this.stages.Finished
