@@ -165,11 +165,11 @@ Vue.component('witb-playspace',{
 				Done:3,
 				Next:4
 			},
-			stage: 0,
+			stage:0,
 			startTime: false,
 			timer: false,
 			timeRemaining: this.game.secondsPerRound,
-			remoteTimeRemaining: false,
+			remoteTimeRemaining: this.game.secondsPerRound,
 			namesLeft : this.game.namesLeftThisRound,
 			nameInPlay : "",
 			passed : "",
@@ -179,7 +179,15 @@ Vue.component('witb-playspace',{
 	mounted: function(){
 		this.listenFor("TIMER",(data)=>{
 			let timerMessage = data.eventDetail
-			console.log(`Remote states ${JSON.stringify(timerMessage)}`)
+			//do we trust the clock?
+			let jitter = (new Date()).getTime-timerMessage.playerEpoch
+			if(jitter < 0 && jitter > 2000){
+				//use network jitter correction if we get causal messages within 2 seconds
+				jitter = 0
+			} else {
+				console.log(`Jitter: ${jitter}`)
+			}
+			this.remoteTimeRemaining = Math.max(0,timerMessage.playerSeconds - jitter/1000)
 		})
 	},
 	computed:{
@@ -189,6 +197,12 @@ Vue.component('witb-playspace',{
 			  ...map,
 			  [turn.teamIndex]: (map[turn.teamIndex] || 0) + turn.names.length,
 			}), {})
+		},
+		localTimePercentage: function(){
+			return `width: ${this.timeRemaining/this.game.secondsPerRound * 100}%`;
+		},
+		remoteTime:function(){
+			return `width: ${this.remoteTimeRemaining/this.game.secondsPerRound * 100}%`;
 		},
 		team: function(){
 			return this.game.teams[this.game.teamIndex]
@@ -283,7 +297,10 @@ Vue.component('witb-playspace',{
 			</ul>
 			<div class="card-body" v-if = "!game.ended && player.identifier == profile.id">
 				<button @click = "start" class =  "btn btn-primary" v-if = "stage==stages.Ready">Start my go</button>
-				<h6 v-if = "stage<stages.Done">{{timeRemaining}} s</h6>
+				<div class="progress" style="height: 20px;">
+					<div class="progress-bar" role="progressbar" :style="localTimeWidth">{{timeRemaining}}s</div>
+					<div class="progress-bar" role="progressbar" :style="remoteTimeWidth">{{remoteTimeRemaining}}s</div>
+				</div>
 				<button @click = "endTurn" class =  "btn btn-primary" v-if = "stage==stages.Finished">End my go<br><small>Got {{namesGot.length}}</small></button>
 			</div>
 		</div>
