@@ -180,7 +180,7 @@ Vue.component('witb-playspace',{
 		this.listenFor("TIMER",(data)=>{
 			let timerMessage = data.eventDetails
 			if(timerMessage.identifier == this.player.identifier){
-				console.log("Remote states":timerMessage)
+				console.log(`Remote states ${timerMessage}`)
 			}
 		})
 	},
