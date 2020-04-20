@@ -24,7 +24,7 @@ exports.handler = async event => {
      .catch(error("Connection Error"))
    case '$disconnect':
       return await ddb.delete(disconnect(route.connection)).promise()
-      .then(success("Diconnected"))
+      .then(success("Disconnected"))
       .catch(error("Disconnection Error"))
    case 'sendmessage':
       return await ddb.query(connections()).promise()
