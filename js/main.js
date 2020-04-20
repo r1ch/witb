@@ -238,11 +238,11 @@ Vue.component('witb-playspace',{
 				playerEpoch: (new Date()).getTime(),
 				playerSeconds: timeRemaining
 			})
-			this.timeRemaining = timeRemaining | 0
-			if(this.timeRemaining <= 0){
+			if(timeRemaining <= 0){
 				clearInterval(this.timer)
 				this.stage = this.stages.Finished
 			}
+			this.timeRemaining = timeRemaining | 0
 		},
 		gotIt : function(name){
 			console.log(`GotIt before, got: event: ${this.namesGot}, event: ${name}, nameInPlay: ${this.nameInPlay}, passed:${this.passed}`)
