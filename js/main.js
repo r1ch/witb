@@ -392,13 +392,13 @@ var app = new Vue({
 			})
 		},
 		sendMessage(eventType,eventDetail){
-			this.socket.send({
+			this.socket.send(JSON.stringify({
 				action:"sendmessage",
 				data:JSON.stringify({
 					eventType:eventType,
 					eventDetail:eventDetail
 				})
-			});
+			}));
 		}
 	},
 	provide: function(){
