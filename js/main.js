@@ -180,6 +180,7 @@ Vue.component('witb-playspace',{
 		this.listenFor("TIMER",(data)=>{
 			let timerMessage = data.eventDetail
 			//do we trust the clock?
+			console.log(`${timerMessage}, ${timerMessage.playerEpoch}`)
 			let jitter = (new Date()).getTime-timerMessage.playerEpoch
 			if(jitter < 0 && jitter > 2000){
 				//use network jitter correction if we get causal messages within 2 seconds
@@ -299,6 +300,8 @@ Vue.component('witb-playspace',{
 				<button @click = "start" class =  "btn btn-primary" v-if = "stage==stages.Ready">Start my go</button>
 				<div class="progress" style="height: 20px;">
 					<div class="progress-bar" role="progressbar" :style="localTimeWidth">{{timeRemaining}}s</div>
+				</div>
+				<div class="progress" style="height: 20px;">
 					<div class="progress-bar" role="progressbar" :style="remoteTimeWidth">{{remoteTimeRemaining}}s</div>
 				</div>
 				<button @click = "endTurn" class =  "btn btn-primary" v-if = "stage==stages.Finished">End my go<br><small>Got {{namesGot.length}}</small></button>
