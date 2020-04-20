@@ -232,12 +232,13 @@ Vue.component('witb-playspace',{
 			this.timer = setInterval(()=>{this.tick()},500)
 		},
 		tick : function(){
-			this.timeRemaining = Math.max((this.startTime+this.game.secondsPerRound*1000-Date.now())/1000|0,0)
+			let timeRemaining = Math.max((this.startTime+this.game.secondsPerRound*1000-Date.now())/1000,0)
 			this.sendMessage("TIMER",{
 				player: this.profile.id,
 				playerEpoch: (new Date()).getTime(),
-				playerSeconds: this.timeRemaining
+				playerSeconds: timeRemaining
 			})
+			this.timeRemaining = timeRemaining | 0
 			if(this.timeRemaining <= 0){
 				clearInterval(this.timer)
 				this.stage = this.stages.Finished
