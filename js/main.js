@@ -292,18 +292,20 @@ Vue.component('witb-playspace',{
 				<h6 class="card-subtitle mb-2" v-if = "game.ended">Finished!</h6>
 				<span v-for = "(value,index) in scores" class="badge badge-pill" :class = "teamColours(teams[game.teams[index].team].livery).badge">{{value}}</span>
 			</div>
+			<div class = "card-body">
+				<div v-if = "!game.ended && player.identifier == profile.id" class="progress teamColours(teams[player.team].livery).progress" style="height: 20px;">
+					<div class="progress-bar" role="progressbar" :style="localTimeWidth">{{timeRemaining}}s</div>
+				</div>
+				<div v-if = "!game.ended && player.identifier != profile.id" class="progress teamColours(teams[player.team].livery).progress" style="height: 20px;">
+					<div class="progress-bar" role="progressbar" :style="remoteTimeWidth">{{remoteTimeRemaining}}s</div>
+				</div>
+			</div>
 			<ul class="list-group list-group-flush" v-if = "!game.ended && stage<stages.Done && player.identifier == profile.id">
 				<witb-playname @gotIt = "gotPass" :name="passed" :canPass = "false"></witb-playname>
 				<witb-playname @gotIt = "gotIt" @passIt = "passIt" :name="nameInPlay" :canPass = "passed == ''"></witb-playname>
 			</ul>
 			<div class="card-body" v-if = "!game.ended && player.identifier == profile.id">
 				<button @click = "start" class =  "btn btn-primary" v-if = "stage==stages.Ready">Start my go</button>
-				<div class="progress" style="height: 20px;">
-					<div class="progress-bar" role="progressbar" :style="localTimeWidth">{{timeRemaining}}s</div>
-				</div>
-				<div class="progress" style="height: 20px;">
-					<div class="progress-bar" role="progressbar" :style="remoteTimeWidth">{{remoteTimeRemaining}}s</div>
-				</div>
 				<button @click = "endTurn" class =  "btn btn-primary" v-if = "stage==stages.Finished">End my go<br><small>Got {{namesGot.length}}</small></button>
 			</div>
 		</div>
@@ -437,7 +439,8 @@ var app = new Vue({
 				li:`list-group-item-${livery}`,
 				button:`btn-${livery}`,
 				card:`border-${livery}`,
-				badge:`badge-${livery}`
+				badge:`badge-${livery}`,
+				progress:`bg-${livery}`
 			})
 			
 		}
