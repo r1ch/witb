@@ -136,16 +136,17 @@ Vue.component('witb-game',{
 	},
 	template: `
 		<div class = row>
-			<h5>{{game.title}}</h5>
+			<h5 class = "col-12">{{game.title}}</h5>
 			<ul class = "list-group-flush" v-if = "currentGameIdentifier == game.identifier">
 				<witb-me @saveNames="saveNames" @saveTeam = "saveTeam" :game="game" :names="names" :team="team"></witb-me>
 				<witb-player v-for = "player in players" :key = "player.identifier" :player="player" v-if="player.identifier!=profile.id"></witb-player>
 			</ul>
 			<br>	
-			<div class = "offset-3 col-6">
+			<div class = "col-12">
+				<small class= "col-6">{{game.namesPerPerson}} names, {{game.secondsPerRound}}s/turn</small>
 				<button class = "btn btn-primary col-6" @click="chooseGame" v-if="currentGameIdentifier != game.identifier">Join</button>
 				<button class = "btn btn-primary col-6" @click="startGame" :class="{'disabled': !gameReady}" v-if="currentGameIdentifier == game.identifier">Start</button>
-				<span v-if = "startProblem" class="form-text text-muted">{{startProblem}}</span>
+				<span v-if = "startProblem" class="form-text text-muted col-6">{{startProblem}}</span>
 			</div>
 		</div>
 	`
@@ -153,7 +154,7 @@ Vue.component('witb-game',{
 
 Vue.component('witb-playspace',{
 	mixins:[APIMixin],
-	inject:['profile','teams','teamColours'],
+	inject:['profile','teams','teamColours','sendMessage','listenFor'],
 	props: ['game'],
 	data: function(){
 		return {
@@ -191,8 +192,7 @@ Vue.component('witb-playspace',{
 	},
 	watch: {
 		"game.playIndex"(newVal,oldVal){
-			if(this.stage == this.stages.Done){
-				console.log("After go, clean up")
+				console.log("Clean-up as new player")
 				this.startTime = false
 				this.timer && clearInterval(this.time)
 				this.timer = false
@@ -201,11 +201,12 @@ Vue.component('witb-playspace',{
 				this.nameInPlay = ""
 				this.passed = ""
 				this.namesGot = []
-				this.stage = this.stages.Next
-			} else {
-				console.log("Pre go, prepare")
-				this.namesLeft = this.game.namesLeftThisRound
+			if(this.player.identifier == this.profile.id){
+				console.log("It's my go!")
 				this.stage = this.stages.Ready
+			} else {
+				console.log("Someone else's go...")
+				this.stage = this.stages.Next
 			}
 		}
 	},
@@ -232,6 +233,11 @@ Vue.component('witb-playspace',{
 		},
 		tick : function(){
 			this.timeRemaining = Math.max((this.startTime+this.game.secondsPerRound*1000-Date.now())/1000|0,0)
+			this.sendMessage({
+				player: this.profile.id,
+				playerEpoch: (new Date()).getTime(),
+				playerSeconds: this.timeRemaining
+			})
 			if(this.timeRemaining <= 0){
 				clearInterval(this.timer)
 				this.stage = this.stages.Finished
@@ -359,7 +365,9 @@ var app = new Vue({
 	data: {
 		profile: {ready:false,id:0,name:'',url:'',token:''},
 		socket: null,
-		messages: []
+		messages: [],
+		version:version,
+		revision:revision.substring(0,5)
 	},
 	methods:{
 		userReady(event){
@@ -373,12 +381,19 @@ var app = new Vue({
 		},
 		listenFor(key,handler){
 			this.socket.addEventListener("message",event=>event.data == key ? handler() : false)
+		},
+		sendMessage(message){
+			this.socket.send({
+				action:"sendmessage",
+				data:JSON.stringify(message)
+			});
 		}
 	},
 	provide: function(){
 		return {
 			profile: this.profile,
 			listenFor: this.listenFor,
+			sendMessage: this.sendMessage,
 			teams: [
 				{name:"1",livery:"primary",key:0},
 				{name:"2",livery:"success",key:1},
@@ -410,6 +425,9 @@ var app = new Vue({
 			<witb-container></witb-container>
 			<span class = "badge badge-pill badge-primary" v-for = "message in messages">
 				{{message.substring(0,1)}}		
+			</span><br>
+			<span class = "badge badge-pill badge-info">
+				{{revision}}:{{version}}		
 			</span>
 		</div>
 	`
