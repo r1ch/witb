@@ -382,10 +382,13 @@ var app = new Vue({
 		listenFor(key,handler){
 			this.socket.addEventListener("message",event=>event.data.eventType == key ? handler() : false)
 		},
-		sendMessage(message){
+		sendMessage(eventType,eventDetail){
 			this.socket.send({
 				action:"sendmessage",
-				data:JSON.stringify(message)
+				data:JSON.stringify({
+					eventType:eventType,
+					eventDetail:eventDetail
+				})
 			});
 		}
 	},
