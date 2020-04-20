@@ -380,7 +380,7 @@ var app = new Vue({
 			this.profile.ready = true
 		},
 		listenFor(key,handler){
-			this.socket.addEventListener("message",event=>event.data == key ? handler() : false)
+			this.socket.addEventListener("message",event=>event.data.eventType == key ? handler() : false)
 		},
 		sendMessage(message){
 			this.socket.send({
@@ -424,7 +424,7 @@ var app = new Vue({
 			<google-login @userReady = "userReady"></google-login>
 			<witb-container></witb-container>
 			<span class = "badge badge-pill badge-primary" v-for = "message in messages">
-				{{message.substring(0,1)}}		
+				{{message.eventType.substring(0,1)}}		
 			</span><br>
 			<span class = "badge badge-pill badge-info">
 				{{revision}}:{{version}}		
