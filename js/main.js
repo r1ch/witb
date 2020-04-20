@@ -233,7 +233,7 @@ Vue.component('witb-playspace',{
 		},
 		tick : function(){
 			this.timeRemaining = Math.max((this.startTime+this.game.secondsPerRound*1000-Date.now())/1000|0,0)
-			this.timeRemaining % 5 == 0 && this.sendMessage({
+			this.sendMessage({
 				player: this.profile.id,
 				playerEpoch: (new Date()).getTime(),
 				playerSeconds: this.timeRemaining
