@@ -393,6 +393,7 @@ var app = new Vue({
 		return {
 			profile: this.profile,
 			listenFor: this.listenFor,
+			sendMessage: this.sendMessage,
 			teams: [
 				{name:"1",livery:"primary",key:0},
 				{name:"2",livery:"success",key:1},
