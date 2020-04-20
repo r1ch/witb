@@ -294,10 +294,10 @@ Vue.component('witb-playspace',{
 			</div>
 			<div class = "card-body">
 				<div v-if = "!game.ended && player.identifier == profile.id" class="progress" style="height: 20px;">
-					<div class="progress-bar" :class = "teamColours(teams[player.team].livery).progress" role="progressbar" :style="localTimeWidth">{{Math.floor(timeRemaining)}}s</div>
+					<div class="progress-bar" :class = "teamColours(teams[player.team].livery).progress" role="progressbar" :style="localTimeWidth">{{Math.ceil(timeRemaining)}}s</div>
 				</div>
 				<div v-if = "!game.ended && player.identifier != profile.id" class="progress teamColours(teams[player.team].livery).progress" style="height: 20px;">
-					<div class="progress-bar" :class = "teamColours(teams[player.team].livery).progress" role="progressbar" :style="remoteTimeWidth">{{Math.floor(remoteTimeRemaining)}}s</div>
+					<div class="progress-bar" :class = "teamColours(teams[player.team].livery).progress" role="progressbar" :style="remoteTimeWidth">{{Math.ceil(remoteTimeRemaining)}}s</div>
 				</div>
 			</div>
 			<ul class="list-group list-group-flush" v-if = "!game.ended && stage<stages.Done && player.identifier == profile.id">
