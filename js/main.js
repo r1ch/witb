@@ -179,7 +179,7 @@ Vue.component('witb-playspace',{
 	mounted: function(){
 		this.listenFor("TIMER",(data)=>{
 			let timerMessage = data
-			console.log(`Remote states ${timerMessage}`)
+			console.log(`Remote states ${JSON.stringify(timerMessage)}`)
 		})
 	},
 	computed:{
