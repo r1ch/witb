@@ -376,6 +376,12 @@ var app = new Vue({
 		},
 		listenFor(key,handler){
 			this.socket.addEventListener("message",event=>event.data == key ? handler() : false)
+		},
+		sendMessage(message){
+			this.socket.send({
+				action:"sendmessage",
+				body:message
+			});
 		}
 	},
 	provide: function(){
