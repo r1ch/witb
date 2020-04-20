@@ -169,11 +169,20 @@ Vue.component('witb-playspace',{
 			startTime: false,
 			timer: false,
 			timeRemaining: this.game.secondsPerRound,
+			remoteTimeRemaining: false,
 			namesLeft : this.game.namesLeftThisRound,
 			nameInPlay : "",
 			passed : "",
 			namesGot : [],
 		}
+	},
+	mounted: function(){
+		this.listenFor("TIMER",(data)=>{
+			let timerMessage = data.eventDetails
+			if(timerMessage.identifier == this.player.identifier){
+				console.log("Remote states":timerMessage)
+			}
+		})
 	},
 	computed:{
 		scores: function(){
@@ -192,15 +201,8 @@ Vue.component('witb-playspace',{
 	},
 	watch: {
 		"game.playIndex"(newVal,oldVal){
-				console.log("Clean-up as new player")
-				this.startTime = false
-				this.timer && clearInterval(this.time)
-				this.timer = false
-				this.timeRemaining = this.game.secondsPerRound
-				this.namesLeft = this.game.namesLeftThisRound
-				this.nameInPlay = ""
-				this.passed = ""
-				this.namesGot = []
+			console.log("Clean-up as new player")
+			Object.assign(this.$data, this.$options.data.apply(this))
 			if(this.player.identifier == this.profile.id){
 				console.log("It's my go!")
 				this.stage = this.stages.Ready
