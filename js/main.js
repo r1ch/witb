@@ -198,10 +198,10 @@ Vue.component('witb-playspace',{
 			  [turn.teamIndex]: (map[turn.teamIndex] || 0) + turn.names.length,
 			}), {})
 		},
-		localTimePercentage: function(){
+		localTimeWidth: function(){
 			return `width: ${this.timeRemaining/this.game.secondsPerRound * 100}%`;
 		},
-		remoteTime:function(){
+		remoteTimeWidth:function(){
 			return `width: ${this.remoteTimeRemaining/this.game.secondsPerRound * 100}%`;
 		},
 		team: function(){
