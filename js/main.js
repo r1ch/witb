@@ -388,7 +388,7 @@ var app = new Vue({
 					console.err(`Error in parse of ${JSON.stringify(event)} data`)
 					data = false
 				}
-				data && data.eventType && data.eventType == key ? handler(data) : false
+				data && data.eventType && (data.eventType == key || key == "*") ? handler(data) : false
 			})
 		},
 		sendMessage(eventType,eventDetail){
@@ -423,13 +423,13 @@ var app = new Vue({
 	},
 	created: function(){
 		this.socket = new WebSocket(window.config.socketGatewayUrl + window.config.socketGatewayPath)
-		this.socket.onmessage = event=>{
-			this.messages.unshift(event.data)
+		this.listenFor("*",(data)=>{
+			this.messages.unshift(data.eventType)
 			if(this.messages.length > 3) this.messages.pop()
 			setTimeout(()=>{
 				if(this.messages) this.messages.pop()
 			},5000)
-		}
+		})
 	},
 	template: `
 		<div class = "container">
