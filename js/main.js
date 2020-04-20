@@ -394,10 +394,10 @@ var app = new Vue({
 		sendMessage(eventType,eventDetail){
 			this.socket.send(JSON.stringify({
 				action:"sendmessage",
-				data:JSON.stringify({
+				data:{
 					eventType:eventType,
 					eventDetail:eventDetail
-				})
+				}
 			}));
 		}
 	},
