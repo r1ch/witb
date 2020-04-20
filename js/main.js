@@ -385,7 +385,7 @@ var app = new Vue({
 		sendMessage(message){
 			this.socket.send({
 				action:"sendmessage",
-				body:message
+				data:JSON.stringify(message)
 			});
 		}
 	},
