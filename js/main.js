@@ -165,15 +165,31 @@ Vue.component('witb-playspace',{
 				Done:3,
 				Next:4
 			},
-			stage: 0,
+			stage:0,
 			startTime: false,
 			timer: false,
 			timeRemaining: this.game.secondsPerRound,
+			remoteTimeRemaining: this.game.secondsPerRound,
 			namesLeft : this.game.namesLeftThisRound,
 			nameInPlay : "",
 			passed : "",
 			namesGot : [],
 		}
+	},
+	mounted: function(){
+		this.listenFor("TIMER",(data)=>{
+			let timerMessage = data.eventDetail
+			//do we trust the clock?
+			console.log(`${timerMessage}, ${timerMessage.playerEpoch}`)
+			let jitter = (new Date()).getTime()-timerMessage.playerEpoch
+			if(jitter < 0 || jitter > 2000){
+				//use network jitter correction if we get causal messages within 2 seconds
+				jitter = 0
+			} else {
+				console.log(`Jitter: ${jitter}`)
+			}
+			this.remoteTimeRemaining = Math.max(0,timerMessage.playerSeconds - jitter/1000)
+		})
 	},
 	computed:{
 		scores: function(){
@@ -182,6 +198,12 @@ Vue.component('witb-playspace',{
 			  ...map,
 			  [turn.teamIndex]: (map[turn.teamIndex] || 0) + turn.names.length,
 			}), {})
+		},
+		localTimeWidth: function(){
+			return `width: ${this.timeRemaining/this.game.secondsPerRound * 100}%`;
+		},
+		remoteTimeWidth:function(){
+			return `width: ${this.remoteTimeRemaining/this.game.secondsPerRound * 100}%`;
 		},
 		team: function(){
 			return this.game.teams[this.game.teamIndex]
@@ -192,15 +214,8 @@ Vue.component('witb-playspace',{
 	},
 	watch: {
 		"game.playIndex"(newVal,oldVal){
-				console.log("Clean-up as new player")
-				this.startTime = false
-				this.timer && clearInterval(this.time)
-				this.timer = false
-				this.timeRemaining = this.game.secondsPerRound
-				this.namesLeft = this.game.namesLeftThisRound
-				this.nameInPlay = ""
-				this.passed = ""
-				this.namesGot = []
+			console.log("Clean-up as new player")
+			Object.assign(this.$data, this.$options.data.apply(this))
 			if(this.player.identifier == this.profile.id){
 				console.log("It's my go!")
 				this.stage = this.stages.Ready
@@ -232,16 +247,17 @@ Vue.component('witb-playspace',{
 			this.timer = setInterval(()=>{this.tick()},500)
 		},
 		tick : function(){
-			this.timeRemaining = Math.max((this.startTime+this.game.secondsPerRound*1000-Date.now())/1000|0,0)
-			this.sendMessage({
+			let timeRemaining = Math.max((this.startTime+this.game.secondsPerRound*1000-Date.now())/1000,0)
+			this.sendMessage("TIMER",{
 				player: this.profile.id,
 				playerEpoch: (new Date()).getTime(),
-				playerSeconds: this.timeRemaining
+				playerSeconds: timeRemaining
 			})
-			if(this.timeRemaining <= 0){
+			if(timeRemaining <= 0){
 				clearInterval(this.timer)
 				this.stage = this.stages.Finished
 			}
+			this.timeRemaining = timeRemaining
 		},
 		gotIt : function(name){
 			console.log(`GotIt before, got: event: ${this.namesGot}, event: ${name}, nameInPlay: ${this.nameInPlay}, passed:${this.passed}`)
@@ -276,13 +292,20 @@ Vue.component('witb-playspace',{
 				<h6 class="card-subtitle mb-2" v-if = "game.ended">Finished!</h6>
 				<span v-for = "(value,index) in scores" class="badge badge-pill" :class = "teamColours(teams[game.teams[index].team].livery).badge">{{value}}</span>
 			</div>
+			<div class = "card-body">
+				<div v-if = "!game.ended && player.identifier == profile.id" class="progress" style="height: 20px;">
+					<div class="progress-bar" :class = "teamColours(teams[player.team].livery).progress" role="progressbar" :style="localTimeWidth">{{Math.ceil(timeRemaining)}}s</div>
+				</div>
+				<div v-if = "!game.ended && player.identifier != profile.id" class="progress teamColours(teams[player.team].livery).progress" style="height: 20px;">
+					<div class="progress-bar" :class = "teamColours(teams[player.team].livery).progress" role="progressbar" :style="remoteTimeWidth">{{Math.ceil(remoteTimeRemaining)}}s</div>
+				</div>
+			</div>
 			<ul class="list-group list-group-flush" v-if = "!game.ended && stage<stages.Done && player.identifier == profile.id">
 				<witb-playname @gotIt = "gotPass" :name="passed" :canPass = "false"></witb-playname>
 				<witb-playname @gotIt = "gotIt" @passIt = "passIt" :name="nameInPlay" :canPass = "passed == ''"></witb-playname>
 			</ul>
 			<div class="card-body" v-if = "!game.ended && player.identifier == profile.id">
 				<button @click = "start" class =  "btn btn-primary" v-if = "stage==stages.Ready">Start my go</button>
-				<h6 v-if = "stage<stages.Done">{{timeRemaining}} s</h6>
 				<button @click = "endTurn" class =  "btn btn-primary" v-if = "stage==stages.Finished">End my go<br><small>Got {{namesGot.length}}</small></button>
 			</div>
 		</div>
@@ -380,13 +403,25 @@ var app = new Vue({
 			this.profile.ready = true
 		},
 		listenFor(key,handler){
-			this.socket.addEventListener("message",event=>event.data == key ? handler() : false)
+			this.socket.addEventListener("message",event=>{
+				let data = event && event.data
+				try{
+					data = JSON.parse(data)
+				} catch(err){
+					console.err(`Error in parse of ${JSON.stringify(event)} data`)
+					data = false
+				}
+				data && data.eventType && (data.eventType == key || key == "*") ? handler(data) : false
+			})
 		},
-		sendMessage(message){
-			this.socket.send({
+		sendMessage(eventType,eventDetail){
+			this.socket.send(JSON.stringify({
 				action:"sendmessage",
-				data:JSON.stringify(message)
-			});
+				data:{
+					eventType:eventType,
+					eventDetail:eventDetail
+				}
+			}));
 		}
 	},
 	provide: function(){
@@ -404,20 +439,23 @@ var app = new Vue({
 				li:`list-group-item-${livery}`,
 				button:`btn-${livery}`,
 				card:`border-${livery}`,
-				badge:`badge-${livery}`
+				badge:`badge-${livery}`,
+				progress:`bg-${livery}`
 			})
 			
 		}
 	},
 	created: function(){
 		this.socket = new WebSocket(window.config.socketGatewayUrl + window.config.socketGatewayPath)
-		this.socket.onmessage = event=>{
-			this.messages.unshift(event.data)
+		this.listenFor("*",(data)=>{
+			this.messages.unshift(data.eventType)
 			if(this.messages.length > 3) this.messages.pop()
-			setTimeout(()=>{
-				if(this.messages) this.messages.pop()
-			},5000)
-		}
+			else {
+				setTimeout(()=>{
+					if(this.messages) this.messages.pop()
+				},2000)
+			}
+		})
 	},
 	template: `
 		<div class = "container">
