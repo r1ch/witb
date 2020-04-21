@@ -180,7 +180,7 @@ Vue.component('witb-playspace',{
 		this.listenFor("TIMER",(data)=>{
 			let timerMessage = data.eventDetail
 			//do we trust the clock?
-			console.log(`${timerMessage}, ${timerMessage.playerEpoch}`)
+			console.log(`${JSON.stringify(timerMessage)}, ${timerMessage.playerEpoch}`)
 			let jitter = (new Date()).getTime()-timerMessage.playerEpoch
 			if(jitter < 0 || jitter > 2000){
 				//use network jitter correction if we get causal messages within 2 seconds
