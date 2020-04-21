@@ -235,8 +235,8 @@ Vue.component('witb-playspace',{
 				got: "http://soundbible.com/2101-12-Ga-Winchester-Shotgun.html",
 				pass: "http://soundbible.com/2055-Evil-Laugh-Male-6.html"
 			}
-			if (sounds(sound)){
-				var audio = new Audio(sounds(sound));
+			if (sounds[sound]){
+				var audio = new Audio(sounds[sound]);
 				audio.play()
 			}
 		},
