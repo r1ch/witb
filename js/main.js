@@ -231,9 +231,9 @@ Vue.component('witb-playspace',{
 	methods:{
 		playSound : function(sound){
 			let sounds = {
-				end: "http://soundbible.com/2190-Front-Desk-Bell.html",
-				got: "http://soundbible.com/2101-12-Ga-Winchester-Shotgun.html",
-				pass: "http://soundbible.com/2055-Evil-Laugh-Male-6.html"
+				end: "/sounds/end.mp3",
+				got: "/sounds/got.mp3",
+				pass: "/sounds/pass.mp3"
 			}
 			if (sounds[sound]){
 				var audio = new Audio(sounds[sound]);
