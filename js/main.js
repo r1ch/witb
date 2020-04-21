@@ -189,6 +189,9 @@ Vue.component('witb-playspace',{
 				console.log(`Jitter: ${jitter}`)
 			}
 			this.remoteTimeRemaining = Math.max(0,timerMessage.playerSeconds - jitter/1000)
+			if(this.remoteTimeRemaining|0==0){
+				this.sendMessage("TURN","end")
+			}
 		})
 		this.listenFor("TURN",(data)=>{
 			this.playSound(data.eventDetail)
@@ -295,7 +298,6 @@ Vue.component('witb-playspace',{
 			console.log(`gotPass after, event: ${this.namesGot}, event: ${name}, nameInPlay: ${this.nameInPlay}, passed:${this.passed}`)
 		},
 		endTurn : function(){
-			this.sendMessage("TURN","end")
 			this.timer && clearInterval(this.timer)
 			this.stage = this.stages.Done
 			this.$emit("endTurn",this.namesGot)
