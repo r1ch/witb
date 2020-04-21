@@ -190,6 +190,9 @@ Vue.component('witb-playspace',{
 			}
 			this.remoteTimeRemaining = Math.max(0,timerMessage.playerSeconds - jitter/1000)
 		})
+		this.listenFor("TURN",(data)=>{
+			this.playSound(data.eventDetail)
+		})
 	},
 	computed:{
 		scores: function(){
@@ -226,6 +229,17 @@ Vue.component('witb-playspace',{
 		}
 	},
 	methods:{
+		playSound : function(sound){
+			let sounds = {
+				end: "http://soundbible.com/2190-Front-Desk-Bell.html",
+				got: "http://soundbible.com/2101-12-Ga-Winchester-Shotgun.html",
+				pass: "http://soundbible.com/2055-Evil-Laugh-Male-6.html"
+			}
+			if (sounds(sound)){
+				var audio = new Audio(sounds(sound));
+				audio.play()
+			}
+		},
 		pickNextName : function(){
 			if(this.namesLeft && this.namesLeft.length > 0 && this.stage < this.stages.Finished){
 				console.log(`Old name: ${this.nameInPlay}`)
@@ -260,24 +274,28 @@ Vue.component('witb-playspace',{
 			this.timeRemaining = timeRemaining
 		},
 		gotIt : function(name){
+			this.sendMessage("TURN","got")
 			console.log(`GotIt before, got: event: ${this.namesGot}, event: ${name}, nameInPlay: ${this.nameInPlay}, passed:${this.passed}`)
 			this.namesGot.push(name)
 			this.pickNextName()
 			console.log(`GotIt after, event: ${this.namesGot}, event: ${name}, nameInPlay: ${this.nameInPlay}, passed:${this.passed}`)
 		},
 		passIt : function(name){
+			this.sendMessage("TURN","pass")
 			console.log(`PassIt before, event: ${this.namesGot}, event: ${name}, nameInPlay: ${this.nameInPlay}, passed:${this.passed}`)
 			this.passed = name
 			this.pickNextName()
 			console.log(`PassIt after, event: ${this.namesGot}, event: ${name}, nameInPlay: ${this.nameInPlay}, passed:${this.passed}`)
 		},
 		gotPass : function(name){
+			this.sendMessage("TURN","got")
 			console.log(`gotPass before, event: ${this.namesGot}, event: ${name}, nameInPlay: ${this.nameInPlay}, passed:${this.passed}`)
 			this.namesGot.push(name)
 			this.passed = false
 			console.log(`gotPass after, event: ${this.namesGot}, event: ${name}, nameInPlay: ${this.nameInPlay}, passed:${this.passed}`)
 		},
 		endTurn : function(){
+			this.sendMessage("TURN","end")
 			this.timer && clearInterval(this.timer)
 			this.stage = this.stages.Done
 			this.$emit("endTurn",this.namesGot)
