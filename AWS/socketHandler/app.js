@@ -6,15 +6,33 @@ console.log(`Configured to send from ${process.env.ENDPOINT}`)
 exports.handler = async event => {
  console.log(event)
 
- let route = {}
+ let route = {
+   key:"error"
+ }
 
  if(event && event.requestContext && event.requestContext.routeKey){
    route.key = event.requestContext.routeKey
    route.connection = event.requestContext.connectionId
-   route.data = event.body ? JSON.parse(event.body).data : false
+   let body = false
+   if(event.body){
+    try{
+      body = JSON.parse(event.body)
+    } catch (err){
+      body = false
+      console.log(`Error ${JSON.stringify(err)} in parsing ${JSON.stringify(event)} body`)
+    }
+  }
+   let eventType =  body.data ? body.data.eventType : "MESSAGE"
+   let eventDetail = body.data ? body.data.eventDetail : "" 
+   route.data = JSON.stringify({
+     eventType : eventType,
+     eventDetail : eventDetail
+   })
  } else if (event && event.Records){
    route.key = 'sendmessage'
-   route.data = event.Records[0].dynamodb.Keys.recordType.S
+   route.data = JSON.stringify({
+     eventType: event.Records[0].dynamodb.Keys.recordType.S
+   })
  }
 
  switch(route.key){
@@ -32,7 +50,7 @@ exports.handler = async event => {
       .then(success("Sent to all"))
       .catch(error)
    default:
-     return error("Badness out of bounds exception")
+     return error("Unknown route")
  }
 };
 
