@@ -190,7 +190,7 @@ Vue.component('witb-playspace',{
 			}
 			this.remoteTimeRemaining = Math.max(0,timerMessage.playerSeconds - jitter/1000)
 			if(this.remoteTimeRemaining <= 0){
-				this.sendMessage("TURN","end")
+				this.playSound("end")
 			}
 		})
 		this.listenFor("TURN",(data)=>{
